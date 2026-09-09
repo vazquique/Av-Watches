@@ -432,7 +432,7 @@
 .av-guia__op .e { font-size: 1.35rem; line-height: 1.1; }
 .av-guia__op .s { font-size: 0.82rem; color: var(--tinta-tenue); }
 .av-guia__op.elegida { background: var(--acento); }
-.av-guia__op.elegida .e, .av-guia__op.elegida .s { color: #0B0B0C; }
+.av-guia__op.elegida .e, .av-guia__op.elegida .s { color: var(--fondo); }
 .av-guia__pie { margin: 1.2rem 0 0; font-size: .84rem; color: var(--tinta-fantasma); max-width: 52ch; }
 .av-guia__atras { display: inline-block; margin-top: 1.4rem; color: var(--tinta-tenue); }
 
