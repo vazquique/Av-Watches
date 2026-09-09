@@ -46,11 +46,10 @@ buena idea sustituirlas por fotos propias conforme las tengas.
 | Ficha | **De perfil.** El reloj de canto, a escala y acotado. El grosor es lo que decide si entra bajo el puño y casi ninguna tienda lo enseña. |
 | Ficha | **Mueve el tiempo.** Adelanta o atrasa el reloj hasta quince días: la fase lunar recorre el mes, la fecha salta a medianoche, el segundo huso se mueve. |
 | Ficha | **En tu muñeca.** Dos vistas a escala en milímetros: desde arriba y de canto. La circunferencia que mides con un listón se convierte a ancho y alto reales con la fórmula de Ramanujan para elipses, porque una muñeca no es un cilindro. |
-| Ficha | **Apagar la luz**: apaga el dial y deja solo la luminiscencia. Y la **lupa** de relojero, que magnifica el dial x2.6. |
+| Ficha | **Apagar la luz**: apaga el dial y deja solo la luminiscencia. Y la **lupa** de relojero, que magnifica el dial x2.6. Lo esencial queda a la vista y el resto (ficha técnica, talla, notas) vive plegado. |
 | `guia.html` | **¿Cuál es tu reloj?** Cinco preguntas con puntuación real sobre el inventario y una recomendación explicada. Respeta lo que pides: a quien dice que no quiere darle cuerda no se le ofrece un cuerda manual. |
-| Portada | **El escaparate**: una vitrina con su cristal, la pieza grande y una lista que rota sola hasta que alguien la toca. |
-| Portada | **El movimiento por dentro**, animado de verdad: todas las ruedas comparten módulo, así que los dientes encajan, y las velocidades salen de la razón de dientes. El barrilete tarda tres minutos por vuelta y el volante late 3.75 veces por segundo. El escape avanza a pasos, un diente por latido. |
-| Portada | La hora real de Guadalajara, Ginebra, Tokio y Nueva York, cada una en un reloj distinto del catálogo. |
+| `aprende-movimientos.html` | **El movimiento por dentro**, animado de verdad: todas las ruedas comparten módulo, así que los dientes encajan, y las velocidades salen de la razón de dientes. El barrilete tarda tres minutos por vuelta y el volante late 3.75 veces por segundo. El escape avanza a pasos, un diente por latido. |
+| `aprende.html` | Cinco guías cortas — movimientos, talla, cuidados, autenticidad y glosario — para que la información no estorbe en la portada. |
 | `comparar.html` | **Siluetas superpuestas**: diámetros concéntricos y grosores apilados, en milímetros literales. |
 | Catálogo | Filtros por marca, condición, mecánica, tipo, complicación, precio y diámetro. Viven en la URL, así que un filtro se comparte por WhatsApp. |
 | Todo | Buscador con `⌘K`, bolsa, bóveda y modo día/noche que se recuerda. La barra dorada de arriba es el avance del día. |
@@ -67,6 +66,8 @@ catalogo.html       Catálogo con filtros
 reloj.html?id=…     Ficha del reloj
 comparar.html       Comparador
 guia.html           ¿Cuál es tu reloj? (cuestionario)
+aprende.html        Índice de guías
+aprende-*.html      Movimientos, talla, cuidados, autenticidad, glosario
 boveda.html         Lista de deseos
 pedido.html         Cierre de compra
 casa.html           Sobre AV Watches
@@ -82,7 +83,7 @@ assets/js/escala.js      Calibración de pantalla para el tamaño real
 assets/js/mecanismo.js   El tren de engranes animado
 assets/js/tienda.js      Bolsa, bóveda, comparador, tema, buscador, chrome
 assets/js/componentes.js Tarjeta de vitrina
-assets/js/{inicio,catalogo,detalle,comparar,boveda,pedido,guia}.js
+assets/js/{inicio,catalogo,detalle,comparar,boveda,pedido,guia,aprende}.js
 ```
 
 ## Agregar un reloj

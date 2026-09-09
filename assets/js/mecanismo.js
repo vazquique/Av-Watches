@@ -172,23 +172,16 @@
       <circle cx="${n(anc.x)}" cy="${n(anc.y)}" r="3.2" fill="${RUBI}" opacity=".9"/>
     </g>`;
 
-    /* Anotaciones de plano técnico, con la velocidad real de cada rueda. */
-    const notas = [
-      { e: 0, dy: 96,  txt: 'BARRILETE',     dato: `1 vuelta / ${Math.round(T[0] / 60)} min` },
-      { e: 1, dy: -74, txt: 'RUEDA CENTRAL', dato: `1 / ${Math.round(T[1])} s` },
-      { e: 3, dy: -46, txt: 'CUARTA',        dato: `1 / ${n(T[3])} s` },
-      { e: 4, dy: 62,  txt: 'ESCAPE',        dato: `${ejes[4].rueda} pasos / vuelta` }
-    ];
-    s += `<g font-family="'IBM Plex Mono',monospace" font-size="8" fill="var(--tinta-tenue)" letter-spacing="1.4">`;
-    notas.forEach(({ e, dy, txt, dato }) => {
-      const p = ejes[e], y2 = p.y + dy;
-      s += `<line x1="${n(p.x)}" y1="${n(p.y)}" x2="${n(p.x)}" y2="${n(y2)}" stroke="var(--mec-borde)" stroke-width=".6"/>`;
-      s += `<text x="${n(p.x)}" y="${n(y2 + (dy > 0 ? 11 : -4))}" text-anchor="middle">${txt}</text>`;
-      s += `<text x="${n(p.x)}" y="${n(y2 + (dy > 0 ? 21 : 6))}" text-anchor="middle" fill="${LATON}" opacity=".8">${dato}</text>`;
+    /* Tres rótulos y ya. Las cifras están en el texto de la guía, no encima
+       del dibujo: el esquema se lee mejor callado. */
+    s += `<g font-family="'IBM Plex Mono',monospace" font-size="8" fill="var(--tinta-tenue)" letter-spacing="1.6">`;
+    [[0, 92, 'BARRILETE'], [4, 58, 'ESCAPE']].forEach(([e, dy, txt]) => {
+      const q = ejes[e], y2 = q.y + dy;
+      s += `<line x1="${n(q.x)}" y1="${n(q.y)}" x2="${n(q.x)}" y2="${n(y2)}" stroke="var(--mec-borde)" stroke-width=".6"/>`;
+      s += `<text x="${n(q.x)}" y="${n(y2 + 11)}" text-anchor="middle">${txt}</text>`;
     });
     s += `<line x1="${n(vol.x)}" y1="${n(vol.y + vol.r)}" x2="${n(vol.x)}" y2="272" stroke="var(--mec-borde)" stroke-width=".6"/>`;
     s += `<text x="${n(vol.x)}" y="283" text-anchor="middle">VOLANTE</text>`;
-    s += `<text x="${n(vol.x)}" y="293" text-anchor="middle" fill="${LATON}" opacity=".8">${n(1 / (semi * 2))} latidos / s</text>`;
     s += `</g></svg>`;
     return s;
   }

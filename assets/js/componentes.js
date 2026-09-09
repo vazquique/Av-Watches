@@ -32,11 +32,7 @@
       ${sello(p)}
       <div class="av-pieza__lienzo" data-reloj="${p.id}"></div>
       <h3 class="av-pieza__nom"><a href="${r()}reloj.html?id=${p.id}">${p.modelo}</a></h3>
-      <p class="av-pieza__lema">${p.lema}</p>
-      <div class="av-pieza__cab" style="border-top:var(--filo);padding-top:.8rem">
-        <span>${p.caja.diametro} mm · ${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'}</span>
-        <span>${p.calibre.tipo}</span>
-      </div>
+      <p class="av-pieza__specs av-mono">${p.caja.diametro} mm · ${p.calibre.tipo} · ${p.condicion === 'nuevo' ? 'nuevo' : 'seminuevo'}</p>
       <div class="av-pieza__pie">
         ${precio(p)}
         <div class="av-pieza__actos">

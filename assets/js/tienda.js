@@ -99,8 +99,7 @@
     const nav = [
       ['catalogo.html', 'Catálogo'],
       ['guia.html', 'Guíame'],
-      ['casa.html', 'Sobre AV'],
-      ['comparar.html', 'Comparar'],
+      ['aprende.html', 'Aprende'],
       ['servicio.html', 'Ayuda']
     ];
     const activa = p => location.pathname.endsWith(p) ? ' aria-current="page"' : '';
@@ -171,7 +170,7 @@
       <nav class="av-pie__cols" aria-label="Pie de página">
         <div><h3>Catálogo</h3>${AV.COLECCIONES.map(c => `<a href="${r}catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}</a>`).join('')}<a href="${r}catalogo.html">Ver todo</a></div>
         <div><h3>Marcas</h3>${AV.MARCAS.slice(0, 5).map(m => `<a href="${r}catalogo.html?marca=${encodeURIComponent(m)}">${m}</a>`).join('')}<a href="${r}catalogo.html">Todas las marcas</a></div>
-        <div><h3>Comprar aquí</h3><a href="${r}guia.html">¿Cuál es tu reloj?</a><a href="${r}servicio.html#garantia">Garantía y autenticidad</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#gdl">Vernos en Guadalajara</a><a href="${r}boveda.html">Tu bóveda</a></div>
+        <div><h3>Aprende</h3><a href="${r}aprende-movimientos.html">Automático o cuarzo</a><a href="${r}aprende-talla.html">Qué talla te queda</a><a href="${r}aprende-cuidados.html">Cómo cuidarlo</a><a href="${r}aprende-original.html">Si es original</a><a href="${r}aprende.html">Todas las guías</a></div><div><h3>La tienda</h3><a href="${r}casa.html">Sobre AV</a><a href="${r}servicio.html#garantia">Garantía</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#gdl">Vernos en Guadalajara</a><a href="${r}boveda.html">Tu bóveda</a></div>
       </nav>
       <div class="av-pie__base">
         <span>© ${new Date().getFullYear()} AV Watches · Guadalajara, Jalisco</span>
