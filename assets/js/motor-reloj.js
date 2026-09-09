@@ -517,7 +517,8 @@
     if (g) g.style.transform = `rotate(${ang}deg)`;
   }
 
-  function tic() {
+  /* Una pasada: pone en hora todas las piezas vivas del documento. */
+  function pintar() {
     const ahora = Date.now();
     for (const el of vivos) {
       let d = new Date(ahora);
@@ -540,8 +541,35 @@
       girar(el, '.av-gmt', (h + m / 60) * 15);
       girar(el, '.av-sub-s', segCont * 6);
     }
-    requestAnimationFrame(tic);
   }
+
+  /* El bucle vive de requestAnimationFrame, que da el barrido suave. Pero el
+     navegador lo suspende en pestañas de fondo y en ahorro de batería, y de
+     ahí no siempre vuelve solo: un reloj parado es peor que uno que salta.
+     Por eso hay un latido de un segundo que pinta pase lo que pase y, si ve
+     que el rAF lleva rato muerto, lo levanta otra vez. */
+  let corriendo = false, ultimoCuadro = 0;
+
+  function cuadro() {
+    ultimoCuadro = Date.now();
+    pintar();
+    if (document.visibilityState === 'visible') requestAnimationFrame(cuadro);
+    else corriendo = false;
+  }
+
+  function arrancar() {
+    if (corriendo) return;
+    corriendo = true;
+    ultimoCuadro = Date.now();
+    requestAnimationFrame(cuadro);
+  }
+
+  function latido() {
+    pintar();
+    if (Date.now() - ultimoCuadro > 2000) { corriendo = false; arrancar(); }
+  }
+
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') arrancar(); });
 
   /* Monta todo contenedor con data-reloj="id-del-modelo". */
   function montarTodos(raiz) {
@@ -554,6 +582,8 @@
     refrescar();
   }
 
-  global.AVMotor = { svgReloj, montarTodos, refrescar, aclarar, esClaro };
-  document.addEventListener('DOMContentLoaded', () => { montarTodos(); requestAnimationFrame(tic); });
+  global.AVMotor = { svgReloj, montarTodos, refrescar, pintar, aclarar, esClaro };
+  function iniciar() { montarTodos(); arrancar(); setInterval(latido, 1000); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+  else iniciar();
 })(window);
