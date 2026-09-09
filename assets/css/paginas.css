@@ -594,3 +594,42 @@
 
 .av-notas li { padding: .7rem 1rem .7rem 2.6rem; font-size: .88rem; }
 .av-notas li::before { left: 1rem; }
+
+/* Acciones de cabecera de sección: filtrar y ver todo. */
+.av-seccion-eti__acciones { display: flex; gap: .4rem; flex: 0 0 auto; }
+
+/* ==========================  FILTROS EN MÓVIL  ===========================
+   En el teléfono los filtros ocupaban media pantalla antes de ver un reloj.
+   Ahora se abren con un botón y se cierran al terminar.
+   ======================================================================== */
+.av-filtros-abrir { display: none; }
+.av-filtros__cabeza { display: none; }
+@media (max-width: 980px) {
+  .av-filtros-abrir {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%;
+    border: var(--filo); background: var(--fondo-2); padding: .8rem 1rem; margin-bottom: 1rem;
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--tinta);
+  }
+  .av-filtros-abrir b { font-family: var(--mono); font-size: .64rem; color: var(--laton); }
+  .av-filtros-abrir b:empty::before { content: 'Abrir'; color: var(--tinta-fantasma); }
+
+  .av-filtros {
+    position: fixed; inset: 0; z-index: 175; overflow-y: auto;
+    background: var(--fondo); padding: 0 var(--marco) calc(2rem + env(safe-area-inset-bottom));
+    transform: translateY(100%); transition: transform .45s var(--curva);
+    display: block;
+  }
+  .av-filtros-abiertos .av-filtros { transform: none; }
+  .av-filtros__cabeza {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 2; background: var(--fondo);
+    padding: 1.1rem 0; border-bottom: var(--filo); margin-bottom: 1rem;
+  }
+  .av-filtros .av-filtro { margin-bottom: 1.4rem; }
+  .av-filtros .av-btn { width: 100%; }
+}
+@media (max-width: 980px) {
+  /* El orden, ya dentro del panel, ocupa el ancho completo. */
+  .av-filtros .av-orden { display: grid; gap: .4rem; margin-bottom: 1.4rem; }
+  .av-filtros .av-orden select { width: 100%; padding: .7rem .8rem; }
+}

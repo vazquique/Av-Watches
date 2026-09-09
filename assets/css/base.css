@@ -193,8 +193,6 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-icono--bolsa:hover svg { transform: translateY(-1px); }
 
 @media (max-width: 860px) {
-  .av-nav { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; justify-content: space-around; background: color-mix(in oklab, var(--fondo) 94%, transparent); backdrop-filter: blur(14px); border-top: var(--filo); padding: .55rem var(--marco) calc(.55rem + env(safe-area-inset-bottom)); z-index: 149; }
-  .av-nav a { font-size: .62rem; letter-spacing: .1em; }
   .av-logo__txt, .av-hora-local { display: none; }
   .av-scrolled:not(.av-sube) .av-cabeza { transform: none; }
 }
@@ -209,7 +207,7 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-pie__cols a:hover { color: var(--tinta); padding-left: .4rem; }
 .av-pie__base { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; border-top: var(--filo); margin-top: 1rem; padding: 1.6rem 0; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; color: var(--tinta-fantasma); }
 .av-pie__hora b { color: var(--laton); font-variant-numeric: tabular-nums; }
-@media (max-width: 860px) { .av-pie { grid-template-columns: 1fr; } .av-pie__base { padding-bottom: 5rem; } }
+@media (max-width: 860px) { .av-pie { grid-template-columns: 1fr; } }
 
 /* --- 8. Bolsa lateral ---------------------------------------------------- */
 .av-velo { position: fixed; inset: 0; background: var(--velo); backdrop-filter: blur(3px); z-index: 160; opacity: 0; transition: opacity .45s var(--curva); }
@@ -278,7 +276,7 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-aviso__punto { width: 6px; height: 6px; background: var(--laton); border-radius: 50%; animation: av-pulso 2s infinite; }
 .av-aviso__accion { color: var(--laton); text-transform: uppercase; letter-spacing: .14em; font-size: .66rem; border-bottom: 1px solid currentColor; }
 @keyframes av-pulso { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
-@media (max-width: 860px) { .av-aviso { bottom: 4.6rem; width: calc(100% - 2rem); } }
+@media (max-width: 860px) { .av-aviso { bottom: 1.4rem; width: calc(100% - 2rem); } }
 
 /* --- 11. La pieza (SVG) -------------------------------------------------- */
 .av-svg { width: 100%; height: auto; overflow: visible; }
@@ -298,8 +296,11 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-svg.lume text { opacity: .12; }
 
 /* --- 12. Utilidades ------------------------------------------------------ */
-[data-revelar] { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--curva), transform .9s var(--curva); }
-[data-revelar].visible { opacity: 1; transform: none; }
+[data-revelar] { opacity: 1; transform: none; }
+@media (min-width: 861px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  [data-revelar]:not(.visible) { opacity: 0; transform: translateY(12px); }
+  [data-revelar] { transition: opacity .55s var(--curva), transform .55s var(--curva); }
+}
 [data-revelar][data-retraso="1"] { transition-delay: .09s; }
 [data-revelar][data-retraso="2"] { transition-delay: .18s; }
 [data-revelar][data-retraso="3"] { transition-delay: .27s; }
@@ -308,3 +309,51 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-solo-lectores { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 main { padding-top: calc(var(--cabeza-alto) + 2px); }
 .av-linea__txt h3 em { font-family: var(--mono); font-style: normal; font-size: .62rem; text-transform: uppercase; letter-spacing: .16em; color: var(--laton); display: block; }
+
+/* ==========================  MENÚ DE TRES LÍNEAS  ========================
+   En el teléfono sustituye a la barra de pestañas: cabe todo lo importante
+   y se cierra tocando fuera o eligiendo algo.
+   ======================================================================== */
+.av-icono--menu { display: none; }
+@media (max-width: 860px) {
+  .av-icono--menu { display: grid; }
+  .av-nav { display: none; }            /* el menú la reemplaza */
+}
+
+.av-menu {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(23rem, 100vw); z-index: 170;
+  background: var(--fondo-2); border-left: var(--filo);
+  display: flex; flex-direction: column;
+  transform: translateX(101%); transition: transform .5s var(--curva);
+}
+.av-menu-abierto .av-menu { transform: none; }
+.av-menu-abierto .av-velo { opacity: 1; }
+.av-menu__cabeza { display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem var(--marco); border-bottom: var(--filo); flex: 0 0 auto; }
+.av-menu__cuerpo { flex: 1; overflow-y: auto; padding: 0 var(--marco) calc(2rem + env(safe-area-inset-bottom)); }
+
+.av-menu__principal { display: grid; padding: .6rem 0; border-bottom: var(--filo); }
+.av-menu__principal a { font-family: var(--display); font-size: 1.5rem; padding: .55rem 0; transition: color .25s, padding-left .3s var(--curva); }
+.av-menu__principal a:hover { color: var(--laton); padding-left: .4rem; }
+
+.av-menu__grupo { padding: 1.1rem 0; border-bottom: var(--filo); }
+.av-menu__grupo h3 { font-family: var(--mono); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--laton); margin: 0 0 .6rem; }
+.av-menu__grupo > a { display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: .4rem 0; font-size: .95rem; color: var(--tinta-tenue); transition: color .25s, padding-left .3s var(--curva); }
+.av-menu__grupo > a:hover { color: var(--tinta); padding-left: .4rem; }
+.av-menu__grupo em { font-style: normal; font-family: var(--mono); font-size: .64rem; color: var(--tinta-fantasma); }
+.av-menu__grupo em:empty { display: none; }
+.av-menu__marcas { display: flex; flex-wrap: wrap; gap: .4rem; }
+.av-menu__marcas a { border: var(--filo); padding: .3rem .6rem; font-family: var(--mono); font-size: .68rem;
+  color: var(--tinta-tenue); transition: color .25s, border-color .25s; }
+.av-menu__marcas a:hover { color: var(--tinta); border-color: var(--linea-viva); }
+
+.av-menu__datos { list-style: none; margin: 1.1rem 0 0; padding: 0; display: grid; gap: .45rem;
+  font-size: .66rem; letter-spacing: .08em; color: var(--tinta-fantasma); }
+.av-menu__datos li { display: flex; align-items: center; gap: .5rem; }
+.av-menu__datos li::before { content: ''; width: 5px; height: 5px; background: var(--laton); border-radius: 50%; flex: 0 0 auto; }
+
+/* El buscador se cierra tocando fuera del recuadro. */
+.av-buscador { cursor: pointer; }
+.av-buscador__caja { cursor: auto; }

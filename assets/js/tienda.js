@@ -118,6 +118,9 @@
         </nav>
         <div class="av-acciones">
           <time class="av-hora-local" id="av-hora" aria-label="Hora local"></time>
+          <button type="button" class="av-icono av-icono--menu" id="av-menu-btn" aria-label="Abrir el menú" aria-expanded="false">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16"/></svg>
+          </button>
           <button type="button" class="av-icono" id="av-buscar-btn" aria-label="Buscar en el catálogo" title="Buscar (⌘K)">
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 18 18"/></svg>
           </button>
@@ -142,6 +145,45 @@
     </header>
 
     <div class="av-velo" id="av-velo" hidden></div>
+
+    <aside class="av-menu" id="av-menu" aria-hidden="true" aria-label="Menú">
+      <div class="av-menu__cabeza">
+        <span class="av-t-eyebrow">Menú</span>
+        <button type="button" class="av-cerrar" id="av-menu-cerrar" aria-label="Cerrar el menú">Cerrar</button>
+      </div>
+      <div class="av-menu__cuerpo">
+        <nav class="av-menu__principal" aria-label="Secciones">
+          ${nav.map(([h, t]) => `<a href="${r}${h}">${t}</a>`).join('')}
+        </nav>
+
+        <div class="av-menu__grupo">
+          <h3>Por dónde empezar</h3>
+          ${AV.COLECCIONES.map(c => `<a href="${r}catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}
+            <em>${AV.RELOJES.filter(x => x.coleccion === c.id).length}</em></a>`).join('')}
+        </div>
+
+        <div class="av-menu__grupo">
+          <h3>Marcas</h3>
+          <div class="av-menu__marcas">
+            ${AV.MARCAS.map(m => `<a href="${r}catalogo.html?marca=${encodeURIComponent(m)}">${m}</a>`).join('')}
+          </div>
+        </div>
+
+        <div class="av-menu__grupo">
+          <h3>Lo tuyo</h3>
+          <a href="${r}boveda.html">Tu bóveda <em data-cuenta="boveda"></em></a>
+          <a href="${r}comparar.html">Comparar <em data-cuenta="comparador"></em></a>
+          <a href="${r}casa.html">Sobre AV</a>
+        </div>
+
+        <ul class="av-menu__datos av-mono">
+          <li>Envío asegurado gratis</li>
+          <li>7 días para devolver</li>
+          <li>Entrega en mano en Guadalajara</li>
+          <li>Meses sin intereses</li>
+        </ul>
+      </div>
+    </aside>
 
     <aside class="av-bolsa" id="av-bolsa" aria-hidden="true" aria-label="Tu bolsa">
       <div class="av-bolsa__cabeza">
@@ -189,6 +231,16 @@
     document.getElementById('av-bolsa-cerrar').onclick = cerrarPaneles;
     document.getElementById('av-velo').onclick = cerrarPaneles;
     document.getElementById('av-buscar-btn').onclick = abrirBuscador;
+    document.getElementById('av-menu-btn').onclick = abrirMenu;
+    document.getElementById('av-menu-cerrar').onclick = cerrarPaneles;
+    /* Tocar fuera del recuadro cierra el buscador: en el teléfono nadie
+       quiere buscar el botón de retroceso para salir. */
+    document.getElementById('av-buscador').addEventListener('pointerdown', e => {
+      if (e.target === e.currentTarget) cerrarPaneles();
+    });
+    document.getElementById('av-menu').addEventListener('click', e => {
+      if (e.target.closest('a')) cerrarPaneles();     /* al elegir, se cierra solo */
+    });
 
     document.addEventListener('keydown', e => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); abrirBuscador(); }
@@ -251,6 +303,15 @@
     document.body.classList.add('av-bloqueado');
     requestAnimationFrame(() => document.body.classList.add('av-bolsa-abierta'));
   }
+  function abrirMenu() {
+    document.getElementById('av-velo').hidden = false;
+    document.getElementById('av-menu').setAttribute('aria-hidden', 'false');
+    document.getElementById('av-menu-btn').setAttribute('aria-expanded', 'true');
+    document.body.classList.add('av-bloqueado');
+    requestAnimationFrame(() => document.body.classList.add('av-menu-abierto'));
+    pintarContadores();
+  }
+
   function abrirBuscador() {
     const b = document.getElementById('av-buscador');
     b.hidden = false; document.body.classList.add('av-bloqueado');
@@ -258,8 +319,10 @@
     pintarBusqueda('');
   }
   function cerrarPaneles() {
-    document.body.classList.remove('av-bolsa-abierta', 'av-bloqueado');
+    document.body.classList.remove('av-bolsa-abierta', 'av-menu-abierto', 'av-bloqueado');
     document.getElementById('av-bolsa').setAttribute('aria-hidden', 'true');
+    const menu = document.getElementById('av-menu');
+    if (menu) { menu.setAttribute('aria-hidden', 'true'); document.getElementById('av-menu-btn').setAttribute('aria-expanded', 'false'); }
     document.getElementById('av-velo').hidden = true;
     const b = document.getElementById('av-buscador');
     b.classList.remove('visible'); setTimeout(() => { b.hidden = true; }, 220);
@@ -342,10 +405,27 @@
   document.addEventListener('DOMContentLoaded', () => {
     montarArmazon();
     tema(S.tema);
-    /* Revelado por scroll, para todo lo que traiga data-revelar. */
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('[data-revelar]').forEach(el => io.observe(el));
-    global.AVTienda.observar = el => io.observe(el);
+    /* Revelado por scroll. Solo en escritorio con puntero: en táctil el
+       desplazamiento es demasiado rápido y las piezas se veían aparecer de
+       golpe. Y lo que ya está en pantalla al cargar no se anima nunca:
+       animar lo que el visitante ya está viendo es lo que se siente mal. */
+    const animar = matchMedia('(min-width: 861px) and (hover: hover)').matches
+                && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let io = null;
+    if (animar) {
+      io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      }), { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+    }
+    const observar = el => {
+      if (!animar) { el.classList.add('visible'); return; }
+      /* Ya visible al montarse: se muestra sin animación. */
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) { el.classList.add('visible'); return; }
+      io.observe(el);
+    };
+    document.querySelectorAll('[data-revelar]').forEach(observar);
+    global.AVTienda.observar = observar;
 
     /* Las cifras suben desde cero cuando entran en pantalla. Una sola vez. */
     const ioCifras = new IntersectionObserver(es => es.forEach(e => {

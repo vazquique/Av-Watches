@@ -46,7 +46,14 @@
     </header>
 
     <div class="av-catalogo">
+      <button type="button" class="av-filtros-abrir" id="filtros-abrir" aria-expanded="false" aria-controls="filtros">
+        <span>Filtrar y ordenar</span><b id="filtros-cuenta"></b>
+      </button>
       <form class="av-filtros" id="filtros" aria-label="Filtrar la colección">
+        <div class="av-filtros__cabeza">
+          <span class="av-t-eyebrow">Filtros</span>
+          <button type="button" class="av-cerrar" id="filtros-cerrar">Listo</button>
+        </div>
         <div class="av-filtro"><h3>Marca</h3><div id="f-marca"></div></div>
         <div class="av-filtro"><h3>Condición</h3><div id="f-condicion"></div></div>
         <div class="av-filtro"><h3>Para qué</h3><div id="f-coleccion"></div></div>

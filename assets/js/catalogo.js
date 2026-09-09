@@ -109,4 +109,46 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   aplicar(false);
+
+  /* ----------------------------------------------------------------------
+     En móvil los filtros viven detrás de un botón: ocupaban media pantalla
+     antes de dejar ver un reloj.
+     ---------------------------------------------------------------------- */
+  const abrir = document.getElementById('filtros-abrir');
+  const cuenta = document.getElementById('filtros-cuenta');
+  const cerrarFiltros = () => {
+    document.body.classList.remove('av-filtros-abiertos', 'av-bloqueado');
+    abrir.setAttribute('aria-expanded', 'false');
+  };
+  abrir.onclick = () => {
+    document.body.classList.add('av-filtros-abiertos', 'av-bloqueado');
+    abrir.setAttribute('aria-expanded', 'true');
+  };
+  document.getElementById('filtros-cerrar').onclick = cerrarFiltros;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarFiltros(); });
+
+  /* El botón dice cuántos filtros hay puestos. */
+  function contarFiltros() {
+    const n = form.querySelectorAll('input[type="checkbox"]:checked').length
+            + (+rPrecio.value < 160000 ? 1 : 0) + (+rDiam.value < 45 ? 1 : 0);
+    cuenta.textContent = n ? `${n} activo${n > 1 ? 's' : ''}` : '';
+  }
+  form.addEventListener('change', contarFiltros);
+  form.addEventListener('input', contarFiltros);
+  contarFiltros();
+
+  /* En móvil el selector de orden se muda dentro del panel: el botón dice
+     "filtrar y ordenar" y tiene que cumplir las dos cosas. */
+  const orden_caja = document.querySelector('.av-orden');
+  const cabecera = orden_caja.parentNode;
+  const acomodarOrden = () => {
+    const movil = matchMedia('(max-width: 980px)').matches;
+    if (movil && orden_caja.parentNode !== form) form.insertBefore(orden_caja, form.querySelector('.av-filtro'));
+    else if (!movil && orden_caja.parentNode === form) cabecera.appendChild(orden_caja);
+  };
+  acomodarOrden();
+  addEventListener('resize', acomodarOrden);
+
+  /* Si se llega con un filtro en la dirección, se muestra ya aplicado. */
+  if (location.hash === '#filtros' && matchMedia('(max-width: 980px)').matches) abrir.click();
 });
