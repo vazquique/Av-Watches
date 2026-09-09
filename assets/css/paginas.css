@@ -17,7 +17,7 @@
   font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta-fantasma); }
 .av-hero__sellos li { display: flex; align-items: center; gap: .45rem; }
 .av-hero__sellos li::before { content: ''; width: 5px; height: 5px; background: var(--laton); border-radius: 50%; }
-.av-hero__pieza { width: 100%; justify-self: end; filter: drop-shadow(0 22px 40px rgba(0,0,0,.5)); cursor: pointer;
+.av-hero__pieza { width: 100%; justify-self: end; cursor: pointer;
   transition: transform .6s var(--curva); }
 .av-hero__pieza:hover { transform: translateY(-5px); }
 .av-hero__pieza .av-svg { width: 100%; }
@@ -464,7 +464,7 @@
 
 /* Titular con una pieza viva al lado, en las páginas de texto. */
 .av-portada-doble { display: grid; grid-template-columns: minmax(0,1fr) clamp(10rem, 22vw, 17rem); gap: clamp(1.5rem,4vw,3.5rem); align-items: center; }
-.av-portada-pieza { width: 100%; filter: drop-shadow(0 22px 40px rgba(0,0,0,.5)); }
+.av-portada-pieza { width: 100%; position: relative; }
 .av-portada-pieza .av-svg { width: 100%; }
 @media (max-width: 780px) { .av-portada-doble { grid-template-columns: 1fr; } .av-portada-pieza { max-width: 13rem; margin-inline: auto; } }
 
@@ -688,8 +688,11 @@
 /* Con foto no hay nada que apoyar: la foto trae su propia luz. */
 .av-pieza__lienzo.con-foto::after { display: none; }
 [data-tema="dia"] .av-pieza__lienzo::after { background: radial-gradient(50% 50%, rgba(40,35,25,.28), transparent 70%); }
-.av-pieza__lienzo .av-svg { filter: drop-shadow(0 10px 16px rgba(0,0,0,.4)); }
-[data-tema="dia"] .av-pieza__lienzo .av-svg { filter: drop-shadow(0 10px 18px rgba(40,35,25,.22)); }
+/* Aquí iba un drop-shadow sobre el SVG. Se veía bien y costaba 26 cuadros por
+   segundo: como las agujas se mueven dentro del elemento filtrado, el navegador
+   vuelve a calcular la sombra sesenta veces por segundo. La caja ya trae su
+   propia sombra dibujada dentro del SVG, y el suelo lo pone ::after, que no se
+   mueve. Misma imagen, sin el costo. */
 
 /* El escaparate de la ficha, con la misma luz pero más marcada. */
 .av-escaparate {
@@ -723,3 +726,10 @@
   filter: blur(9px); z-index: -1;
 }
 [data-tema="dia"] .av-hero__pieza::after { background: radial-gradient(50% 50%, rgba(40,35,25,.28), transparent 70%); }
+.av-portada-pieza::after {
+  content: ''; position: absolute; left: 50%; bottom: 4%; translate: -50% 0;
+  width: 52%; height: 6%; border-radius: 50%;
+  background: radial-gradient(50% 50%, rgba(0,0,0,.6), transparent 70%);
+  filter: blur(9px); z-index: -1;
+}
+[data-tema="dia"] .av-portada-pieza::after { background: radial-gradient(50% 50%, rgba(40,35,25,.28), transparent 70%); }
