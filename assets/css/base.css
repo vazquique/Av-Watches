@@ -26,6 +26,12 @@
   --mono:    'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --sans:    'Archivo', 'Helvetica Neue', Arial, sans-serif;
 
+  /* Tonos del esquema del movimiento, para que funcione en ambos temas. */
+  --mec-acero: rgba(176,180,190,.9);
+  --mec-placa: rgba(150,150,160,.06);
+  --mec-borde: rgba(170,172,180,.26);
+  --mec-luz:   rgba(201,162,74,.13);
+
   --marco: clamp(1rem, 4vw, 4.5rem);   /* margen lateral de la página */
   --filo: 1px solid var(--linea);
   --ritmo: clamp(4.5rem, 9vw, 9rem);   /* aire entre secciones */
@@ -47,6 +53,10 @@
   --laton-hondo:  #C9A24A;
   --brasa:        #A83A22;
   --velo:         rgba(242,238,230,.78);
+  --mec-acero: rgba(88,95,110,.85);
+  --mec-placa: rgba(60,64,74,.06);
+  --mec-borde: rgba(60,64,74,.30);
+  --mec-luz:   rgba(138,98,32,.10);
 }
 
 /* --- 2. Reinicio --------------------------------------------------------- */

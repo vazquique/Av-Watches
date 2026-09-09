@@ -557,3 +557,5 @@
 .av-muneca input[type="range"] { width: 100%; appearance: none; height: 1px; background: var(--linea-viva); margin: .4rem 0; }
 .av-muneca input[type="range"]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
 .av-muneca input[type="range"]::-moz-range-thumb { width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-mecanismo { margin: 0; }
+.av-mecanismo figcaption { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; margin-bottom: .8rem; }

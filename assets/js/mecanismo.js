@@ -49,7 +49,9 @@
   }
 
   function mecanismoSVG() {
-    const LATON = '#C9A24A', ACERO = 'rgba(170,172,180,.85)', RUBI = '#C4452D';
+    /* Los tonos salen de variables para que el esquema aguante los dos temas:
+   sobre papel claro un gris de fondo oscuro se pierde. */
+    const LATON = 'var(--laton)', ACERO = 'var(--mec-acero)', RUBI = 'var(--brasa)';
 
     /* Cada eje recibe por su piñón y transmite por su rueda: es lo que
        multiplica la velocidad desde el barrilete hasta el escape.        */
@@ -89,7 +91,7 @@
       aria-label="Esquema animado de un movimiento mecánico: el barrilete mueve el tren de rodaje hasta el escape y el volante">`;
 
     s += `<defs><radialGradient id="mecLuz" cx="50%" cy="45%" r="60%">
-        <stop offset="0%" stop-color="rgba(201,162,74,.13)"/><stop offset="100%" stop-color="transparent"/>
+        <stop offset="0%" stop-color="var(--mec-luz)"/><stop offset="100%" stop-color="transparent"/>
       </radialGradient></defs>`;
     s += `<rect width="470" height="310" fill="url(#mecLuz)"/>`;
 
@@ -102,7 +104,7 @@
                    C ${n(x0 + 44)} 96 ${n(x1 - 84)} 112 ${n(x1)} 140
                    L ${n(x1 - 4)} 198
                    C ${n(x1 - 92)} 176 ${n(x0 + 60)} 224 ${n(x0 + 6)} 206 Z"
-            fill="rgba(150,150,160,.05)" stroke="rgba(170,172,180,.22)" stroke-width="1" stroke-linejoin="round"/>`;
+            fill="var(--mec-placa)" stroke="var(--mec-borde)" stroke-width="1" stroke-linejoin="round"/>`;
 
     /* Ruedas y piñones */
     ejes.forEach((e, i) => {
@@ -134,7 +136,7 @@
                    L ${n(vol.x + vol.r - 2)} ${n(vol.y + 12)}
                    Q ${n(vol.x + vol.r + 2)} ${n(vol.y - vol.r + 2)} ${n(vol.x)} ${n(vol.y - vol.r + 2)}
                    Q ${n(vol.x - vol.r - 2)} ${n(vol.y - vol.r + 2)} ${n(vol.x - vol.r + 2)} ${n(vol.y + 6)} Z"
-            fill="rgba(150,150,160,.06)" stroke="rgba(170,172,180,.28)" stroke-width="1" stroke-linejoin="round"/>`;
+            fill="var(--mec-placa)" stroke="var(--mec-borde)" stroke-width="1" stroke-linejoin="round"/>`;
 
     /* Volante: no gira, oscila. Es el que marca el ritmo del reloj. */
     s += `<g class="av-pieza-mec" data-parte="volante">
@@ -161,8 +163,8 @@
       L ${n(anc.x + lado * rEsc * 0.22)} ${n(anc.y + brazo * 0.40)} Z`;
     s += `<g class="av-pieza-mec" data-parte="ancora">
       <g class="av-ancora" style="--x:${n(anc.x)}px;--y:${n(anc.y)}px;--semi:${n(semi)}s">
-        <path d="${paleta(-1)}" fill="rgba(170,172,180,.12)" stroke="${ACERO}" stroke-width="1.4" stroke-linejoin="round"/>
-        <path d="${paleta(1)}"  fill="rgba(170,172,180,.12)" stroke="${ACERO}" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="${paleta(-1)}" fill="var(--mec-placa)" stroke="${ACERO}" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="${paleta(1)}"  fill="var(--mec-placa)" stroke="${ACERO}" stroke-width="1.4" stroke-linejoin="round"/>
         <line x1="${n(anc.x)}" y1="${n(anc.y)}" x2="${n(vol.x - vol.r - 6)}" y2="${n(vol.y)}" stroke="${ACERO}" stroke-width="1.6"/>
         <path d="M ${n(vol.x - vol.r - 8)} ${n(vol.y - 6)} L ${n(vol.x - vol.r + 1)} ${n(vol.y)} L ${n(vol.x - vol.r - 8)} ${n(vol.y + 6)}"
               fill="none" stroke="${ACERO}" stroke-width="1.4" stroke-linejoin="round"/>
@@ -177,14 +179,14 @@
       { e: 3, dy: -46, txt: 'CUARTA',        dato: `1 / ${n(T[3])} s` },
       { e: 4, dy: 62,  txt: 'ESCAPE',        dato: `${ejes[4].rueda} pasos / vuelta` }
     ];
-    s += `<g font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(170,172,180,.75)" letter-spacing="1.4">`;
+    s += `<g font-family="'IBM Plex Mono',monospace" font-size="8" fill="var(--tinta-tenue)" letter-spacing="1.4">`;
     notas.forEach(({ e, dy, txt, dato }) => {
       const p = ejes[e], y2 = p.y + dy;
-      s += `<line x1="${n(p.x)}" y1="${n(p.y)}" x2="${n(p.x)}" y2="${n(y2)}" stroke="rgba(170,172,180,.35)" stroke-width=".6"/>`;
+      s += `<line x1="${n(p.x)}" y1="${n(p.y)}" x2="${n(p.x)}" y2="${n(y2)}" stroke="var(--mec-borde)" stroke-width=".6"/>`;
       s += `<text x="${n(p.x)}" y="${n(y2 + (dy > 0 ? 11 : -4))}" text-anchor="middle">${txt}</text>`;
       s += `<text x="${n(p.x)}" y="${n(y2 + (dy > 0 ? 21 : 6))}" text-anchor="middle" fill="${LATON}" opacity=".8">${dato}</text>`;
     });
-    s += `<line x1="${n(vol.x)}" y1="${n(vol.y + vol.r)}" x2="${n(vol.x)}" y2="272" stroke="rgba(170,172,180,.35)" stroke-width=".6"/>`;
+    s += `<line x1="${n(vol.x)}" y1="${n(vol.y + vol.r)}" x2="${n(vol.x)}" y2="272" stroke="var(--mec-borde)" stroke-width=".6"/>`;
     s += `<text x="${n(vol.x)}" y="283" text-anchor="middle">VOLANTE</text>`;
     s += `<text x="${n(vol.x)}" y="293" text-anchor="middle" fill="${LATON}" opacity=".8">${n(1 / (semi * 2))} latidos / s</text>`;
     s += `</g></svg>`;

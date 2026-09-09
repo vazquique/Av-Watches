@@ -218,7 +218,7 @@
     </g></svg>`;
 
     /* ---- De canto: cuánto sobresale ---- */
-    const LW = Math.max(m.ancho * 1.7, D + 46), LH = m.alto + H + 26;
+    const LW = Math.max(m.ancho * 1.7, D + 64), LH = m.alto + H + 26;
     const lx = LW / 2, ly = LH - 12;
     let lat = `<svg viewBox="0 0 ${n(LW)} ${n(LH)}" role="img" aria-label="Cuánto sobresale el reloj de la muñeca">`;
     lat += `<ellipse cx="${n(lx)}" cy="${n(ly - m.alto / 2)}" rx="${n(m.ancho / 2)}" ry="${n(m.alto / 2)}"
@@ -230,7 +230,7 @@
              fill="${spec.dial.base}" opacity=".9"/>`;
     lat += `<g font-family="'IBM Plex Mono',monospace" font-size="4" letter-spacing=".3">
       <line x1="${n(lx + D / 2 + 5)}" y1="${n(yTop - H)}" x2="${n(lx + D / 2 + 5)}" y2="${n(yTop)}" stroke="var(--laton)" stroke-width=".5"/>
-      <text x="${n(lx + D / 2 + 8)}" y="${n(yTop - H / 2 + 1.5)}" fill="var(--laton)">sobresale ${H} mm</text>
+      <text x="${n(lx + D / 2 + 8)}" y="${n(yTop - H / 2 + 1.5)}" fill="var(--laton)">${H} mm</text>
     </g></svg>`;
 
     return { sup, lat, medidas: m };
