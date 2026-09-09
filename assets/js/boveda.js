@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cont.innerHTML = `<div class="av-vacio" style="border:var(--filo)">
         <p class="av-t-lead">La bóveda está vacía.</p>
         <p>Guarda aquí los relojes que te traen dando vueltas. Se quedan en este navegador, nadie más los ve.</p>
-        <a class="av-btn av-btn--laton" href="catalogo.html">Ver el catálogo</a></div>`;
+        <a class="av-btn av-btn--acento" href="catalogo.html">Ver el catálogo</a></div>`;
       return;
     }
     cont.style.border = '';

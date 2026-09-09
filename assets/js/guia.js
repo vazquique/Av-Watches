@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       zona.innerHTML = `<div class="av-guia__final">
         <h2 class="av-t-display">No tengo nada que encaje.</h2>
         <p class="av-t-lead">Con eso que me pides no hay pieza en existencia. Escríbeme y lo consigo por encargo.</p>
-        <div class="av-hero__cta"><a class="av-btn av-btn--laton" href="servicio.html#contacto">Escríbeme</a>
+        <div class="av-hero__cta"><a class="av-btn av-btn--acento" href="servicio.html#contacto">Escríbeme</a>
         <button type="button" class="av-btn" id="guia-otra">Volver a empezar</button></div></div>`;
       document.getElementById('guia-otra').onclick = reiniciar;
       return;
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <article class="av-guia__gana">
         <div class="av-guia__pieza" data-reloj="${mejor.r.id}"></div>
         <div>
-          <p class="av-mono av-laton" style="letter-spacing:.24em;text-transform:uppercase;font-size:.66rem">${mejor.r.marca}</p>
+          <p class="av-mono av-acento" style="letter-spacing:.24em;text-transform:uppercase;font-size:.66rem">${mejor.r.marca}</p>
           <h3 class="av-t-display" style="font-size:clamp(1.8rem,3.4vw,2.8rem)">${mejor.r.modelo}</h3>
           <p class="av-t-lead" style="margin:.6rem 0 1.2rem">${mejor.r.lema}</p>
           <ul class="av-guia__razones">${mejor.razones.map(x => `<li>${x}</li>`).join('')}</ul>
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="av-guia__final">
         <button type="button" class="av-btn" id="guia-otra">Volver a empezar</button>
-        <a class="av-btn av-btn--laton" href="catalogo.html">Ver todo el catálogo</a>
+        <a class="av-btn av-btn--acento" href="catalogo.html">Ver todo el catálogo</a>
       </div>`;
 
     AVMotor.montarTodos(zona);

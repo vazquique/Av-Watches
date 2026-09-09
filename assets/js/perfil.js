@@ -118,13 +118,13 @@
     /* Cotas, como en un plano: el alto a la izquierda, el ancho abajo. */
     if (opts.cotas !== false) {
       const xc = margen + correaLargo - 7, tam = Math.max(2.4, H * 0.30);
-      s += `<g stroke="var(--laton)" stroke-width=".28" fill="none" opacity=".85">
+      s += `<g stroke="var(--acento)" stroke-width=".28" fill="none" opacity=".85">
         <line x1="${n(xc)}" y1="${n(margen)}" x2="${n(xc)}" y2="${n(base)}"/>
         <line x1="${n(xc - 1.6)}" y1="${n(margen)}" x2="${n(xc + 1.6)}" y2="${n(margen)}"/>
         <line x1="${n(xc - 1.6)}" y1="${n(base)}" x2="${n(xc + 1.6)}" y2="${n(base)}"/>
       </g>`;
       s += `<text x="${n(xc - 2.4)}" y="${n(margen + H / 2)}" text-anchor="end" dominant-baseline="central"
-              font-family="'IBM Plex Mono',monospace" font-size="${n(tam)}" fill="var(--laton)">${H} mm</text>`;
+              font-family="Archivo,sans-serif" font-size="${n(tam)}" fill="var(--acento)">${H} mm</text>`;
       const yw = base + hFondo * 1.7 + 5;
       s += `<g stroke="rgba(150,150,160,.55)" stroke-width=".28" fill="none">
         <line x1="${n(cx - D / 2)}" y1="${n(yw)}" x2="${n(cx + D / 2)}" y2="${n(yw)}"/>
@@ -132,7 +132,7 @@
         <line x1="${n(cx + D / 2)}" y1="${n(yw - 1.6)}" x2="${n(cx + D / 2)}" y2="${n(yw + 1.6)}"/>
       </g>`;
       s += `<text x="${n(cx)}" y="${n(yw + tam + 1)}" text-anchor="middle"
-              font-family="'IBM Plex Mono',monospace" font-size="${n(tam)}" fill="rgba(150,150,160,.75)">${D} mm</text>`;
+              font-family="Archivo,sans-serif" font-size="${n(tam)}" fill="rgba(150,150,160,.75)">${D} mm</text>`;
     }
     return s + '</svg>';
   }
@@ -210,11 +210,11 @@
     sup += `<line x1="${n(cx)}" y1="${n(cy)}" x2="${n(cx)}" y2="${n(cy - D * 0.22)}" stroke="${spec.manecillas.color}" stroke-width="${n(D * 0.035)}" stroke-linecap="round"/>`;
     sup += `<line x1="${n(cx)}" y1="${n(cy)}" x2="${n(cx + D * 0.28)}" y2="${n(cy + D * 0.10)}" stroke="${spec.manecillas.color}" stroke-width="${n(D * 0.025)}" stroke-linecap="round"/>`;
     /* Cotas: el ancho de la muñeca y el de la caja, uno junto al otro. */
-    sup += `<g font-family="'IBM Plex Mono',monospace" font-size="4" letter-spacing=".3">
+    sup += `<g font-family="Archivo,sans-serif" font-size="4" letter-spacing=".3">
       <line x1="${n(cx - aMun)}" y1="${n(VH - 8)}" x2="${n(cx + aMun)}" y2="${n(VH - 8)}" stroke="${pielBorde}" stroke-width=".5"/>
       <text x="${n(cx)}" y="${n(VH - 2)}" text-anchor="middle" fill="var(--tinta-tenue)">muñeca ${m.ancho} mm</text>
-      <line x1="${n(cx - D / 2)}" y1="${n(cy - aMun - 6)}" x2="${n(cx + D / 2)}" y2="${n(cy - aMun - 6)}" stroke="var(--laton)" stroke-width=".5"/>
-      <text x="${n(cx)}" y="${n(cy - aMun - 9)}" text-anchor="middle" fill="var(--laton)">caja ${D} mm</text>
+      <line x1="${n(cx - D / 2)}" y1="${n(cy - aMun - 6)}" x2="${n(cx + D / 2)}" y2="${n(cy - aMun - 6)}" stroke="var(--acento)" stroke-width=".5"/>
+      <text x="${n(cx)}" y="${n(cy - aMun - 9)}" text-anchor="middle" fill="var(--acento)">caja ${D} mm</text>
     </g></svg>`;
 
     /* ---- De canto: cuánto sobresale ---- */
@@ -228,9 +228,9 @@
              fill="${met.cuerpo}" stroke="${met.sombra}" stroke-width=".7"/>`;
     lat += `<rect x="${n(lx - D / 2 + D * 0.06)}" y="${n(yTop - H + H * 0.10)}" width="${n(D * 0.88)}" height="${n(H * 0.22)}"
              fill="${spec.dial.base}" opacity=".9"/>`;
-    lat += `<g font-family="'IBM Plex Mono',monospace" font-size="4" letter-spacing=".3">
-      <line x1="${n(lx + D / 2 + 5)}" y1="${n(yTop - H)}" x2="${n(lx + D / 2 + 5)}" y2="${n(yTop)}" stroke="var(--laton)" stroke-width=".5"/>
-      <text x="${n(lx + D / 2 + 8)}" y="${n(yTop - H / 2 + 1.5)}" fill="var(--laton)">${H} mm</text>
+    lat += `<g font-family="Archivo,sans-serif" font-size="4" letter-spacing=".3">
+      <line x1="${n(lx + D / 2 + 5)}" y1="${n(yTop - H)}" x2="${n(lx + D / 2 + 5)}" y2="${n(yTop)}" stroke="var(--acento)" stroke-width=".5"/>
+      <text x="${n(lx + D / 2 + 8)}" y="${n(yTop - H / 2 + 1.5)}" fill="var(--acento)">${H} mm</text>
     </g></svg>`;
 
     return { sup, lat, medidas: m };

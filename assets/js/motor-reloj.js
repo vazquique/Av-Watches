@@ -149,7 +149,7 @@
       }
       [10, 20, 30, 40, 50].forEach(v => {
         const [x, y] = polar(cx, cy, (R + rIn) / 2, v * 6);
-        out += `<text x="${n(x)}" y="${n(y + 4.5)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(R * 0.1)}" fill="#e8e4da" opacity="0.92">${v}</text>`;
+        out += `<text x="${n(x)}" y="${n(y + 4.5)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(R * 0.1)}" fill="#e8e4da" opacity="0.92">${v}</text>`;
       });
       const [px, py] = polar(cx, cy, (R + rIn) / 2 + 1, 0);
       out += `<circle class="av-lume" cx="${n(px)}" cy="${n(py)}" r="${n(R * 0.048)}" fill="#dfe6df"/>`;
@@ -160,7 +160,7 @@
       out += `<path d="M ${p(cx, cy, rm, 180)} A ${n(rm)} ${n(rm)} 0 0 1 ${p(cx, cy, rm, 359.9)}" fill="none" stroke="${b.colorNoche}" stroke-width="${n(gw)}"/>`;
       for (let h = 0; h < 24; h++) {
         const a = h * 15, [x, y] = polar(cx, cy, rm, a);
-        if (h % 2 === 0) out += `<text x="${n(x)}" y="${n(y + 4.2)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(R * 0.095)}" fill="#efece4" opacity="0.95">${h === 0 ? 24 : h}</text>`;
+        if (h % 2 === 0) out += `<text x="${n(x)}" y="${n(y + 4.2)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(R * 0.095)}" fill="#efece4" opacity="0.95">${h === 0 ? 24 : h}</text>`;
         else { const [x1, y1] = polar(cx, cy, rm - gw * 0.22, a), [x2, y2] = polar(cx, cy, rm + gw * 0.22, a); out += `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" stroke="#efece4" stroke-width="1.1" opacity="0.55"/>`; }
       }
     } else if (t === 'taquimetro') {
@@ -168,10 +168,10 @@
       out += `<circle cx="${cx}" cy="${cy}" r="${n(rm)}" fill="none" stroke="${b.colorDia}" stroke-width="${n(gw)}"/>`;
       [400, 300, 240, 200, 175, 150, 135, 120, 110, 100, 90, 80, 75, 70, 65, 60].forEach(v => {
         const a = 3600 / v * 6 % 360, [x, y] = polar(cx, cy, rm, a);
-        out += `<text x="${n(x)}" y="${n(y + 3.6)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(R * 0.082)}" fill="#e9e5da" opacity="0.9">${v}</text>`;
+        out += `<text x="${n(x)}" y="${n(y + 3.6)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(R * 0.082)}" fill="#e9e5da" opacity="0.9">${v}</text>`;
       });
       const [tx, ty] = polar(cx, cy, rm, 33);
-      out += `<text x="${n(tx)}" y="${n(ty)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(R * 0.062)}" fill="#c9a24a" letter-spacing="1">TACHY</text>`;
+      out += `<text x="${n(tx)}" y="${n(ty)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(R * 0.062)}" fill="#c9a24a" letter-spacing="1">TACHY</text>`;
     } else {
       /* Liso pulido: un anillo con un filo interior marcado. */
       out += `<circle cx="${cx}" cy="${cy}" r="${n((R + rIn) / 2)}" fill="none" stroke="url(#met${uid})" stroke-width="${n(R - rIn)}"/>`;
@@ -255,14 +255,14 @@
         if (spec.complicaciones.includes('fecha') && i === 3) return;
         if (spec.complicaciones.includes('segundero-pequeno') && i === 6) return;
         const [x, y] = polar(cx, cy, rd * 0.80, i * 30);
-        out += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="'Bodoni Moda',Georgia,serif" font-size="${n(rd * 0.16)}" fill="${tinta}">${t}</text>`;
+        out += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="Georgia,'Times New Roman',serif" font-size="${n(rd * 0.16)}" fill="${tinta}">${t}</text>`;
       });
     } else if (d.indices === 'arabigo') {
       for (let i = 0; i < 12; i++) {
         const num = i === 0 ? 12 : i;
         if (spec.complicaciones.includes('fecha') && i === 3) continue;
         const [x, y] = polar(cx, cy, rd * 0.78, i * 30);
-        out += `<text class="${claseLume}" x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono',monospace" font-weight="600" font-size="${n(rd * 0.185)}" fill="${tinta}">${num}</text>`;
+        out += `<text class="${claseLume}" x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="Archivo,sans-serif" font-weight="600" font-size="${n(rd * 0.185)}" fill="${tinta}">${num}</text>`;
       }
     } else if (d.indices === 'puntos') {
       /* Escala de buceo: triángulo a las doce, barras a 3-6-9, puntos al resto. */
@@ -316,7 +316,7 @@
       for (let i = 1; i < 14; i++) s += `<circle cx="${n(sx)}" cy="${n(sy)}" r="${n(sr * i / 14)}" fill="none" stroke="${subBorde}" stroke-width="0.6" opacity="0.3"/>`;
       s += `<circle cx="${n(sx)}" cy="${n(sy)}" r="${n(sr)}" fill="none" stroke="${subBorde}" stroke-width="1" opacity="0.6"/>`;
       for (let i = 0; i < 12; i++) s += radial(sx, sy, sr * 0.88, sr * 0.99, i * 30, `stroke="${tinta}" stroke-width="${i % 3 === 0 ? 1.4 : 0.7}" opacity="0.75"`);
-      (etiquetas || []).forEach(([t, a]) => { const [x, y] = polar(sx, sy, sr * 0.62, a); s += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono',monospace" font-size="${n(sr * 0.36)}" fill="${tinta}" opacity="0.85">${t}</text>`; });
+      (etiquetas || []).forEach(([t, a]) => { const [x, y] = polar(sx, sy, sr * 0.62, a); s += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" font-family="Archivo,sans-serif" font-size="${n(sr * 0.36)}" fill="${tinta}" opacity="0.85">${t}</text>`; });
       return s;
     };
 
@@ -359,7 +359,7 @@
       out += `<path d="M ${p(cx, ry, rr, -55)} A ${n(rr)} ${n(rr)} 0 0 1 ${p(cx, ry, rr, 55)}" fill="none" stroke="${subBorde}" stroke-width="1.4" opacity="0.7"/>`;
       for (let i = 0; i <= 4; i++) out += radial(cx, ry, rr, rr * 0.86, -55 + i * 27.5, `stroke="${tinta}" stroke-width="${i % 4 === 0 ? 1.6 : 0.9}" opacity="0.8"`);
       out += radial(cx, ry, 0, rr * 0.8, 34, `stroke="#2a4a8a" stroke-width="1.8"`);
-      out += `<text x="${n(cx)}" y="${n(ry + rr * 0.55)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.062)}" fill="${tinta}" opacity="0.7" letter-spacing="1">RESERVA</text>`;
+      out += `<text x="${n(cx)}" y="${n(ry + rr * 0.55)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(rd * 0.062)}" fill="${tinta}" opacity="0.7" letter-spacing="1">RESERVA</text>`;
     }
     if (comp.includes('mundo')) {
       /* Anillo de veinticuatro ciudades de un worldtimer. */
@@ -370,14 +370,14 @@
       ciudades.forEach((c, i) => {
         const a = i * 15;
         const [x, y] = polar(cx, cy, rc, a);
-        out += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" transform="rotate(${a} ${n(x)} ${n(y)})" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.062)}" fill="${tinta}" opacity="0.85">${c}</text>`;
+        out += `<text x="${n(x)}" y="${n(y)}" text-anchor="middle" dominant-baseline="central" transform="rotate(${a} ${n(x)} ${n(y)})" font-family="Archivo,sans-serif" font-size="${n(rd * 0.062)}" fill="${tinta}" opacity="0.85">${c}</text>`;
       });
     }
     if (comp.includes('fecha')) {
       const dw = rd * 0.20, dh = rd * 0.14, dx = cx + rd * 0.68, dy = cy;
       out += `<rect x="${n(dx - dw / 2)}" y="${n(dy - dh / 2)}" width="${n(dw)}" height="${n(dh)}" fill="${claro ? '#1b1c1f' : '#f0ece2'}"/>`;
       out += `<rect x="${n(dx - dw / 2)}" y="${n(dy - dh / 2)}" width="${n(dw)}" height="${n(dh)}" fill="none" stroke="${tinta}" stroke-width="1.2" opacity="0.85"/>`;
-      out += `<text class="av-fecha" x="${n(dx)}" y="${n(dy)}" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.11)}" fill="${claro ? '#f0ece2' : '#1b1c1f'}">${ahora.getDate()}</text>`;
+      out += `<text class="av-fecha" x="${n(dx)}" y="${n(dy)}" text-anchor="middle" dominant-baseline="central" font-family="Archivo,sans-serif" font-size="${n(rd * 0.11)}" fill="${claro ? '#f0ece2' : '#1b1c1f'}">${ahora.getDate()}</text>`;
     }
 
     /* Firma del dial: la marca del reloj y su familia. Un dial cargado pierde
@@ -387,13 +387,13 @@
     /* La marca se encoge sola si es larga, para no salirse del dial. */
     const tamMarca = rd * (marca.length > 9 ? 0.088 : marca.length > 6 ? 0.105 : 0.125);
     const yFirma = comp.includes('reserva') ? cy - rd * 0.17 : cy - rd * 0.40;
-    out += `<text x="${cx}" y="${n(yFirma)}" text-anchor="middle" font-family="'Bodoni Moda',Georgia,serif" font-weight="600" font-size="${n(tamMarca)}" letter-spacing="${n(rd * 0.016)}" fill="${tinta}">${escapa(marca)}</text>`;
+    out += `<text x="${cx}" y="${n(yFirma)}" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="600" font-size="${n(tamMarca)}" letter-spacing="${n(rd * 0.016)}" fill="${tinta}">${escapa(marca)}</text>`;
     if (!comp.includes('reserva') && spec.dialLinea)
-      out += `<text x="${cx}" y="${n(yFirma + rd * 0.125)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.05)}" letter-spacing="${n(rd * 0.02)}" fill="${tinta}" opacity="0.78">${escapa(spec.dialLinea)}</text>`;
+      out += `<text x="${cx}" y="${n(yFirma + rd * 0.125)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(rd * 0.05)}" letter-spacing="${n(rd * 0.02)}" fill="${tinta}" opacity="0.78">${escapa(spec.dialLinea)}</text>`;
 
     const bajoOcupado = comp.includes('cronografo') || comp.includes('fase-lunar') || comp.includes('segundero-pequeno') || comp.includes('mundo');
     if (!bajoOcupado)
-      out += `<text x="${cx}" y="${n(cy + rd * 0.36)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.052)}" letter-spacing="${n(rd * 0.014)}" fill="${tinta}" opacity="0.62">${spec.calibre.tipo.toUpperCase()} · ${spec.caja.agua} M</text>`;
+      out += `<text x="${cx}" y="${n(cy + rd * 0.36)}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="${n(rd * 0.052)}" letter-spacing="${n(rd * 0.014)}" fill="${tinta}" opacity="0.62">${spec.calibre.tipo.toUpperCase()} · ${spec.caja.agua} M</text>`;
     /* Con el bajo del dial ocupado no se añade nada más: un dial cargado se
        queda sin esa línea antes que amontonar textos. */
     return out;

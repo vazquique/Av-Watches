@@ -1,62 +1,70 @@
 /* ==========================================================================
    AV WATCHES · Base
-   Reglas de la casa: nada de esquinas redondeadas (salvo lo que es círculo),
-   nada de sombras suaves, todo separado por filos de un píxel. La página se
-   lee como una hoja de especificaciones, no como un folleto.
+   --------------------------------------------------------------------------
+   Reglas de la casa: papel, no pantalla. Una sola familia tipográfica y la
+   jerarquía se hace con peso y tamaño, no con mayúsculas ni con espaciado
+   entre letras. El acento es rojo y se usa poco. Nada de dorado, nada de
+   cursivas decorativas, nada de numerar secciones.
+
+   La página se lee como el catálogo impreso de una tienda que sabe lo que
+   vende, y el fondo claro es el que le queda a una foto de producto.
    ========================================================================== */
 
 /* --- 1. Tokens ----------------------------------------------------------- */
 :root {
-  color-scheme: dark;
-  --tinta:        #EDE8E0;
-  --tinta-tenue:  rgba(237,232,224,.58);
-  --tinta-fantasma: rgba(237,232,224,.30);
-  --fondo:        #0B0B0C;
-  --fondo-2:      #101013;
-  --fondo-3:      #17171B;
-  --linea:        rgba(237,232,224,.15);
-  --linea-viva:   rgba(237,232,224,.38);
-  --laton:        #C9A24A;
-  --laton-hondo:  #8A6B24;
-  --brasa:        #C4452D;
-  --lume:         #79F0C8;
-  --velo:         rgba(6,6,7,.72);
+  color-scheme: light;
+  --tinta:          #14130F;   /* negro cálido, no #000 */
+  --tinta-tenue:    #57534A;
+  --tinta-fantasma: #8D8779;
+  --fondo:          #F7F5F0;   /* papel */
+  --fondo-2:        #EFEBE3;   /* papel a la sombra */
+  --fondo-3:        #FFFFFF;   /* tarjeta */
+  --linea:          #DCD6C9;
+  --linea-viva:     #14130F;
+  --acento:         #C0392B;   /* rojo de sello: se usa poco y pega fuerte */
+  --acento-hondo:   #96291D;
+  --brasa:          #C0392B;
+  --lume:           #1F7A5C;
+  --velo:           rgba(20,19,15,.45);
 
-  --display: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
-  --mono:    'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  --sans:    'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  /* Una sola familia. La jerarquía la hace el peso, no otra tipografía. */
+  --display: Archivo, 'Helvetica Neue', Arial, sans-serif;
+  --mono:    Archivo, 'Helvetica Neue', Arial, sans-serif;
+  --sans:    Archivo, 'Helvetica Neue', Arial, sans-serif;
 
-  /* Tonos del esquema del movimiento, para que funcione en ambos temas. */
-  --mec-acero: rgba(176,180,190,.9);
-  --mec-placa: rgba(150,150,160,.06);
-  --mec-borde: rgba(170,172,180,.26);
-  --mec-luz:   rgba(201,162,74,.13);
+  --mec-acero: rgba(70,74,84,.85);
+  --mec-placa: rgba(60,64,74,.05);
+  --mec-borde: rgba(60,64,74,.28);
+  --mec-luz:   rgba(192,57,43,.08);
 
-  --marco: clamp(1rem, 4vw, 4.5rem);   /* margen lateral de la página */
+  --marco: clamp(1.25rem, 4vw, 4rem);
   --filo: 1px solid var(--linea);
-  --ritmo: clamp(2rem, 3.2vw, 3.2rem);   /* aire entre secciones */
+  --ritmo: clamp(2.2rem, 3.4vw, 3.6rem);
   --cabeza-alto: 68px;
   --curva: cubic-bezier(.19,1,.22,1);
 }
 
-[data-tema="dia"] {
-  color-scheme: light;
-  --tinta:        #17171B;
-  --tinta-tenue:  rgba(23,23,27,.62);
-  --tinta-fantasma: rgba(23,23,27,.32);
-  --fondo:        #F2EEE6;
-  --fondo-2:      #EAE5DA;
-  --fondo-3:      #FBF9F4;
-  --linea:        rgba(23,23,27,.18);
-  --linea-viva:   rgba(23,23,27,.42);
-  --laton:        #8A6220;
-  --laton-hondo:  #C9A24A;
-  --brasa:        #A83A22;
-  --velo:         rgba(242,238,230,.78);
-  --mec-acero: rgba(88,95,110,.85);
-  --mec-placa: rgba(60,64,74,.06);
-  --mec-borde: rgba(60,64,74,.30);
-  --mec-luz:   rgba(138,98,32,.10);
+/* El tema oscuro no es negro con dorado: es la misma tinta y el mismo rojo
+   sobre un carbón cálido, para que la tienda se reconozca en los dos. */
+[data-tema="noche"] {
+  color-scheme: dark;
+  --tinta:          #F2EFE8;
+  --tinta-tenue:    #A8A296;
+  --tinta-fantasma: #766F62;
+  --fondo:          #171613;
+  --fondo-2:        #1F1E1A;
+  --fondo-3:        #26241F;
+  --linea:          #35332C;
+  --linea-viva:     #F2EFE8;
+  --acento:         #E4573F;
+  --acento-hondo:   #C0392B;
+  --brasa:          #E4573F;
+  --lume:           #79F0C8;
+  --velo:           rgba(10,9,8,.62);
+  --mec-acero: rgba(176,180,190,.9);
+  --mec-placa: rgba(150,150,160,.06);
+  --mec-borde: rgba(170,172,180,.26);
+  --mec-luz:   rgba(228,87,63,.12);
 }
 
 /* --- 2. Reinicio --------------------------------------------------------- */
@@ -90,36 +98,49 @@ img, svg { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { background: none; border: 0; cursor: pointer; padding: 0; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--laton); outline-offset: 3px; }
-::selection { background: var(--laton); color: var(--fondo); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+::selection { background: var(--acento); color: var(--fondo); }
 hr { border: 0; border-top: var(--filo); margin: 0; }
 [hidden] { display: none !important; }
 
 /* --- 3. Tipografía ------------------------------------------------------- */
-/* La tipografía de display se reserva para nombres y titulares cortos.
-   Todo lo que se lee de corrido va en la sans, que cansa menos. */
+/* Una sola familia en varios pesos. Los titulares van pesados y apretados;
+   el texto corrido, normal. Ninguna etiqueta va en mayúsculas con espaciado
+   ancho: eso es lo que hace que una página se vea de plantilla. */
 .av-t-titan {
-  font-family: var(--display);
-  font-size: clamp(2.3rem, 5.6vw, 4rem);
-  line-height: 1.02; font-weight: 500; letter-spacing: -.02em;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: .95; font-weight: 900; letter-spacing: -.045em;
 }
-.av-t-display { font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.06; font-weight: 500; letter-spacing: -.015em; }
-.av-t-titulo  { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.12; font-weight: 500; }
-.av-t-lead    { font-family: var(--sans); font-size: clamp(.98rem, 1.2vw, 1.08rem); line-height: 1.55; font-weight: 400; color: var(--tinta-tenue); }
-.av-t-eyebrow {
-  font-family: var(--mono); font-size: .68rem; font-weight: 500;
-  text-transform: uppercase; letter-spacing: .26em; color: var(--tinta-tenue);
-}
-.av-mono  { font-family: var(--mono); font-size: .8rem; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
-.av-tenue { color: var(--tinta-tenue); }
-.av-laton { color: var(--laton); }
-.av-cursiva { font-family: var(--display); font-style: italic; }
+.av-t-display { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.05; font-weight: 800; letter-spacing: -.035em; }
+.av-t-titulo  { font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+.av-t-lead    { font-size: clamp(1rem, 1.2vw, 1.12rem); line-height: 1.5; font-weight: 400; color: var(--tinta-tenue); }
 
-/* Numeración de sección: 01 —, con filo que cruza la página. */
-.av-seccion-eti { display: flex; align-items: baseline; gap: 1.25rem; padding-bottom: .8rem; border-bottom: var(--filo); margin-bottom: clamp(1.2rem,2.5vw,2rem); }
-.av-seccion-eti b { font-family: var(--mono); font-size: .72rem; letter-spacing: .2em; color: var(--laton); font-weight: 500; }
+/* Antes esto era mono en mayúsculas con letter-spacing .26em. Ahora es
+   simplemente una etiqueta en negritas: se lee mejor y no delata plantilla. */
+.av-t-eyebrow {
+  font-size: .82rem; font-weight: 700; letter-spacing: 0;
+  text-transform: none; color: var(--tinta-tenue);
+}
+/* Los datos duros (precios, medidas, referencias) van con cifras de ancho
+   fijo para que aliñen en columna, pero en la misma familia que todo. */
+.av-mono  { font-size: .88rem; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.av-tenue { color: var(--tinta-tenue); }
+.av-acento, .av-laton { color: var(--acento); }
+
+/* El realce del titular: un bloque rojo ligeramente torcido, como un sello.
+   Sustituye a la palabra en cursiva de otro color, que es un tic de plantilla. */
+.av-cursiva {
+  font-style: normal; display: inline-block;
+  background: var(--acento); color: #FFF;
+  padding: 0 .26em; rotate: -1.2deg;
+}
+
+/* Encabezado de sección: el nombre y el enlace, y una línea abajo. Sin el
+   "01 —" que numeraba las secciones. */
+.av-seccion-eti { display: flex; align-items: baseline; gap: 1.25rem; padding-bottom: .7rem; border-bottom: 2px solid var(--tinta); margin-bottom: clamp(1.2rem,2.5vw,2rem); }
+.av-seccion-eti b { display: none; }
 .av-seccion-eti span { flex: 1; }
-.av-seccion-eti .av-t-eyebrow { color: var(--tinta); }
+.av-seccion-eti .av-t-eyebrow { color: var(--tinta); font-size: clamp(1.35rem, 2.4vw, 1.9rem); font-weight: 800; letter-spacing: -.035em; }
 
 /* --- 4. Retícula --------------------------------------------------------- */
 .av-marco { padding-inline: var(--marco); }
@@ -128,73 +149,74 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-dos { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
 
 /* --- 5. Botones y enlaces ------------------------------------------------ */
+/* Rectos, sólidos y en negritas. Sin mayúsculas ni espaciado ancho. */
 .av-btn {
   --c: var(--tinta);
-  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .7rem;
-  padding: .95rem 1.7rem; border: 1px solid var(--c); color: var(--c);
-  font-family: var(--mono); font-size: .74rem; text-transform: uppercase; letter-spacing: .18em;
-  overflow: hidden; isolation: isolate; cursor: pointer; text-align: center;
-  transition: color .45s var(--curva), border-color .45s var(--curva);
+  display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
+  padding: .85rem 1.5rem; border: 2px solid var(--c); color: var(--c); background: none;
+  font-size: .95rem; font-weight: 700; letter-spacing: -.01em;
+  cursor: pointer; text-align: center;
+  transition: background .2s, color .2s, border-color .2s;
 }
-/* La tinta sube desde abajo al pasar el cursor. */
-.av-btn::after { content: ''; position: absolute; inset: 0; background: var(--c); transform: scaleY(0); transform-origin: bottom; transition: transform .5s var(--curva); z-index: -1; }
-.av-btn:hover::after, .av-btn:focus-visible::after { transform: scaleY(1); }
-.av-btn:hover, .av-btn:focus-visible { color: var(--fondo); }
-.av-btn--solido { background: var(--tinta); color: var(--fondo); }
-.av-btn--solido::after { background: var(--laton); }
-.av-btn--solido:hover { color: var(--fondo); }
-.av-btn--laton { --c: var(--laton); }
-.av-btn--bajo { padding: .7rem 1.2rem; font-size: .68rem; }
+.av-btn:hover, .av-btn:focus-visible { background: var(--c); color: var(--fondo); }
+.av-btn--solido { background: var(--tinta); border-color: var(--tinta); color: var(--fondo); }
+.av-btn--solido:hover, .av-btn--solido:focus-visible { background: var(--acento); border-color: var(--acento); color: #FFF; }
+.av-btn--acento { --c: var(--acento); }
+.av-btn--acento:hover { color: #FFF; }
+.av-btn--bajo { padding: .6rem 1.1rem; font-size: .88rem; border-width: 1px; }
 .av-bloque { display: flex; width: 100%; }
-.av-btn[disabled] { opacity: .38; pointer-events: none; }
+.av-btn[disabled] { opacity: .35; pointer-events: none; }
 
-/* Enlace con subrayado que se dibuja de izquierda a derecha. */
-.av-enlace { position: relative; font-family: var(--mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .16em; padding-bottom: .3rem; }
-.av-enlace::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .5s var(--curva); }
-.av-enlace:hover::after { transform: scaleX(1); transform-origin: left; }
+/* Enlace de texto: rojo y subrayado grueso, como en un catálogo impreso. */
+.av-enlace {
+  font-size: .95rem; font-weight: 700; color: var(--acento);
+  border-bottom: 2px solid var(--acento); padding-bottom: 1px;
+  transition: color .2s, border-color .2s;
+}
+.av-enlace:hover { color: var(--acento-hondo); border-color: var(--acento-hondo); }
 
 /* --- 6. Barra del día y encabezado --------------------------------------- */
-.av-dia-barra { position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 200; background: var(--linea); }
-.av-dia-barra i { display: block; height: 100%; background: linear-gradient(90deg, var(--laton-hondo), var(--laton)); transform-origin: left; transform: scaleX(0); }
+.av-dia-barra { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200; background: transparent; }
+.av-dia-barra i { display: block; height: 100%; background: var(--acento); transform-origin: left; transform: scaleX(0); }
 
-.av-saltar { position: fixed; top: -100px; left: 1rem; z-index: 300; background: var(--laton); color: #000; padding: .8rem 1.2rem; font-family: var(--mono); font-size: .75rem; transition: top .2s; }
+.av-saltar { position: fixed; top: -100px; left: 1rem; z-index: 300; background: var(--tinta); color: var(--fondo); padding: .8rem 1.2rem; font-weight: 700; transition: top .2s; }
 .av-saltar:focus { top: 1rem; }
 
+/* El encabezado se apoya en una línea gruesa, como la cabecera de un
+   catálogo impreso. No se esconde al bajar: en una tienda el carrito y el
+   buscador tienen que estar siempre a la mano. */
 .av-cabeza {
-  position: fixed; top: 2px; left: 0; right: 0; z-index: 150;
-  border-bottom: 1px solid transparent;
-  transition: background .4s var(--curva), border-color .4s var(--curva), transform .5s var(--curva);
+  position: fixed; top: 3px; left: 0; right: 0; z-index: 150;
+  background: var(--fondo);
+  border-bottom: 2px solid var(--tinta);
+  transition: background .3s;
 }
-.av-scrolled .av-cabeza { background: color-mix(in oklab, var(--fondo) 88%, transparent); backdrop-filter: blur(14px); border-bottom-color: var(--linea); }
-.av-scrolled:not(.av-sube) .av-cabeza { transform: translateY(-110%); }
-.av-cabeza__int { display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.5rem); height: var(--cabeza-alto); padding-inline: var(--marco); }
+.av-cabeza__int { display: flex; align-items: center; gap: clamp(.9rem, 2.6vw, 2.2rem); height: var(--cabeza-alto); padding-inline: var(--marco); }
 
-.av-logo { display: flex; align-items: center; gap: .7rem; flex: 0 0 auto; }
-.av-logo__marca { font-family: var(--display); font-size: 1.6rem; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
-.av-logo__txt { font-family: var(--mono); font-size: .62rem; letter-spacing: .28em; line-height: 1.35; padding-left: .7rem; border-left: var(--filo); }
-.av-logo__txt em { display: block; font-style: normal; letter-spacing: .1em; color: var(--tinta-tenue); font-size: .56rem; }
+.av-logo { display: flex; align-items: baseline; gap: .6rem; flex: 0 0 auto; }
+.av-logo__marca { font-size: 1.45rem; font-weight: 900; letter-spacing: -.045em; line-height: 1; text-transform: uppercase; }
+.av-logo__txt { font-size: .95rem; font-weight: 500; color: var(--tinta-fantasma); line-height: 1; letter-spacing: -.01em; }
 
-.av-nav { display: flex; gap: clamp(.9rem, 2vw, 2rem); margin-inline: auto; }
-.av-nav a { position: relative; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .15em; color: var(--tinta-tenue); padding: .4rem 0; transition: color .35s; }
-.av-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--laton); transform: scaleX(0); transform-origin: right; transition: transform .45s var(--curva); }
+.av-nav { display: flex; gap: clamp(.9rem, 2vw, 1.7rem); margin-right: auto; }
+.av-nav a {
+  font-size: .95rem; font-weight: 600; color: var(--tinta-tenue);
+  padding-bottom: 2px; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s;
+}
 .av-nav a:hover { color: var(--tinta); }
-.av-nav a:hover::after, .av-nav a[aria-current]::after { transform: scaleX(1); transform-origin: left; }
-.av-nav a[aria-current] { color: var(--tinta); }
+.av-nav a[aria-current] { color: var(--tinta); font-weight: 700; border-bottom-color: var(--tinta); }
 
-.av-acciones { display: flex; align-items: center; gap: .45rem; flex: 0 0 auto; }
-.av-hora-local { font-family: var(--mono); font-size: .74rem; letter-spacing: .1em; color: var(--tinta-tenue); font-variant-numeric: tabular-nums; padding-right: .7rem; border-right: var(--filo); margin-right: .35rem; }
-.av-icono { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid transparent; transition: border-color .35s, background .35s; }
-.av-icono:hover { border-color: var(--linea); }
-.av-icono svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.av-acciones { display: flex; align-items: center; gap: .3rem; flex: 0 0 auto; }
+.av-hora-local { font-size: .88rem; color: var(--tinta-fantasma); font-variant-numeric: tabular-nums; margin-right: .5rem; }
+.av-icono { position: relative; display: grid; place-items: center; width: 38px; height: 38px; transition: color .2s; }
+.av-icono:hover { color: var(--acento); }
+.av-icono svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .av-icono .av-ico-dia { display: none; }
-[data-tema="dia"] .av-icono .av-ico-dia { display: block; }
-[data-tema="dia"] .av-icono .av-ico-noche { display: none; }
-.av-cuenta { position: absolute; top: 2px; right: 0; min-width: 15px; height: 15px; padding: 0 3px; background: var(--laton); color: #0B0B0C; font-family: var(--mono); font-size: .58rem; font-weight: 600; display: grid; place-items: center; }
-.av-icono--bolsa:hover svg { transform: translateY(-1px); }
+[data-tema="noche"] .av-icono .av-ico-dia { display: block; }
+[data-tema="noche"] .av-icono .av-ico-noche { display: none; }
+.av-cuenta { position: absolute; top: 1px; right: -1px; min-width: 16px; height: 16px; padding: 0 3px; background: var(--acento); color: #FFF; font-size: 0.82rem; font-weight: 700; display: grid; place-items: center; border-radius: 999px; }
 
 @media (max-width: 860px) {
   .av-logo__txt, .av-hora-local { display: none; }
-  .av-scrolled:not(.av-sube) .av-cabeza { transform: none; }
 }
 
 /* --- 7. Pie -------------------------------------------------------------- */
@@ -202,11 +224,11 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-pie__logo { font-family: var(--display); font-size: 4.5rem; font-weight: 700; line-height: .8; display: block; margin-bottom: 1.2rem; }
 .av-pie__nota { max-width: 40ch; color: var(--tinta-tenue); font-size: .92rem; }
 .av-pie__cols { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(9rem,1fr)); }
-.av-pie__cols h3 { font-family: var(--mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .2em; color: var(--laton); margin-bottom: 1rem; }
+.av-pie__cols h3 { font-size: .95rem; font-weight: 700; letter-spacing: -.01em; color: var(--tinta); margin-bottom: 1rem; }
 .av-pie__cols a { display: block; padding: .32rem 0; font-size: .9rem; color: var(--tinta-tenue); transition: color .3s, padding-left .35s var(--curva); }
 .av-pie__cols a:hover { color: var(--tinta); padding-left: .4rem; }
-.av-pie__base { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; border-top: var(--filo); margin-top: 1rem; padding: 1.6rem 0; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; color: var(--tinta-fantasma); }
-.av-pie__hora b { color: var(--laton); font-variant-numeric: tabular-nums; }
+.av-pie__base { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; border-top: var(--filo); margin-top: 1rem; padding: 1.6rem 0; font-family: var(--mono); font-size: 0.82rem; letter-spacing: .06em; color: var(--tinta-fantasma); }
+.av-pie__hora b { color: var(--acento); font-variant-numeric: tabular-nums; }
 @media (max-width: 860px) { .av-pie { grid-template-columns: 1fr; } }
 
 /* --- 8. Bolsa lateral ---------------------------------------------------- */
@@ -220,14 +242,14 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 }
 .av-bolsa-abierta .av-bolsa { transform: none; }
 .av-bolsa__cabeza { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem var(--marco); border-bottom: var(--filo); }
-.av-cerrar { font-family: var(--mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .16em; color: var(--tinta-tenue); border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
-.av-cerrar:hover { color: var(--tinta); border-bottom-color: var(--laton); }
+.av-cerrar { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0; color: var(--tinta-tenue); border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
+.av-cerrar:hover { color: var(--tinta); border-bottom-color: var(--acento); }
 .av-bolsa__cuerpo { flex: 1; overflow-y: auto; padding: 0 var(--marco); }
 .av-bolsa__pie { padding: 1.4rem var(--marco) calc(1.6rem + env(safe-area-inset-bottom)); border-top: var(--filo); background: var(--fondo-3); }
 .av-bolsa__linea { display: flex; justify-content: space-between; align-items: baseline; padding: .35rem 0; font-family: var(--mono); font-size: .8rem; }
 .av-bolsa__linea b { font-size: 1rem; }
 .av-bolsa__pie .av-btn { margin-top: 1.1rem; }
-.av-bolsa__nota { margin: .9rem 0 0; font-size: .72rem; color: var(--tinta-fantasma); text-align: center; }
+.av-bolsa__nota { margin: .9rem 0 0; font-size: 0.82rem; color: var(--tinta-fantasma); text-align: center; }
 .av-vacio { padding: 3.5rem 0; text-align: center; }
 .av-vacio p:not(.av-t-lead) { color: var(--tinta-tenue); font-size: .92rem; max-width: 28ch; margin-inline: auto; }
 .av-vacio .av-btn { margin-top: 1.5rem; }
@@ -241,9 +263,9 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-cant button { width: 26px; height: 26px; display: grid; place-items: center; color: var(--tinta-tenue); transition: color .25s, background .25s; }
 .av-cant button:hover { color: var(--fondo); background: var(--tinta); }
 .av-cant span { min-width: 26px; text-align: center; font-family: var(--mono); font-size: .78rem; }
-.av-quitar { margin-top: .5rem; font-family: var(--mono); font-size: .64rem; text-transform: uppercase; letter-spacing: .14em; color: var(--tinta-fantasma); border-bottom: 1px solid transparent; }
+.av-quitar { margin-top: .5rem; font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0; color: var(--tinta-fantasma); border-bottom: 1px solid transparent; }
 .av-quitar:hover { color: var(--brasa); border-bottom-color: var(--brasa); }
-.av-grabado-eti { font-family: var(--display); font-style: italic; color: var(--laton) !important; }
+.av-grabado-eti { font-family: var(--display); font-style: italic; color: var(--acento) !important; }
 
 /* --- 9. Buscador --------------------------------------------------------- */
 .av-buscador { position: fixed; inset: 0; z-index: 180; background: var(--velo); backdrop-filter: blur(8px); opacity: 0; transition: opacity .3s; display: grid; place-items: start center; padding: clamp(3rem,12vh,9rem) 1rem 1rem; }
@@ -254,14 +276,14 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 .av-buscador input::placeholder { color: var(--tinta-fantasma); font-size: 1.1rem; }
 .av-buscador input:focus { outline: none; }
 .av-buscador__res { max-height: min(50vh, 26rem); overflow-y: auto; }
-.av-buscador__eti { margin: 0; padding: .9rem 1.6rem .4rem; font-family: var(--mono); font-size: .64rem; text-transform: uppercase; letter-spacing: .2em; color: var(--tinta-fantasma); }
+.av-buscador__eti { margin: 0; padding: .9rem 1.6rem .4rem; font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0; color: var(--tinta-fantasma); }
 .av-buscador__res a { display: grid; grid-template-columns: 4rem 1fr auto; gap: 1rem; align-items: center; padding: .8rem 1.6rem; border-top: var(--filo); transition: background .2s; }
 .av-buscador__res a:hover, .av-buscador__res a.sel { background: var(--fondo-3); }
-.av-buscador__res a.sel { box-shadow: inset 2px 0 0 var(--laton); }
-.av-buscador__ref { color: var(--laton); }
+.av-buscador__res a.sel { box-shadow: inset 2px 0 0 var(--acento); }
+.av-buscador__ref { color: var(--acento); }
 .av-buscador__nom { font-family: var(--display); font-size: 1.1rem; }
-.av-buscador__nom em { display: block; font-family: var(--mono); font-style: normal; font-size: .66rem; color: var(--tinta-tenue); letter-spacing: .06em; }
-.av-buscador__pie { padding: .8rem 1.6rem; border-top: var(--filo); font-family: var(--mono); font-size: .64rem; color: var(--tinta-fantasma); letter-spacing: .08em; }
+.av-buscador__nom em { display: block; font-family: var(--mono); font-style: normal; font-size: 0.82rem; color: var(--tinta-tenue); letter-spacing: .06em; }
+.av-buscador__pie { padding: .8rem 1.6rem; border-top: var(--filo); font-family: var(--mono); font-size: 0.82rem; color: var(--tinta-fantasma); letter-spacing: 0; }
 .av-buscador kbd { display: inline-block; padding: 1px 5px; border: var(--filo); margin-right: 2px; }
 
 /* --- 10. Aviso ----------------------------------------------------------- */
@@ -273,8 +295,8 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
   transform: translate(-50%, 150%); opacity: 0; transition: transform .55s var(--curva), opacity .4s;
 }
 .av-aviso.visible { transform: translate(-50%, 0); opacity: 1; }
-.av-aviso__punto { width: 6px; height: 6px; background: var(--laton); border-radius: 50%; animation: av-pulso 2s infinite; }
-.av-aviso__accion { color: var(--laton); text-transform: uppercase; letter-spacing: .14em; font-size: .66rem; border-bottom: 1px solid currentColor; }
+.av-aviso__punto { width: 6px; height: 6px; background: var(--acento); border-radius: 50%; animation: av-pulso 2s infinite; }
+.av-aviso__accion { color: var(--acento); letter-spacing: 0; font-size: 0.82rem; border-bottom: 1px solid currentColor; }
 @keyframes av-pulso { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
 @media (max-width: 860px) { .av-aviso { bottom: 1.4rem; width: calc(100% - 2rem); } }
 
@@ -308,7 +330,7 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 [data-revelar][data-retraso="5"] { transition-delay: .45s; }
 .av-solo-lectores { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 main { padding-top: calc(var(--cabeza-alto) + 2px); }
-.av-linea__txt h3 em { font-family: var(--mono); font-style: normal; font-size: .62rem; text-transform: uppercase; letter-spacing: .16em; color: var(--laton); display: block; }
+.av-linea__txt h3 em { font-family: var(--mono); font-style: normal; font-size: 0.82rem; letter-spacing: 0; color: var(--acento); display: block; }
 
 /* ==========================  MENÚ DE TRES LÍNEAS  ========================
    En el teléfono sustituye a la barra de pestañas: cabe todo lo importante
@@ -334,25 +356,25 @@ main { padding-top: calc(var(--cabeza-alto) + 2px); }
 
 .av-menu__principal { display: grid; padding: .6rem 0; border-bottom: var(--filo); }
 .av-menu__principal a { font-family: var(--display); font-size: 1.5rem; padding: .55rem 0; transition: color .25s, padding-left .3s var(--curva); }
-.av-menu__principal a:hover { color: var(--laton); padding-left: .4rem; }
+.av-menu__principal a:hover { color: var(--acento); padding-left: .4rem; }
 
 .av-menu__grupo { padding: 1.1rem 0; border-bottom: var(--filo); }
-.av-menu__grupo h3 { font-family: var(--mono); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--laton); margin: 0 0 .6rem; }
+.av-menu__grupo h3 { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0;
+  color: var(--tinta); margin: 0 0 .6rem; }
 .av-menu__grupo > a { display: flex; justify-content: space-between; align-items: center; gap: 1rem;
   padding: .4rem 0; font-size: .95rem; color: var(--tinta-tenue); transition: color .25s, padding-left .3s var(--curva); }
 .av-menu__grupo > a:hover { color: var(--tinta); padding-left: .4rem; }
-.av-menu__grupo em { font-style: normal; font-family: var(--mono); font-size: .64rem; color: var(--tinta-fantasma); }
+.av-menu__grupo em { font-style: normal; font-family: var(--mono); font-size: 0.82rem; color: var(--tinta-fantasma); }
 .av-menu__grupo em:empty { display: none; }
 .av-menu__marcas { display: flex; flex-wrap: wrap; gap: .4rem; }
-.av-menu__marcas a { border: var(--filo); padding: .3rem .6rem; font-family: var(--mono); font-size: .68rem;
+.av-menu__marcas a { border: var(--filo); padding: .3rem .6rem; font-family: var(--mono); font-size: 0.82rem;
   color: var(--tinta-tenue); transition: color .25s, border-color .25s; }
 .av-menu__marcas a:hover { color: var(--tinta); border-color: var(--linea-viva); }
 
 .av-menu__datos { list-style: none; margin: 1.1rem 0 0; padding: 0; display: grid; gap: .45rem;
-  font-size: .66rem; letter-spacing: .08em; color: var(--tinta-fantasma); }
+  font-size: 0.82rem; letter-spacing: 0; color: var(--tinta-fantasma); }
 .av-menu__datos li { display: flex; align-items: center; gap: .5rem; }
-.av-menu__datos li::before { content: ''; width: 5px; height: 5px; background: var(--laton); border-radius: 50%; flex: 0 0 auto; }
+.av-menu__datos li::before { content: ''; width: 5px; height: 5px; background: var(--acento); border-radius: 50%; flex: 0 0 auto; }
 
 /* El buscador se cierra tocando fuera del recuadro. */
 .av-buscador { cursor: pointer; }

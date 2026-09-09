@@ -72,7 +72,7 @@
 
   /* --- Tema: complicación día / noche ------------------------------------ */
   function tema(valor) {
-    const t = valor || S.tema || 'noche';
+    const t = valor || S.tema || 'dia';
     document.documentElement.setAttribute('data-tema', t);
     S.tema = t; guardar();
     const b = document.getElementById('av-tema');
@@ -110,8 +110,8 @@
     <header class="av-cabeza">
       <div class="av-cabeza__int">
         <a class="av-logo" href="${r}index.html" aria-label="AV Watches, inicio">
-          <span class="av-logo__marca">AV</span>
-          <span class="av-logo__txt">WATCHES<em>Relojes · Guadalajara</em></span>
+          <span class="av-logo__marca">AV Watches</span>
+          <span class="av-logo__txt">Guadalajara</span>
         </a>
         <nav class="av-nav" aria-label="Principal">
           ${nav.map(([h, t]) => `<a href="${r}${h}"${activa(h)}>${t}</a>`).join('')}
@@ -335,7 +335,7 @@
       cuerpo.innerHTML = `<div class="av-vacio">
         <p class="av-t-lead">Tu bolsa está en cero.</p>
         <p>Todavía no eliges nada. Sin prisa: un reloj bien escogido te dura cuarenta años.</p>
-        <a class="av-btn av-btn--laton" href="${rutaBase}catalogo.html">Ver el catálogo</a></div>`;
+        <a class="av-btn av-btn--acento" href="${rutaBase}catalogo.html">Ver el catálogo</a></div>`;
       pie.innerHTML = '';
       return;
     }

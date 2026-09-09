@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cont.innerHTML = `<div class="av-vacio" style="grid-column:1/-1;border:var(--filo)">
         <p class="av-t-lead">No hay nada que cobrar.</p>
         <p>Tu bolsa está vacía. Date una vuelta por el catálogo.</p>
-        <a class="av-btn av-btn--laton" href="catalogo.html">Ver el catálogo</a></div>`;
+        <a class="av-btn av-btn--acento" href="catalogo.html">Ver el catálogo</a></div>`;
       return;
     }
 
@@ -76,13 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<div class="av-bolsa__linea" style="align-items:flex-start;padding:.8rem 0;border-bottom:var(--filo)">
           <span style="max-width:70%"><b style="font-family:var(--display);font-size:1.05rem">${p.marca} ${p.modelo}</b>
           <small style="display:block;color:var(--tinta-fantasma);font-size:.68rem">${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'} · ${d.nombre} · ${AV.CORREAS[l.correa].nombre}${l.cant > 1 ? ` · ×${l.cant}` : ''}</small>
-          ${l.grabado ? `<small style="display:block;color:var(--laton);font-family:var(--display);font-style:italic">«${l.grabado}»</small>` : ''}</span>
+          ${l.grabado ? `<small style="display:block;color:var(--acento);font-family:var(--display);font-style:italic">«${l.grabado}»</small>` : ''}</span>
           <b class="av-mono">${AV.precioMXN(l.precio * l.cant)}</b></div>`;
       }).join('');
       document.getElementById('resumen-totales').innerHTML = `
         <div class="av-bolsa__linea" style="margin-top:1rem"><span>Subtotal</span><b class="av-mono">${AV.precioMXN(sub)}</b></div>
         <div class="av-bolsa__linea av-tenue"><span>Entrega</span><b class="av-mono">${envio ? AV.precioMXN(envio) : 'Sin costo'}</b></div>
-        ${desc ? `<div class="av-bolsa__linea" style="color:var(--laton)"><span>Descuento por transferencia</span><b class="av-mono">−${AV.precioMXN(desc)}</b></div>` : ''}
+        ${desc ? `<div class="av-bolsa__linea" style="color:var(--acento)"><span>Descuento por transferencia</span><b class="av-mono">−${AV.precioMXN(desc)}</b></div>` : ''}
         <div class="av-bolsa__linea" style="border-top:var(--filo);margin-top:.6rem;padding-top:.8rem"><span>Total</span><b class="av-mono" style="font-size:1.3rem">${AV.precioMXN(sub + envio - desc)}</b></div>`;
     }
     cont.addEventListener('change', totales);
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="av-t-lead">Ya lo aparté a tu nombre.<br>Te escribo hoy mismo para confirmarte los detalles.</p>
         <div data-reloj="${primera.id}" data-correa="${carrito[0].correa}"></div>
         <p class="av-mono av-tenue" style="max-width:44ch;margin:0 auto 2rem">Te mando el detalle a ${f.correo.value.trim()}. Cualquier cosa, contesta ese correo: lo leo yo, no un robot.</p>
-        <a class="av-btn av-btn--laton" href="index.html">Volver al inicio</a>
+        <a class="av-btn av-btn--acento" href="index.html">Volver al inicio</a>
       </section>`;
       AVTienda.estado.carrito.length = 0; AVTienda.guardar();
       AVMotor.montarTodos();

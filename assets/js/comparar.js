@@ -1,6 +1,6 @@
 /* ==========================================================================
    AV WATCHES · Comparador
-   Marca en latón el mejor valor de cada fila: más reserva, más delgado,
+   Marca en rojo el mejor valor de cada fila: más reserva, más delgado,
    más resistente. Comparar sin ayudar no sirve de nada.
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
      Siluetas superpuestas: la diferencia de tamaño de un vistazo.
      Todo en milímetros, así que la comparación es literal.
      ---------------------------------------------------------------------- */
-  const TONOS = ['var(--laton)', 'rgba(160,180,220,.9)', 'rgba(200,110,80,.9)'];
+  const TONOS = ['var(--acento)', 'rgba(160,180,220,.9)', 'rgba(200,110,80,.9)'];
 
   function siluetas(piezas) {
     const maxD = Math.max(...piezas.map(p => p.caja.diametro));
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       /* La cota de cada uno, escalonada para que no se encimen. */
       const y = H / 2 - r;
       frente += `<line x1="${W / 2}" y1="${y}" x2="${W / 2 + 6 + i * 3}" y2="${y - 4 - i * 5}" stroke="${TONOS[i]}" stroke-width=".35"/>`;
-      frente += `<text x="${W / 2 + 8 + i * 3}" y="${y - 4 - i * 5}" font-family="'IBM Plex Mono',monospace" font-size="3.6"
+      frente += `<text x="${W / 2 + 8 + i * 3}" y="${y - 4 - i * 5}" font-family="Archivo,sans-serif" font-size="3.6"
                   fill="${TONOS[i]}">${p.caja.diametro} mm</text>`;
     });
     frente += '</svg>';
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       canto += `<rect x="${x}" y="${(y - p.caja.altura).toFixed(2)}" width="${p.caja.diametro}" height="${p.caja.altura}"
                  rx="${(p.caja.altura * 0.30).toFixed(2)}" fill="none" stroke="${TONOS[i]}" stroke-width=".7"/>`;
       canto += `<text x="${HW / 2 + p.caja.diametro / 2 + 3}" y="${(y - p.caja.altura / 2 + 1.3).toFixed(2)}"
-                 font-family="'IBM Plex Mono',monospace" font-size="3.6" fill="${TONOS[i]}">${p.caja.altura} mm</text>`;
+                 font-family="Archivo,sans-serif" font-size="3.6" fill="${TONOS[i]}">${p.caja.altura} mm</text>`;
     });
     canto += '</svg>';
 
@@ -83,13 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
       cont.innerHTML = `<div class="av-vacio" style="border:var(--filo)">
         <p class="av-t-lead">No has puesto nada a comparar.</p>
         <p>Manda relojes aquí desde el catálogo con el botón de las tres barras. Caben tres.</p>
-        <a class="av-btn av-btn--laton" href="catalogo.html">Ir a la colección</a></div>`;
+        <a class="av-btn av-btn--acento" href="catalogo.html">Ver el catálogo</a></div>`;
       return;
     }
 
     const th = piezas.map(p => `<td class="av-banco__pieza">
         <div data-reloj="${p.id}" data-dibujo></div>
-        <p class="av-mono av-laton" style="font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;margin:.6rem 0 .2rem">${p.marca}</p>
+        <p class="av-mono av-acento" style="font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;margin:.6rem 0 .2rem">${p.marca}</p>
         <h2 class="av-t-titulo" style="font-size:1.25rem"><a href="reloj.html?id=${p.id}">${p.modelo}</a></h2>
         <p class="av-pieza__lema" style="min-height:0;font-size:.85rem">${p.lema}</p>
         <div style="display:flex;gap:.4rem;justify-content:center;margin-top:.6rem">
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <thead><tr><td></td>${th}</tr></thead>
       <tbody>${filas}</tbody>
     </table></div>
-    <p class="av-mono av-tenue" style="margin-top:1.2rem">En latón, el mejor dato de cada renglón. Ojo: un número mejor no siempre hace un mejor reloj.</p>`;
+    <p class="av-mono av-tenue" style="margin-top:1.2rem">En rojo, el mejor dato de cada renglón. Ojo: un número mejor no siempre hace un mejor reloj.</p>`;
 
     AVMotor.montarTodos(cont);
     cont.querySelectorAll('[data-quitar]').forEach(b => b.onclick = () => { AVTienda.comparar(b.dataset.quitar); pintar(); });

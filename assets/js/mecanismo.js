@@ -51,16 +51,16 @@
   function mecanismoSVG() {
     /* Los tonos salen de variables para que el esquema aguante los dos temas:
    sobre papel claro un gris de fondo oscuro se pierde. */
-    const LATON = 'var(--laton)', ACERO = 'var(--mec-acero)', RUBI = 'var(--brasa)';
+    const ACENTO = 'var(--acento)', ACERO = 'var(--mec-acero)', RUBI = 'var(--brasa)';
 
     /* Cada eje recibe por su piñón y transmite por su rueda: es lo que
        multiplica la velocidad desde el barrilete hasta el escape.        */
     const ejes = [
-      { id: 'barrilete', pinon: 0,  rueda: 64, color: LATON, brazos: 6, capa: .95 },
+      { id: 'barrilete', pinon: 0,  rueda: 64, color: ACENTO, brazos: 6, capa: .95 },
       { id: 'centro',    pinon: 12, rueda: 34, color: ACERO, brazos: 5, capa: .55 },
       { id: 'tercera',   pinon: 10, rueda: 30, color: ACERO, brazos: 5, capa: .70 },
       { id: 'cuarta',    pinon: 10, rueda: 22, color: ACERO, brazos: 4, capa: .85 },
-      { id: 'escape',    pinon: 0,  rueda: 15, color: LATON, brazos: 0, capa: 1 }
+      { id: 'escape',    pinon: 0,  rueda: 15, color: ACENTO, brazos: 0, capa: 1 }
     ];
 
     /* Colocación: la distancia entre ejes es la suma de radios, así que
@@ -141,11 +141,11 @@
     /* Volante: no gira, oscila. Es el que marca el ritmo del reloj. */
     s += `<g class="av-pieza-mec" data-parte="volante">
       <g class="av-volante" style="--x:${n(vol.x)}px;--y:${n(vol.y)}px;--semi:${n(semi)}s">
-        <circle cx="${n(vol.x)}" cy="${n(vol.y)}" r="${vol.r}" fill="none" stroke="${LATON}" stroke-width="2.6"/>
-        <circle cx="${n(vol.x)}" cy="${n(vol.y)}" r="${vol.r - 6}" fill="none" stroke="${LATON}" stroke-width="1" opacity=".35"/>`;
+        <circle cx="${n(vol.x)}" cy="${n(vol.y)}" r="${vol.r}" fill="none" stroke="${ACENTO}" stroke-width="2.6"/>
+        <circle cx="${n(vol.x)}" cy="${n(vol.y)}" r="${vol.r - 6}" fill="none" stroke="${ACENTO}" stroke-width="1" opacity=".35"/>`;
     for (let i = 0; i < 4; i++) {
       const a = rad(i * 90 + 45);
-      s += `<line x1="${n(vol.x)}" y1="${n(vol.y)}" x2="${n(vol.x + vol.r * Math.cos(a))}" y2="${n(vol.y + vol.r * Math.sin(a))}" stroke="${LATON}" stroke-width="1.8" opacity=".7"/>`;
+      s += `<line x1="${n(vol.x)}" y1="${n(vol.y)}" x2="${n(vol.x + vol.r * Math.cos(a))}" y2="${n(vol.y + vol.r * Math.sin(a))}" stroke="${ACENTO}" stroke-width="1.8" opacity=".7"/>`;
     }
     /* Espiral: la que devuelve el volante y le da la isocronía. */
     let esp = '';
@@ -153,7 +153,7 @@
       const r = 5 + (t / 1080) * (vol.r - 14), a = rad(t);
       esp += (t ? ' L ' : 'M ') + n(vol.x + r * Math.cos(a)) + ' ' + n(vol.y + r * Math.sin(a));
     }
-    s += `<path d="${esp}" fill="none" stroke="${LATON}" stroke-width=".85" opacity=".45"/>`;
+    s += `<path d="${esp}" fill="none" stroke="${ACENTO}" stroke-width=".85" opacity=".45"/>`;
     s += `</g><circle cx="${n(vol.x)}" cy="${n(vol.y)}" r="3.6" fill="${RUBI}"/></g>`;
 
     /* Áncora: dos paletas sobre el escape y la horquilla hacia el volante. */
@@ -174,7 +174,7 @@
 
     /* Tres rótulos y ya. Las cifras están en el texto de la guía, no encima
        del dibujo: el esquema se lee mejor callado. */
-    s += `<g font-family="'IBM Plex Mono',monospace" font-size="8" fill="var(--tinta-tenue)" letter-spacing="1.6">`;
+    s += `<g font-family="Archivo,sans-serif" font-size="8" fill="var(--tinta-tenue)" letter-spacing="1.6">`;
     [[0, 92, 'BARRILETE'], [4, 58, 'ESCAPE']].forEach(([e, dy, txt]) => {
       const q = ejes[e], y2 = q.y + dy;
       s += `<line x1="${n(q.x)}" y1="${n(q.y)}" x2="${n(q.x)}" y2="${n(y2)}" stroke="var(--mec-borde)" stroke-width=".6"/>`;
