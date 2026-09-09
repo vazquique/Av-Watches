@@ -2,6 +2,8 @@
 
 > *El tiempo tiene dueño.*
 
+**En línea: https://vazquique.github.io/Av-Watches/**
+
 Tienda en línea de relojes **nuevos y seminuevos** de marcas existentes.
 Envío a toda la República y entrega en persona en Guadalajara.
 Sitio estático, sin dependencias y sin paso de build: se abre `index.html`
@@ -123,6 +125,15 @@ python3 -m http.server 8000
 ```
 
 Y abrir `http://localhost:8000`.
+
+## Publicación
+
+El sitio está en GitHub Pages: **https://vazquique.github.io/Av-Watches/**
+
+Lo despliega `.github/workflows/pages.yml` en cada push a la rama
+`claude/av-watches-ecommerce-iy3qps`. No hay paso de compilación: el repo
+se sube tal cual. Para publicar desde otra rama, cambia el `branches:` de
+ese archivo.
 
 ## Notas
 
