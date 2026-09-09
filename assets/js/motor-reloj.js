@@ -110,11 +110,15 @@
       out += `<path d="M ${n(x1 + inset)} ${n(yCaja + s * 6)} L ${n(x4 + inset * 0.8)} ${n(yFin + s * -6)}" stroke="${c.costura}" stroke-width="1.6" stroke-dasharray="5 6" fill="none" opacity="0.9"/>`;
       out += `<path d="M ${n(x2 - inset)} ${n(yCaja + s * 6)} L ${n(x3 - inset * 0.8)} ${n(yFin + s * -6)}" stroke="${c.costura}" stroke-width="1.6" stroke-dasharray="5 6" fill="none" opacity="0.9"/>`;
       if (!arriba) for (let i = 0; i < 4; i++) out += `<circle cx="${n(cx)}" cy="${n(yFin - 40 - i * 26)}" r="3.4" fill="${aclarar(c.cuerpo, -0.45)}"/>`;
-      /* Hebilla: un marco con su lengüeta, no una banda maciza. */
+      /* Hebilla: marco proporcional a la correa, con su lengüeta cruzada. */
       if (arriba) {
-        const bw = anchoPunta * 1.16, bh = 34;
-        out += `<rect x="${n(cx - bw / 2)}" y="60" width="${n(bw)}" height="${bh}" fill="none" stroke="url(#met${uid})" stroke-width="7"/>`;
-        out += `<rect x="${n(cx - 2)}" y="60" width="4" height="${bh}" fill="url(#met${uid})"/>`;
+        const bw = anchoPunta * 1.08, bh = anchoPunta * 0.46, by = 46, gr = Math.max(3, anchoPunta * 0.045);
+        out += `<rect x="${n(cx - bw / 2)}" y="${n(by)}" width="${n(bw)}" height="${n(bh)}" rx="${n(gr)}"
+                  fill="none" stroke="url(#met${uid})" stroke-width="${n(gr)}"/>`;
+        out += `<rect x="${n(cx - gr * 0.35)}" y="${n(by)}" width="${n(gr * 0.7)}" height="${n(bh)}" fill="url(#met${uid})"/>`;
+        /* La punta que pasa por la hebilla. */
+        out += `<rect x="${n(cx - anchoPunta * 0.30)}" y="${n(by + bh * 0.30)}" width="${n(anchoPunta * 0.60)}" height="${n(bh * 0.40)}"
+                  fill="${c.cuerpo}" opacity=".9"/>`;
       }
     }
     return out;
@@ -326,7 +330,7 @@
       out += `<line x1="${n(cx + rd * 0.52)}" y1="${n(cy)}" x2="${n(cx + rd * 0.52)}" y2="${n(cy - sr * 0.8)}" stroke="${tinta}" stroke-width="1.6"/>`;
       out += `<line x1="${n(cx)}" y1="${n(cy + rd * 0.52)}" x2="${n(cx)}" y2="${n(cy + rd * 0.52 - sr * 0.8)}" stroke="${tinta}" stroke-width="1.6"/>`;
     }
-    if (comp.includes('segundero-pequeno') && !comp.includes('cronografo')) {
+    if (comp.includes('segundero-pequeno') && !comp.includes('cronografo') && !comp.includes('fase-lunar')) {
       const sr = rd * 0.24, sy = cy + rd * 0.48;
       out += subdial(cx, sy, sr, [['30', 180]]);
       out += `<g class="av-sub-s" style="--sx:${n(cx)}px;--sy:${n(sy)}px"><line x1="${n(cx)}" y1="${n(sy + sr * 0.18)}" x2="${n(cx)}" y2="${n(sy - sr * 0.85)}" stroke="${tinta}" stroke-width="1.5"/></g>`;
@@ -390,9 +394,8 @@
     const bajoOcupado = comp.includes('cronografo') || comp.includes('fase-lunar') || comp.includes('segundero-pequeno') || comp.includes('mundo');
     if (!bajoOcupado)
       out += `<text x="${cx}" y="${n(cy + rd * 0.36)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.052)}" letter-spacing="${n(rd * 0.014)}" fill="${tinta}" opacity="0.62">${spec.calibre.tipo.toUpperCase()} · ${spec.caja.agua} M</text>`;
-    else if (!comp.includes('mundo'))
-      /* Con subdial a las seis, la firma técnica se va al costado izquierdo. */
-      out += `<text x="${n(cx - rd * 0.50)}" y="${n(cy + rd * 0.30)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.046)}" letter-spacing="${n(rd * 0.012)}" fill="${tinta}" opacity="0.5">${spec.caja.agua} M</text>`;
+    /* Con el bajo del dial ocupado no se añade nada más: un dial cargado se
+       queda sin esa línea antes que amontonar textos. */
     return out;
   }
 

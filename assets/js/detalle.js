@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="av-tiempo__nota av-mono" id="tiempo-nota"></p>
       </div>
       <p class="av-mono av-tenue" style="text-align:center;margin:.9rem 0 0;font-size:.62rem">
-        Ilustración a escala del modelo · marca la hora real de tu equipo · pasa el cursor para la lupa
+        Ilustración a escala del modelo · pasa el cursor para la lupa
       </p>
     </div>
 
@@ -114,17 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <a class="av-btn" href="servicio.html#gdl">Verlo en persona</a>
       </div>
 
-      <!-- Prueba de talla -->
+      <!-- Prueba de talla: la pieza sobre una muñeca a escala -->
       <section class="av-muneca">
-        <div class="av-config__cab"><h3 style="font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--laton)">¿Cómo te va a quedar?</h3>
-          <span id="muneca-cm">17 cm de muñeca</span></div>
-        <div class="av-muneca__vista">
-          <div class="av-muneca__brazo" id="brazo"></div>
-          <div class="av-muneca__caja" id="caja-vista"><span>${p.caja.diametro} mm</span></div>
+        <div class="av-config__cab">
+          <h3>¿Cómo te va a quedar?</h3>
+          <span id="muneca-cm">17 cm de muñeca</span>
         </div>
-        <input type="range" id="muneca" min="14" max="21" step="0.5" value="17" aria-label="Circunferencia de tu muñeca en centímetros" style="width:100%">
+        <div class="av-muneca__vistas">
+          <figure><figcaption class="av-mono">Desde arriba</figcaption><div id="muneca-sup"></div></figure>
+          <figure><figcaption class="av-mono">De canto · cuánto sobresale</figcaption><div id="muneca-lat"></div></figure>
+        </div>
+        <input type="range" id="muneca" min="14" max="21" step="0.5" value="17"
+               aria-label="Circunferencia de tu muñeca en centímetros">
         <div class="av-muneca__regla"><span>14 cm</span><span>17.5 cm</span><span>21 cm</span></div>
-        <p class="av-muneca__veredicto" id="veredicto" style="margin:.8rem 0 0"></p>
+        <p class="av-muneca__veredicto" id="veredicto"></p>
+        <p class="av-muneca__ayuda av-mono">¿No sabes cuánto mides? Dale una vuelta a la muñeca con un listón o una tira de papel y mídela con una regla.</p>
       </section>
 
       <!-- Hoja de especificaciones -->
@@ -315,21 +319,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   lienzo.addEventListener('pointerleave', () => lupa.classList.remove('viva'));
 
-  /* --- Prueba de talla: milímetros de verdad sobre la muñeca ------------- */
-  const slider = document.getElementById('muneca'), brazo = document.getElementById('brazo');
-  const cajaVista = document.getElementById('caja-vista'), veredicto = document.getElementById('veredicto');
-  const PX_MM = 2.4;
+  /* --- Prueba de talla: la pieza dibujada sobre una muñeca a escala ------ */
+  const slider = $('muneca'), veredicto = $('veredicto');
   function talla() {
     const cm = +slider.value;
-    const anchoMuneca = cm * 10 / Math.PI;          /* de circunferencia a diámetro */
-    brazo.style.width = (anchoMuneca * PX_MM) + 'px';
-    cajaVista.style.width = cajaVista.style.height = (p.caja.diametro * PX_MM) + 'px';
-    document.getElementById('muneca-cm').textContent = cm + ' cm de muñeca';
-    const razon = p.caja.diametro / anchoMuneca;
-    veredicto.innerHTML = razon < 0.62 ? 'Se te va a ver discreto. Elegante, pero discreto.'
-      : razon <= 0.78 ? '<span class="av-laton">Proporción justa.</span> Así se ve un reloj bien puesto.'
-      : razon <= 0.88 ? 'Va a llenarte la muñeca. Si te gusta que se note, adelante.'
-      : 'Te queda grande. Mira una caja de 38 o 39 mm.';
+    const r = AVPerfil.svgMuneca(p, cm);
+    $('muneca-sup').innerHTML = r.sup;
+    $('muneca-lat').innerHTML = r.lat;
+    $('muneca-cm').textContent = cm + ' cm de muñeca';
+    const v = AVPerfil.veredictoTalla(p.caja.diametro, r.medidas.ancho);
+    veredicto.innerHTML = v.txt;
+    veredicto.dataset.nivel = v.nivel;
   }
   slider.oninput = talla; talla();
 

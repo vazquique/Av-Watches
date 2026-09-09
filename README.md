@@ -42,17 +42,22 @@ buena idea sustituirlas por fotos propias conforme las tengas.
 
 | Dónde | Qué |
 |---|---|
-| Portada | Cuatro relojes del catálogo dando la hora real de Guadalajara, Ginebra, Tokio y Nueva York. |
-| Portada | Explicación de automático vs. cuarzo vs. solar, con un movimiento animado. Es la duda que más te van a preguntar. |
-| Ficha | **Selector de referencia**: los colores que el modelo tiene de fábrica, cada uno con su referencia real; el reloj se redibuja al instante. |
-| Ficha | **Lupa**: pasa el cursor sobre el reloj y magnifica el dial x2.6. |
-| Ficha | **«Apagar la luz»**: apaga el dial y deja solo la luminiscencia. |
-| Ficha | **Prueba de talla**: mueves el grosor de tu muñeca y ves la caja a escala real, con veredicto. |
-| Ficha | En seminuevos, un bloque aparte con el estado real de esa pieza. |
+| Ficha | **Tamaño real.** Pones una tarjeta bancaria contra la pantalla y ajustas hasta que coincida. Como una tarjeta mide 85.60 mm en todo el mundo (ISO/IEC 7810 ID-1), con eso se sabe cuántos píxeles mide un milímetro en *esa* pantalla y el reloj se muestra a su tamaño físico exacto. |
+| Ficha | **De perfil.** El reloj de canto, a escala y acotado. El grosor es lo que decide si entra bajo el puño y casi ninguna tienda lo enseña. |
+| Ficha | **Mueve el tiempo.** Adelanta o atrasa el reloj hasta quince días: la fase lunar recorre el mes, la fecha salta a medianoche, el segundo huso se mueve. |
+| Ficha | **En tu muñeca.** Dos vistas a escala en milímetros: desde arriba y de canto. La circunferencia que mides con un listón se convierte a ancho y alto reales con la fórmula de Ramanujan para elipses, porque una muñeca no es un cilindro. |
+| Ficha | **Apagar la luz**: apaga el dial y deja solo la luminiscencia. Y la **lupa** de relojero, que magnifica el dial x2.6. |
+| `guia.html` | **¿Cuál es tu reloj?** Cinco preguntas con puntuación real sobre el inventario y una recomendación explicada. Respeta lo que pides: a quien dice que no quiere darle cuerda no se le ofrece un cuerda manual. |
+| Portada | **El escaparate**: una vitrina con su cristal, la pieza grande y una lista que rota sola hasta que alguien la toca. |
+| Portada | **El movimiento por dentro**, animado de verdad: todas las ruedas comparten módulo, así que los dientes encajan, y las velocidades salen de la razón de dientes. El barrilete tarda tres minutos por vuelta y el volante late 3.75 veces por segundo. El escape avanza a pasos, un diente por latido. |
+| Portada | La hora real de Guadalajara, Ginebra, Tokio y Nueva York, cada una en un reloj distinto del catálogo. |
+| `comparar.html` | **Siluetas superpuestas**: diámetros concéntricos y grosores apilados, en milímetros literales. |
 | Catálogo | Filtros por marca, condición, mecánica, tipo, complicación, precio y diámetro. Viven en la URL, así que un filtro se comparte por WhatsApp. |
-| Comparar | Hasta tres relojes lado a lado, resaltando en latón el mejor dato de cada renglón. |
-| Todo | Buscador con `⌘K`, bolsa, bóveda de deseos y modo día/noche que se recuerda. |
-| Encabezado | La barra dorada de arriba es el avance del día. |
+| Todo | Buscador con `⌘K`, bolsa, bóveda y modo día/noche que se recuerda. La barra dorada de arriba es el avance del día. |
+
+Detalle que se nota sin buscarlo: un cuarzo pega el salto seco de cada
+segundo, un automático barre continuo y una cuerda manual avanza a octavos.
+Sale del tipo de movimiento que declara cada ficha.
 
 ## Estructura
 
@@ -61,6 +66,7 @@ index.html          Portada
 catalogo.html       Catálogo con filtros
 reloj.html?id=…     Ficha del reloj
 comparar.html       Comparador
+guia.html           ¿Cuál es tu reloj? (cuestionario)
 boveda.html         Lista de deseos
 pedido.html         Cierre de compra
 casa.html           Sobre AV Watches
@@ -71,9 +77,12 @@ assets/css/paginas.css   Secciones de cada página
 
 assets/js/datos.js       Inventario: metales, correas y los relojes
 assets/js/motor-reloj.js Motor de dibujo SVG + bucle de la hora
+assets/js/perfil.js      Vista de canto y el reloj sobre la muñeca
+assets/js/escala.js      Calibración de pantalla para el tamaño real
+assets/js/mecanismo.js   El tren de engranes animado
 assets/js/tienda.js      Bolsa, bóveda, comparador, tema, buscador, chrome
-assets/js/componentes.js Tarjeta de vitrina y diagrama del movimiento
-assets/js/{inicio,catalogo,detalle,comparar,boveda,pedido}.js
+assets/js/componentes.js Tarjeta de vitrina
+assets/js/{inicio,catalogo,detalle,comparar,boveda,pedido,guia}.js
 ```
 
 ## Agregar un reloj

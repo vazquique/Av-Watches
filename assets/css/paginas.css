@@ -164,6 +164,9 @@
 @media (max-width: 940px) { .av-ficha { grid-template-columns: 1fr; } }
 
 .av-escaparate { position: sticky; top: calc(var(--cabeza-alto) + 1.5rem); border: var(--filo); background: var(--fondo-2); padding: clamp(1rem,3vw,2.5rem); }
+/* En una sola columna no puede quedarse pegado: taparía todo lo que pasa
+   por debajo. Va después de la regla base para poder ganarle. */
+@media (max-width: 940px) { .av-escaparate { position: static; } }
 .av-escaparate__lienzo { position: relative; display: grid; place-items: center; }
 .av-escaparate__lienzo > div { width: 100%; display: grid; place-items: center; }
 .av-escaparate__lienzo .av-svg { width: min(100%, 26rem); transition: filter .6s; }
@@ -245,7 +248,7 @@
 
 /* ==========================  PEDIDO  ====================================== */
 .av-pedido { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,4vw,4rem); align-items: start; }
-@media (max-width: 900px) { .av-pedido { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .av-pedido { grid-template-columns: 1fr; } .av-resumen { position: static; } }
 .av-campo { margin-bottom: 1.1rem; }
 .av-campo label { display: block; font-family: var(--mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .18em; color: var(--tinta-fantasma); margin-bottom: .45rem; }
 .av-campo input, .av-campo select, .av-campo textarea { width: 100%; background: var(--fondo-2); border: var(--filo); padding: .8rem 1rem; font-size: .95rem; }
@@ -539,3 +542,18 @@
 .av-portada-pieza { width: 100%; filter: drop-shadow(0 22px 40px rgba(0,0,0,.5)); }
 .av-portada-pieza .av-svg { width: 100%; }
 @media (max-width: 780px) { .av-portada-doble { grid-template-columns: 1fr; } .av-portada-pieza { max-width: 13rem; margin-inline: auto; } }
+
+/* La pieza sobre la muñeca, a escala. */
+.av-muneca__vistas { display: grid; grid-template-columns: 1.25fr 1fr; gap: 1px; background: var(--linea); border: var(--filo); margin: 1.2rem 0 1.4rem; }
+.av-muneca__vistas figure { margin: 0; background: var(--fondo); padding: 1rem .8rem .6rem; display: grid; align-content: start; }
+.av-muneca__vistas figcaption { font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-fantasma); margin-bottom: .6rem; }
+.av-muneca__vistas svg { width: 100%; height: auto; max-height: 15rem; }
+.av-muneca__veredicto[data-nivel="bien"] { color: var(--laton); }
+.av-muneca__veredicto[data-nivel="grande"] { color: var(--brasa); }
+.av-muneca__ayuda { margin: .8rem 0 0; font-size: .64rem; color: var(--tinta-fantasma); text-align: center; }
+@media (max-width: 520px) { .av-muneca__vistas { grid-template-columns: 1fr; } }
+
+/* El control de la talla, con el mismo mando que el resto. */
+.av-muneca input[type="range"] { width: 100%; appearance: none; height: 1px; background: var(--linea-viva); margin: .4rem 0; }
+.av-muneca input[type="range"]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-muneca input[type="range"]::-moz-range-thumb { width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
