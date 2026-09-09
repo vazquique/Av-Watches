@@ -355,7 +355,7 @@
       out += `<text x="${n(cx)}" y="${n(ry + rr * 0.55)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.062)}" fill="${tinta}" opacity="0.7" letter-spacing="1">RESERVA</text>`;
     }
     if (comp.includes('mundo')) {
-      /* Anillo de veinticuatro ciudades, arrancando en el meridiano 105. */
+      /* Anillo de veinticuatro ciudades de un worldtimer. */
       const ciudades = ['MEX', 'DEN', 'LAX', 'ANC', 'HNL', 'MDY', 'AKL', 'SYD', 'TYO', 'HKG', 'BKK', 'DAC', 'KHI', 'DXB', 'MOW', 'CAI', 'PAR', 'LON', 'AZO', 'FEN', 'RIO', 'CCS', 'NYC', 'CHI'];
       const rc = rd * 0.66;
       out += `<circle cx="${cx}" cy="${cy}" r="${n(rc + rd * 0.10)}" fill="none" stroke="${subBorde}" stroke-width="0.9" opacity="0.5"/>`;
@@ -373,16 +373,20 @@
       out += `<text class="av-fecha" x="${n(dx)}" y="${n(dy)}" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.11)}" fill="${claro ? '#f0ece2' : '#1b1c1f'}">${ahora.getDate()}</text>`;
     }
 
-    /* Firma de la casa y línea técnica. Un dial cargado pierde la línea de
-       abajo antes que dejar que dos textos se encimen: así se hace de verdad. */
+    /* Firma del dial: la marca del reloj y su familia. Un dial cargado pierde
+       la línea de abajo antes que dejar que dos textos se encimen.          */
+    const marca = spec.marca || '';
+    const escapa = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    /* La marca se encoge sola si es larga, para no salirse del dial. */
+    const tamMarca = rd * (marca.length > 9 ? 0.088 : marca.length > 6 ? 0.105 : 0.125);
     const yFirma = comp.includes('reserva') ? cy - rd * 0.17 : cy - rd * 0.40;
-    out += `<text x="${cx}" y="${n(yFirma)}" text-anchor="middle" font-family="'Bodoni Moda',Georgia,serif" font-weight="600" font-size="${n(rd * 0.135)}" letter-spacing="${n(rd * 0.02)}" fill="${tinta}">AV</text>`;
-    if (!comp.includes('reserva'))
-      out += `<text x="${cx}" y="${n(yFirma + rd * 0.135)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.055)}" letter-spacing="${n(rd * 0.022)}" fill="${tinta}" opacity="0.8">WATCHES</text>`;
+    out += `<text x="${cx}" y="${n(yFirma)}" text-anchor="middle" font-family="'Bodoni Moda',Georgia,serif" font-weight="600" font-size="${n(tamMarca)}" letter-spacing="${n(rd * 0.016)}" fill="${tinta}">${escapa(marca)}</text>`;
+    if (!comp.includes('reserva') && spec.dialLinea)
+      out += `<text x="${cx}" y="${n(yFirma + rd * 0.125)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.05)}" letter-spacing="${n(rd * 0.02)}" fill="${tinta}" opacity="0.78">${escapa(spec.dialLinea)}</text>`;
 
     const bajoOcupado = comp.includes('cronografo') || comp.includes('fase-lunar') || comp.includes('segundero-pequeno') || comp.includes('mundo');
     if (!bajoOcupado)
-      out += `<text x="${cx}" y="${n(cy + rd * 0.36)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.052)}" letter-spacing="${n(rd * 0.014)}" fill="${tinta}" opacity="0.62">${spec.calibre.tipo === 'automático' ? 'AUTOMÁTICO' : 'CUERDA MANUAL'} · ${spec.caja.agua} M</text>`;
+      out += `<text x="${cx}" y="${n(cy + rd * 0.36)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.052)}" letter-spacing="${n(rd * 0.014)}" fill="${tinta}" opacity="0.62">${spec.calibre.tipo.toUpperCase()} · ${spec.caja.agua} M</text>`;
     else if (!comp.includes('mundo'))
       /* Con subdial a las seis, la firma técnica se va al costado izquierdo. */
       out += `<text x="${n(cx - rd * 0.50)}" y="${n(cy + rd * 0.30)}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="${n(rd * 0.046)}" letter-spacing="${n(rd * 0.012)}" fill="${tinta}" opacity="0.5">${spec.caja.agua} M</text>`;
@@ -496,9 +500,9 @@
     /* Reflejo del zafiro: lo último que se dibuja, como en la vida real. */
     g += `<path class="av-cristal" d="M ${n(cx - rDial * 0.94)} ${n(cy - rDial * 0.2)} A ${n(rDial)} ${n(rDial)} 0 0 1 ${n(cx + rDial * 0.42)} ${n(cy - rDial * 0.88)} L ${n(cx - rDial * 0.30)} ${n(cy + rDial * 0.55)} Z" fill="url(#cri${uid})" clip-path="url(#dial${uid})" pointer-events="none"/>`;
 
-    const mov = spec.calibre.tipo === 'automático' ? 'auto' : 'manual';
+    const mov = /cuarzo/.test(spec.calibre.tipo) ? 'cuarzo' : spec.calibre.tipo === 'automático' ? 'auto' : 'manual';
     const clase = 'av-svg av-reloj-vivo' + (opts.clase ? ' ' + opts.clase : '');
-    return `<svg class="${clase}" viewBox="0 0 400 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${spec.nombre}, ${met.nombre}, ${spec.caja.diametro} milímetros"
+    return `<svg class="${clase}" viewBox="0 0 400 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${spec.marca} ${spec.modelo}, ${met.nombre}, ${spec.caja.diametro} milímetros"
       data-mov="${mov}" ${opts.tz ? `data-tz="${opts.tz}"` : ''} preserveAspectRatio="xMidYMid meet">${defs}${g}</svg>`;
   }
 
@@ -525,8 +529,11 @@
         h = v.hour % 24; m = v.minute; s = v.second;
       } else { h = d.getHours(); m = d.getMinutes(); s = d.getSeconds(); }
 
-      /* Un automático barre; una cuerda manual también, pero más lento. */
-      const segCont = el.dataset.mov === 'manual' ? s + Math.floor(ms / 125) / 8 : s + ms / 1000;
+      /* Un automático barre, una cuerda manual barre más entrecortado y un
+         cuarzo pega el salto seco de cada segundo. Se nota y es correcto. */
+      const segCont = el.dataset.mov === 'cuarzo' ? s
+        : el.dataset.mov === 'manual' ? s + Math.floor(ms / 125) / 8
+        : s + ms / 1000;
       girar(el, '.av-seg', segCont * 6);
       girar(el, '.av-min', (m + segCont / 60) * 6);
       girar(el, '.av-hora', ((h % 12) + m / 60 + segCont / 3600) * 30);

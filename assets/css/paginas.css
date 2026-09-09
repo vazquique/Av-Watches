@@ -288,3 +288,14 @@
 /* Volante del calibre: oscila, no gira. */
 .av-volante { transform-box: view-box; transform-origin: var(--vx) var(--vy); animation: av-oscila 1.6s cubic-bezier(.36,0,.64,1) infinite alternate; }
 @keyframes av-oscila { from { transform: rotate(-155deg); } to { transform: rotate(155deg); } }
+
+/* Precio de lista tachado junto al de venta. */
+.av-pieza__precio s { margin-left: .5rem; font-size: .78rem; color: var(--tinta-fantasma); text-decoration-thickness: 1px; }
+
+/* Condición de la pieza y estado del seminuevo. */
+.av-condicion { border: 1px solid currentColor; padding: .18rem .45rem; color: var(--laton); }
+.av-condicion.usado { color: var(--tinta-tenue); }
+.av-ficha__precio s { color: var(--tinta-fantasma); }
+.av-estado { margin-top: 1.4rem; padding: 1rem 1.2rem; border-left: 2px solid var(--laton); background: var(--fondo-2); }
+.av-estado p { margin: .5rem 0 0; font-size: .92rem; color: var(--tinta-tenue); }
+.av-config__nota { margin: .8rem 0 0; font-size: .78rem; color: var(--tinta-fantasma); }

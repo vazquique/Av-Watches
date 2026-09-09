@@ -28,7 +28,7 @@
     if (existente) existente.cant += (linea.cant || 1);
     else S.carrito.push(Object.assign({ cant: 1 }, linea));
     guardar();
-    aviso(`${AV.porId(linea.id).nombre} · en la bolsa`, 'Ver bolsa', abrirBolsa);
+    aviso(`${AV.nombreCompleto(AV.porId(linea.id))} · en la bolsa`, 'Ver bolsa', abrirBolsa);
     abrirBolsa();
   }
   function quitar(idx) { S.carrito.splice(idx, 1); guardar(); pintarBolsa(); }
@@ -44,7 +44,7 @@
   function boveda(id) {
     const i = S.boveda.indexOf(id);
     if (i >= 0) { S.boveda.splice(i, 1); aviso('Fuera de la bóveda'); }
-    else { S.boveda.push(id); aviso(`${AV.porId(id).nombre} · guardado en tu bóveda`); }
+    else { S.boveda.push(id); aviso(`${AV.nombreCompleto(AV.porId(id))} · guardado en tu bóveda`); }
     guardar();
     return S.boveda.includes(id);
   }
@@ -55,9 +55,9 @@
     const i = S.comparador.indexOf(id);
     if (i >= 0) { S.comparador.splice(i, 1); }
     else {
-      if (S.comparador.length >= 3) { aviso('El banco de trabajo solo aguanta tres piezas'); return false; }
+      if (S.comparador.length >= 3) { aviso('El comparador solo aguanta tres relojes'); return false; }
       S.comparador.push(id);
-      aviso(`${AV.porId(id).nombre} · en el banco (${S.comparador.length}/3)`, 'Comparar', () => location.href = rutaBase + 'comparar.html');
+      aviso(`${AV.nombreCompleto(AV.porId(id))} · a comparar (${S.comparador.length}/3)`, 'Ver', () => location.href = rutaBase + 'comparar.html');
     }
     guardar();
     return S.comparador.includes(id);
@@ -97,10 +97,10 @@
   function montarArmazon() {
     const r = rutaBase;
     const nav = [
-      ['catalogo.html', 'Colección'],
-      ['casa.html', 'La casa'],
-      ['comparar.html', 'Banco'],
-      ['servicio.html', 'Servicio']
+      ['catalogo.html', 'Catálogo'],
+      ['casa.html', 'Sobre AV'],
+      ['comparar.html', 'Comparar'],
+      ['servicio.html', 'Ayuda']
     ];
     const activa = p => location.pathname.endsWith(p) ? ' aria-current="page"' : '';
 
@@ -111,21 +111,21 @@
       <div class="av-cabeza__int">
         <a class="av-logo" href="${r}index.html" aria-label="AV Watches, inicio">
           <span class="av-logo__marca">AV</span>
-          <span class="av-logo__txt">WATCHES<em>Taller · México</em></span>
+          <span class="av-logo__txt">WATCHES<em>Relojes · Guadalajara</em></span>
         </a>
         <nav class="av-nav" aria-label="Principal">
           ${nav.map(([h, t]) => `<a href="${r}${h}"${activa(h)}>${t}</a>`).join('')}
         </nav>
         <div class="av-acciones">
           <time class="av-hora-local" id="av-hora" aria-label="Hora local"></time>
-          <button type="button" class="av-icono" id="av-buscar-btn" aria-label="Buscar en la colección" title="Buscar (⌘K)">
+          <button type="button" class="av-icono" id="av-buscar-btn" aria-label="Buscar en el catálogo" title="Buscar (⌘K)">
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 18 18"/></svg>
           </button>
           <button type="button" class="av-icono" id="av-tema" aria-label="Cambiar tema">
             <svg viewBox="0 0 20 20" aria-hidden="true" class="av-ico-noche"><path d="M16 12.5A7 7 0 0 1 7.5 4a7 7 0 1 0 8.5 8.5Z"/></svg>
             <svg viewBox="0 0 20 20" aria-hidden="true" class="av-ico-dia"><circle cx="10" cy="10" r="4"/><g><path d="M10 1v2M10 17v2M1 10h2M17 10h2M3.6 3.6l1.4 1.4M15 15l1.4 1.4M16.4 3.6 15 5M5 15l-1.4 1.4"/></g></svg>
           </button>
-          <a class="av-icono" href="${r}comparar.html" aria-label="Banco de trabajo">
+          <a class="av-icono" href="${r}comparar.html" aria-label="Comparador">
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16V7M10 16V4M17 16v-6"/><path d="M1 18h18"/></svg>
             <b class="av-cuenta" data-cuenta="comparador"></b>
           </a>
@@ -153,8 +153,8 @@
     </aside>
 
     <div class="av-buscador" id="av-buscador" hidden>
-      <div class="av-buscador__caja" role="dialog" aria-modal="true" aria-label="Buscar en la colección">
-        <input type="search" id="av-buscar-input" placeholder="Busca por nombre, colección, calibre, metal…" autocomplete="off" spellcheck="false">
+      <div class="av-buscador__caja" role="dialog" aria-modal="true" aria-label="Buscar en el catálogo">
+        <input type="search" id="av-buscar-input" placeholder="Busca por marca, modelo, referencia…" autocomplete="off" spellcheck="false">
         <div class="av-buscador__res" id="av-buscar-res"></div>
         <div class="av-buscador__pie"><kbd>↑</kbd><kbd>↓</kbd> navegar · <kbd>Enter</kbd> abrir · <kbd>Esc</kbd> cerrar</div>
       </div>
@@ -165,16 +165,16 @@
       <div class="av-pie__marca">
         <span class="av-pie__logo">AV</span>
         <p class="av-t-lead">El tiempo tiene dueño.</p>
-        <p class="av-pie__nota">Taller y sala de exhibición en la colonia Juárez, Ciudad de México. Cada pieza se arma, se regula y se prueba durante quince días antes de salir por la puerta.</p>
+        <p class="av-pie__nota">Tienda de relojes nuevos y seminuevos. Envío asegurado a toda la República y entrega en persona si andas por Guadalajara. Cada pieza se revisa, se fotografía y se describe tal cual está.</p>
       </div>
       <nav class="av-pie__cols" aria-label="Pie de página">
-        <div><h3>Colección</h3>${AV.COLECCIONES.map(c => `<a href="${r}catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}</a>`).join('')}<a href="${r}catalogo.html">Ver todo</a></div>
-        <div><h3>La casa</h3><a href="${r}casa.html">Historia</a><a href="${r}casa.html#taller">El taller</a><a href="${r}casa.html#calibres">Calibres</a><a href="${r}servicio.html">Servicio</a></div>
-        <div><h3>Cliente</h3><a href="${r}servicio.html#garantia">Garantía de 5 años</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#cita">Agenda una cita</a><a href="${r}boveda.html">Tu bóveda</a></div>
+        <div><h3>Catálogo</h3>${AV.COLECCIONES.map(c => `<a href="${r}catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}</a>`).join('')}<a href="${r}catalogo.html">Ver todo</a></div>
+        <div><h3>Marcas</h3>${AV.MARCAS.slice(0, 5).map(m => `<a href="${r}catalogo.html?marca=${encodeURIComponent(m)}">${m}</a>`).join('')}<a href="${r}catalogo.html">Todas las marcas</a></div>
+        <div><h3>Comprar aquí</h3><a href="${r}servicio.html#garantia">Garantía y autenticidad</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#gdl">Vernos en Guadalajara</a><a href="${r}boveda.html">Tu bóveda</a></div>
       </nav>
       <div class="av-pie__base">
-        <span>© ${new Date().getFullYear()} AV Watches · Ciudad de México</span>
-        <span class="av-pie__hora">Hora de la casa <b id="av-hora-casa"></b></span>
+        <span>© ${new Date().getFullYear()} AV Watches · Guadalajara, Jalisco</span>
+        <span class="av-pie__hora">Hora en Guadalajara <b id="av-hora-casa"></b></span>
         <span>Precios en pesos mexicanos, IVA incluido</span>
       </div>
     </footer>`);
@@ -271,20 +271,20 @@
     if (!S.carrito.length) {
       cuerpo.innerHTML = `<div class="av-vacio">
         <p class="av-t-lead">Tu bolsa está en cero.</p>
-        <p>Todavía no eliges pieza. Nosotros tampoco tenemos prisa: un reloj bien escogido dura cuarenta años.</p>
-        <a class="av-btn av-btn--laton" href="${rutaBase}catalogo.html">Ver la colección</a></div>`;
+        <p>Todavía no eliges nada. Sin prisa: un reloj bien escogido te dura cuarenta años.</p>
+        <a class="av-btn av-btn--laton" href="${rutaBase}catalogo.html">Ver el catálogo</a></div>`;
       pie.innerHTML = '';
       return;
     }
     cuerpo.innerHTML = S.carrito.map((l, i) => {
       const r = AV.porId(l.id);
-      const dial = (r.variantesDial.find(v => v.id === l.dial) || r.variantesDial[0]);
+      const v = (r.variantes.find(x => x.id === l.dial) || r.variantes[0]);
       return `<article class="av-linea">
         <div class="av-linea__img" data-reloj-mini="${l.id}" data-dial="${l.dial}" data-correa="${l.correa}"></div>
         <div class="av-linea__txt">
-          <h3><a href="${rutaBase}reloj.html?id=${l.id}">${r.nombre}</a></h3>
-          <p class="av-mono av-tenue">${r.ref} · ${dial.nombre} · ${AV.CORREAS[l.correa].nombre}</p>
-          ${l.grabado ? `<p class="av-grabado-eti">Grabado: «${l.grabado}»</p>` : ''}
+          <h3><a href="${rutaBase}reloj.html?id=${l.id}"><em>${r.marca}</em> ${r.modelo}</a></h3>
+          <p class="av-mono av-tenue">${r.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'} · ${v.nombre} · ${AV.CORREAS[l.correa].nombre}</p>
+          ${l.grabado ? `<p class="av-grabado-eti">Nota: «${l.grabado}»</p>` : ''}
           <div class="av-linea__fila">
             <div class="av-cant">
               <button type="button" data-cant="${i}" data-d="-1" aria-label="Quitar uno">–</button>
@@ -300,7 +300,7 @@
 
     cuerpo.querySelectorAll('[data-reloj-mini]').forEach(el => {
       const r = AV.porId(el.dataset.relojMini);
-      const dial = r.variantesDial.find(v => v.id === el.dataset.dial) || r.variantesDial[0];
+      const dial = r.variantes.find(v => v.id === el.dataset.dial) || r.variantes[0];
       el.innerHTML = AVMotor.svgReloj(r, { dial, correa: el.dataset.correa });
     });
     AVMotor.refrescar();
@@ -311,9 +311,9 @@
     pie.innerHTML = `
       <div class="av-bolsa__linea"><span>Subtotal</span><b class="av-mono">${AV.precioMXN(total())}</b></div>
       <div class="av-bolsa__linea av-tenue"><span>Envío asegurado</span><b class="av-mono">Sin costo</b></div>
-      <div class="av-bolsa__linea av-tenue"><span>Grabado y ajuste de talla</span><b class="av-mono">Incluidos</b></div>
+      <div class="av-bolsa__linea av-tenue"><span>Ajuste de brazalete</span><b class="av-mono">Incluido</b></div>
       <a class="av-btn av-btn--solido av-bloque" href="${rutaBase}pedido.html">Completar el pedido</a>
-      <p class="av-bolsa__nota">Cinco años de garantía de taller. Treinta días para cambiar de opinión.</p>`;
+      <p class="av-bolsa__nota">Garantía de la marca. 7 días para devolverlo si algo no cuadra.</p>`;
   }
 
   /* --- Buscador ---------------------------------------------------------- */
@@ -326,13 +326,13 @@
       lista = (vistos.length ? vistos : AV.RELOJES.slice(0, 5));
       cont.innerHTML = `<p class="av-buscador__eti">${vistos.length ? 'Lo último que viste' : 'Empieza por aquí'}</p>`;
     } else {
-      lista = AV.RELOJES.filter(r => [r.nombre, r.coleccion, r.ref, r.estilo, r.calibre.nombre, AV.METALES[r.caja.metal].nombre, r.lema].join(' ').toLowerCase().includes(t));
-      cont.innerHTML = `<p class="av-buscador__eti">${lista.length ? lista.length + ' pieza' + (lista.length > 1 ? 's' : '') : 'Nada con eso. Prueba «acero», «GMT» o «cronógrafo».'}</p>`;
+      lista = AV.RELOJES.filter(r => [r.marca, r.modelo, r.refFab, r.coleccion, r.condicion, r.estilo, r.calibre.nombre, r.calibre.tipo, AV.METALES[r.caja.metal].nombre, r.lema].join(' ').toLowerCase().includes(t));
+      cont.innerHTML = `<p class="av-buscador__eti">${lista.length ? lista.length + ' reloj' + (lista.length > 1 ? 'es' : '') : 'Nada con eso. Prueba «Seiko», «diver», «automático» o «seminuevo».'}</p>`;
     }
     cont.innerHTML += lista.map((r, i) => `
       <a href="${rutaBase}reloj.html?id=${r.id}" class="${i === 0 ? 'sel' : ''}">
-        <span class="av-buscador__ref av-mono">${r.ref}</span>
-        <span class="av-buscador__nom">${r.nombre}<em>${r.coleccion} · ${r.caja.diametro} mm · ${AV.METALES[r.caja.metal].nombre}</em></span>
+        <span class="av-buscador__ref av-mono">${r.marca}</span>
+        <span class="av-buscador__nom">${r.modelo}<em>${r.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'} · ${r.caja.diametro} mm · ${r.calibre.tipo}</em></span>
         <span class="av-mono">${AV.precioMXN(r.precio)}</span>
       </a>`).join('');
   }

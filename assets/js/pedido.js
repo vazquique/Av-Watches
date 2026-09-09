@@ -5,9 +5,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const cont = document.getElementById('pedido');
   const ENTREGAS = [
-    { id: 'taller', nom: 'Recoger en el taller', det: 'Río Lerma 232, colonia Juárez · con cita', costo: 0 },
-    { id: 'mensajeria', nom: 'Mensajería asegurada', det: 'Toda la República · 5 a 8 días hábiles', costo: 0 },
-    { id: 'mano', nom: 'Entrega en mano', det: 'Zona metropolitana del Valle de México · un relojero te la lleva', costo: 1200 }
+    { id: 'mensajeria', nom: 'Mensajería asegurada', det: 'Toda la República · 2 a 5 días hábiles, con guía rastreable', costo: 0 },
+    { id: 'gdl', nom: 'Nos vemos en Guadalajara', det: 'En un punto público de la zona · lo revisas antes de pagar', costo: 0 },
+    { id: 'express', nom: 'Envío express', det: 'Día siguiente hábil a capitales · asegurado', costo: 450 }
   ];
 
   function pintar() {
@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!carrito.length) {
       cont.innerHTML = `<div class="av-vacio" style="grid-column:1/-1;border:var(--filo)">
         <p class="av-t-lead">No hay nada que cobrar.</p>
-        <p>Tu bolsa está vacía. Date una vuelta por la colección.</p>
-        <a class="av-btn av-btn--laton" href="catalogo.html">Ver la colección</a></div>`;
+        <p>Tu bolsa está vacía. Date una vuelta por el catálogo.</p>
+        <a class="av-btn av-btn--laton" href="catalogo.html">Ver el catálogo</a></div>`;
       return;
     }
 
@@ -36,22 +36,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <legend class="av-t-eyebrow" style="margin-bottom:1.2rem">02 · Cómo te la hacemos llegar</legend>
           <div class="av-entrega">
             ${ENTREGAS.map((e, i) => `<label>
-              <input type="radio" name="entrega" value="${e.id}" data-costo="${e.costo}" ${i === 1 ? 'checked' : ''}>
+              <input type="radio" name="entrega" value="${e.id}" data-costo="${e.costo}" ${i === 0 ? 'checked' : ''}>
               <span>${e.nom}<small>${e.det}</small></span>
               <b class="av-mono">${e.costo ? AV.precioMXN(e.costo) : 'Sin costo'}</b>
             </label>`).join('')}
           </div>
-          <div class="av-campo" style="margin-top:1.2rem"><label for="dir">Dirección de entrega</label><textarea id="dir" name="dir" rows="3" placeholder="Calle, número, colonia, código postal, ciudad"></textarea></div>
+          <div class="av-campo" style="margin-top:1.2rem"><label for="dir">Dirección de entrega <span style="text-transform:none;letter-spacing:0">(déjala vacía si nos vemos en Guadalajara)</span></label><textarea id="dir" name="dir" rows="3" placeholder="Calle, número, colonia, código postal, ciudad"></textarea></div>
         </fieldset>
 
         <fieldset style="border:0;padding:0">
           <legend class="av-t-eyebrow" style="margin-bottom:1.2rem">03 · Cómo pagas</legend>
           <div class="av-entrega">
             <label><input type="radio" name="pago" value="tarjeta" checked><span>Tarjeta de crédito o débito<small>Hasta 12 meses sin intereses</small></span><b class="av-mono">—</b></label>
-            <label><input type="radio" name="pago" value="transfer"><span>Transferencia SPEI<small>Te mandamos la CLABE por correo</small></span><b class="av-mono">−3%</b></label>
-            <label><input type="radio" name="pago" value="taller"><span>En el taller<small>Efectivo o terminal, el día que la recoges</small></span><b class="av-mono">—</b></label>
+            <label><input type="radio" name="pago" value="transfer"><span>Transferencia SPEI<small>Te paso la CLABE por correo</small></span><b class="av-mono">−3%</b></label>
+            <label><input type="radio" name="pago" value="encuentro"><span>Al vernos<small>Efectivo o transferencia, el día que nos encontramos</small></span><b class="av-mono">—</b></label>
           </div>
-          <p class="av-mono av-tenue" style="margin-top:1rem;font-size:.68rem">Esta tienda es una demostración: no se procesa ningún cobro ni se envía información a ningún servidor.</p>
+          <p class="av-mono av-tenue" style="margin-top:1rem;font-size:.68rem">Sitio de demostración: no se procesa ningún cobro ni se envía información a ningún servidor.</p>
         </fieldset>
       </form>
 
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="resumen-lineas"></div>
         <div id="resumen-totales"></div>
         <button type="submit" form="form-pedido" class="av-btn av-btn--solido av-bloque" style="margin-top:1.4rem">Confirmar el pedido</button>
-        <p class="av-bolsa__nota">Cinco años de garantía. Treinta días para devolverlo completo.</p>
+        <p class="av-bolsa__nota">Garantía de la marca. Siete días para devolverlo completo.</p>
       </aside>`;
 
     /* --- Resumen ---------------------------------------------------------- */
@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const desc = pago && pago.value === 'transfer' ? Math.round(sub * 0.03) : 0;
       document.getElementById('resumen-lineas').innerHTML = carrito.map(l => {
         const p = AV.porId(l.id);
-        const d = p.variantesDial.find(v => v.id === l.dial) || p.variantesDial[0];
+        const d = p.variantes.find(v => v.id === l.dial) || p.variantes[0];
         return `<div class="av-bolsa__linea" style="align-items:flex-start;padding:.8rem 0;border-bottom:var(--filo)">
-          <span style="max-width:70%"><b style="font-family:var(--display);font-size:1.05rem">${p.nombre}</b>
-          <small style="display:block;color:var(--tinta-fantasma);font-size:.68rem">${d.nombre} · ${AV.CORREAS[l.correa].nombre}${l.cant > 1 ? ` · ×${l.cant}` : ''}</small>
+          <span style="max-width:70%"><b style="font-family:var(--display);font-size:1.05rem">${p.marca} ${p.modelo}</b>
+          <small style="display:block;color:var(--tinta-fantasma);font-size:.68rem">${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'} · ${d.nombre} · ${AV.CORREAS[l.correa].nombre}${l.cant > 1 ? ` · ×${l.cant}` : ''}</small>
           ${l.grabado ? `<small style="display:block;color:var(--laton);font-family:var(--display);font-style:italic">«${l.grabado}»</small>` : ''}</span>
           <b class="av-mono">${AV.precioMXN(l.precio * l.cant)}</b></div>`;
       }).join('');
@@ -93,16 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const f = e.target;
       const faltan = ['nombre', 'apellido', 'correo'].filter(n => !f[n].value.trim());
-      if (faltan.length) { AVTienda.aviso('Nos falta tu ' + faltan[0] + '.'); f[faltan[0]].focus(); return; }
+      if (faltan.length) { AVTienda.aviso('Me falta tu ' + faltan[0] + '.'); f[faltan[0]].focus(); return; }
 
       const folio = 'AV-' + Date.now().toString(36).toUpperCase().slice(-6);
       const primera = AV.porId(carrito[0].id);
       document.querySelector('main').innerHTML = `<section class="av-marco av-gracias">
         <p class="av-t-eyebrow">Pedido ${folio}</p>
         <h1 class="av-t-display" style="margin:1rem 0">Gracias, ${f.nombre.value.trim()}.</h1>
-        <p class="av-t-lead">Tu pieza entra hoy al banco de regulación.<br>Quince días de pruebas y sale con su carta de marcha firmada.</p>
+        <p class="av-t-lead">Ya lo aparté a tu nombre.<br>Te escribo hoy mismo para confirmarte los detalles.</p>
         <div data-reloj="${primera.id}" data-correa="${carrito[0].correa}"></div>
-        <p class="av-mono av-tenue" style="max-width:44ch;margin:0 auto 2rem">Te mandamos el detalle a ${f.correo.value.trim()}. Cualquier cosa, contesta ese correo: lo leemos nosotros, no un robot.</p>
+        <p class="av-mono av-tenue" style="max-width:44ch;margin:0 auto 2rem">Te mando el detalle a ${f.correo.value.trim()}. Cualquier cosa, contesta ese correo: lo leo yo, no un robot.</p>
         <a class="av-btn av-btn--laton" href="index.html">Volver al inicio</a>
       </section>`;
       AVTienda.estado.carrito.length = 0; AVTienda.guardar();

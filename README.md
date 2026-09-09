@@ -2,88 +2,119 @@
 
 > *El tiempo tiene dueño.*
 
-Tienda en línea de una casa relojera independiente. Sitio estático, sin
-dependencias, sin build: se abre `index.html` y funciona.
+Tienda en línea de relojes **nuevos y seminuevos** de marcas existentes.
+Envío a toda la República y entrega en persona en Guadalajara.
+Sitio estático, sin dependencias y sin paso de build: se abre `index.html`
+y funciona.
 
 ---
 
+## ⚠ Antes de publicarlo
+
+Tres cosas que **tienes que revisar**, porque las llené con datos de ejemplo:
+
+1. **Precios y existencias** (`assets/js/datos.js`) — son aproximaciones de
+   mercado, no tu inventario. Ajusta `precio`, `precioLista` y `stock` de
+   cada entrada.
+2. **Especificaciones** — siguen a los modelos de fábrica, pero verifica cada
+   `refFab` contra la pieza que tengas físicamente antes de publicarla.
+3. **Tus datos de contacto** — busca los comentarios `⇢` en `servicio.html`
+   (correo, WhatsApp, redes) y en `casa.html` (tu historia y tus cifras).
+
+Los formularios de pedido y contacto **no mandan nada a ningún servidor** ni
+procesan cobros: son demostración. Para vender de verdad hace falta una
+pasarela (Stripe, Mercado Pago, Conekta) y un backend.
+
 ## La idea
 
-**Aquí no hay una sola fotografía de reloj.** Cada pieza se dibuja por código
-en SVG a partir de su ficha técnica y **marca la hora real**, en vivo, con las
-manecillas girando. Cambiar el diámetro de la caja en `datos.js` hace que el
-reloj se vea más grande en toda la tienda; cambiar el color del dial lo repinta
-en la portada, el catálogo, el carrito y el comparador.
+**Aquí no hay una sola fotografía.** Cada reloj se dibuja por código en SVG a
+partir de su ficha técnica y **marca la hora real**, en vivo. El dial lleva la
+marca que corresponde, la caja se dibuja al diámetro real del modelo, y un
+cuarzo pega el salto seco de cada segundo mientras un automático barre suave.
 
-El motor sabe dibujar biseles de buceo, GMT bicolor, taquímetro y canelado;
-diales con rayo de sol, guilloché, aventurina y esqueleto; índices bâton,
-romanos, arábigos y de buzo; agujas dauphine, espada, mercedes y bâton; y
-complicaciones de fecha, cronógrafo, fase lunar, reserva de marcha, segundo
-huso y hora mundial.
+Es una ilustración a escala, no una foto del producto: sirve para que el
+catálogo se vea coherente mientras consigues fotos reales de tus piezas. Es
+buena idea sustituirlas por fotos propias conforme las tengas.
 
 ## Cosas que vale la pena abrir
 
 | Dónde | Qué |
 |---|---|
-| Portada | La hora real en cuatro husos, cada uno en una pieza distinta. El calibre AV·01 con su tren de rodaje girando y el volante oscilando. |
-| Ficha de pieza | **Configurador en vivo**: cambias dial o correa y el reloj se redibuja al instante, con su precio. |
-| Ficha de pieza | **Lupa de relojero**: pasa el cursor sobre la pieza y magnifica el dial x2.6. |
-| Ficha de pieza | **«Apagar la luz»**: apaga el dial y deja encendida solo la luminiscencia. |
-| Ficha de pieza | **Prueba de talla**: mueves el grosor de tu muñeca y ves la caja a escala real de milímetros, con veredicto. |
-| Catálogo | Filtros por colección, temperamento, material, complicación, precio y diámetro. Los filtros viven en la URL, así que una búsqueda se comparte. |
-| Banco de trabajo | Compara hasta tres piezas y resalta en latón el mejor dato de cada renglón. |
-| Todo el sitio | Buscador con `⌘K` / `Ctrl+K`, bolsa lateral, bóveda de deseos, y modo día/noche que se recuerda. |
-| Encabezado | La barra dorada de arriba es el avance del día: a medianoche está en cero, a las 23:59 llena. |
+| Portada | Cuatro relojes del catálogo dando la hora real de Guadalajara, Ginebra, Tokio y Nueva York. |
+| Portada | Explicación de automático vs. cuarzo vs. solar, con un movimiento animado. Es la duda que más te van a preguntar. |
+| Ficha | **Selector de referencia**: los colores que el modelo tiene de fábrica, cada uno con su referencia real; el reloj se redibuja al instante. |
+| Ficha | **Lupa**: pasa el cursor sobre el reloj y magnifica el dial x2.6. |
+| Ficha | **«Apagar la luz»**: apaga el dial y deja solo la luminiscencia. |
+| Ficha | **Prueba de talla**: mueves el grosor de tu muñeca y ves la caja a escala real, con veredicto. |
+| Ficha | En seminuevos, un bloque aparte con el estado real de esa pieza. |
+| Catálogo | Filtros por marca, condición, mecánica, tipo, complicación, precio y diámetro. Viven en la URL, así que un filtro se comparte por WhatsApp. |
+| Comparar | Hasta tres relojes lado a lado, resaltando en latón el mejor dato de cada renglón. |
+| Todo | Buscador con `⌘K`, bolsa, bóveda de deseos y modo día/noche que se recuerda. |
+| Encabezado | La barra dorada de arriba es el avance del día. |
 
 ## Estructura
 
 ```
 index.html          Portada
-catalogo.html       La colección, con filtros
-reloj.html?id=…     Ficha de pieza + configurador
-comparar.html       Banco de trabajo
+catalogo.html       Catálogo con filtros
+reloj.html?id=…     Ficha del reloj
+comparar.html       Comparador
 boveda.html         Lista de deseos
 pedido.html         Cierre de compra
-casa.html           Historia del taller
-servicio.html       Garantía, servicio y citas
+casa.html           Sobre AV Watches
+servicio.html       Ayuda: garantía, envíos, autenticidad, contacto
 
 assets/css/base.css      Tokens, tipografía, armazón, componentes
 assets/css/paginas.css   Secciones de cada página
 
-assets/js/datos.js       Catálogo: metales, correas y las 12 piezas
+assets/js/datos.js       Inventario: metales, correas y los relojes
 assets/js/motor-reloj.js Motor de dibujo SVG + bucle de la hora
-assets/js/tienda.js      Carrito, bóveda, comparador, tema, buscador, chrome
-assets/js/componentes.js Tarjeta de vitrina y diagrama del calibre
+assets/js/tienda.js      Bolsa, bóveda, comparador, tema, buscador, chrome
+assets/js/componentes.js Tarjeta de vitrina y diagrama del movimiento
 assets/js/{inicio,catalogo,detalle,comparar,boveda,pedido}.js
 ```
 
 ## Agregar un reloj
 
-Se añade un objeto a `AV.RELOJES` en `assets/js/datos.js`. Aparece solo en el
-catálogo, en los filtros, en el buscador y en el comparador, con su dibujo ya
-hecho. Nada más que tocar.
+Un objeto más en `AV.RELOJES` (`assets/js/datos.js`). Aparece solo en el
+catálogo, en los filtros, en el buscador y en el comparador, ya dibujado.
 
 ```js
 {
-  id: 'nuevo-modelo', ref: 'AV·13', nombre: 'Nombre', coleccion: 'Nocturno',
-  lema: 'Una línea que lo explique.', precio: 40000, anio: 2026,
-  piezas: 100, stock: 5, estilo: 'buceo',
-  caja: { metal: 'acero', diametro: 40, altura: 11, agua: 200, cristal: 'Zafiro' },
-  calibre: { nombre: 'AV-01', tipo: 'automático', frecuencia: '28,800 alt/h', rubies: 24, reserva: 41 },
-  dial: { base: '#101318', textura: 'sunburst', indices: 'baton', tinta: '#EDE8E0', lume: true },
-  bisel: { tipo: 'buceo', colorDia: '#0a2340', colorNoche: null },
-  manecillas: { tipo: 'espada', color: '#EDE8E0' },
-  complicaciones: ['fecha'], correa: 'acero',
-  variantesDial: [...], variantesCorrea: [...], notas: [...]
+  id: 'marca-modelo',                       // sin espacios, va en la URL
+  marca: 'Seiko', modelo: 'Presage Cocktail',
+  dialLinea: 'PRESAGE',                     // segunda línea del dial
+  refFab: 'SRPB43J1',
+  coleccion: 'Para empezar',                // una de AV.COLECCIONES
+  condicion: 'nuevo',                       // 'nuevo' | 'seminuevo'
+  incluye: 'Caja, papeles y garantía de 2 años',
+  estado: null,                             // obligatorio si es seminuevo
+  lema: 'Una línea que lo explique.',
+  precio: 9900, precioLista: 12000,         // precioLista sale tachado
+  anio: 2024, stock: 2, estilo: 'vestir',
+  caja: { metal: 'acero', diametro: 40.5, altura: 11.8, agua: 50, cristal: 'Hardlex' },
+  calibre: { nombre: 'Seiko 4R35', tipo: 'automático', frecuencia: '21,600 alt/h', rubies: 23, reserva: 41 },
+  dial: { base: '#e8dcc0', textura: 'sunburst', indices: 'baton', tinta: '#2e2a23', lume: false },
+  bisel: { tipo: 'liso', colorDia: null, colorNoche: null },
+  manecillas: { tipo: 'dauphine', color: '#3a352c' },
+  complicaciones: ['fecha'], correa: 'pielCafe',
+  variantes: [ { id:'champan', nombre:'Champán (SRPB43J1)', base:'#e8dcc0', tinta:'#2e2a23', extra:0 } ],
+  correasExtra: ['pielCafe', 'acero'],
+  notas: ['Tres cosas que valga la pena decir de este reloj.']
 }
 ```
 
-Valores admitidos: `metal` de `AV.METALES`, `textura` (`sunburst`, `guilloche`,
-`mate`, `aventurina`, `esqueleto`), `indices` (`baton`, `puntos`, `romano`,
-`arabigo`), `bisel.tipo` (`liso`, `buceo`, `gmt`, `taquimetro`, `canelado`),
-`manecillas.tipo` (`dauphine`, `espada`, `mercedes`, `baton`) y
+Valores admitidos: `metal` de `AV.METALES`; `correa` y `correasExtra` de
+`AV.CORREAS`; `textura` (`sunburst`, `guilloche`, `mate`, `aventurina`,
+`esqueleto`); `indices` (`baton`, `puntos`, `romano`, `arabigo`);
+`bisel.tipo` (`liso`, `buceo`, `gmt`, `taquimetro`, `canelado`);
+`manecillas.tipo` (`dauphine`, `espada`, `mercedes`, `baton`);
+`calibre.tipo` (`automático`, `cuerda manual`, `cuarzo`, `cuarzo solar`);
 `complicaciones` (`fecha`, `gmt`, `cronografo`, `fase-lunar`, `reserva`,
 `segundero-pequeno`, `mundo`).
+
+Para cuarzo y solar, `reserva` va en horas: si pones más de 8760 se muestra
+como años de pila, y más de 720 como meses de reserva a oscuras.
 
 ## Correr en local
 
@@ -91,14 +122,13 @@ Valores admitidos: `metal` de `AV.METALES`, `textura` (`sunburst`, `guilloche`,
 python3 -m http.server 8000
 ```
 
-Y abrir `http://localhost:8000`. También funciona abriendo el archivo directo,
-pero con servidor se ve como debe.
+Y abrir `http://localhost:8000`.
 
 ## Notas
 
-- El carrito, la bóveda, el comparador y el tema viven en `localStorage`: son
+- La bolsa, la bóveda, el comparador y el tema viven en `localStorage`: son
   de ese navegador y no salen de ahí.
-- El formulario de pedido y el de citas **no mandan nada a ningún servidor**:
-  es una demostración, no se procesa ningún cobro.
-- Las tipografías (Bodoni Moda, IBM Plex Mono, Archivo) se cargan de Google
+- Las tipografías (Bodoni Moda, IBM Plex Mono, Archivo) vienen de Google
   Fonts, con respaldos del sistema si no hay red.
+- Las marcas mencionadas son de sus respectivos dueños. El sitio las nombra
+  como lo hace cualquier revendedor; no implica representación oficial.

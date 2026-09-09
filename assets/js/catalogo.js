@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const ESTILOS = {
     buceo: 'Buceo', cronografo: 'Cronógrafo', viajero: 'Viajero', vestir: 'De vestir',
-    campo: 'De campo', deportivo: 'Deportivo', complicacion: 'Alta complicación'
+    campo: 'De campo', deportivo: 'Deportivo', complicacion: 'Con complicación'
   };
+  const CONDICIONES = { nuevo: 'Nuevo, sellado', seminuevo: 'Seminuevo' };
+  const MECANICAS = { 'automático': 'Automático', 'cuerda manual': 'Cuerda manual', 'cuarzo': 'Cuarzo', 'cuarzo solar': 'Cuarzo solar' };
   const COMPS = {
     fecha: 'Fecha', gmt: 'Segundo huso', cronografo: 'Cronógrafo',
     'fase-lunar': 'Fase lunar', reserva: 'Reserva de marcha',
@@ -31,15 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function coincide(r, campo, valor) {
     if (campo === 'coleccion') return r.coleccion === valor;
+    if (campo === 'marca') return r.marca === valor;
+    if (campo === 'condicion') return r.condicion === valor;
+    if (campo === 'mecanica') return r.calibre.tipo === valor;
     if (campo === 'estilo') return r.estilo === valor;
-    if (campo === 'metal') return r.caja.metal === valor;
     if (campo === 'comp') return r.complicaciones.includes(valor);
     return true;
   }
 
   casillas('f-coleccion', 'coleccion', AV.COLECCIONES.map(c => c.id));
+  casillas('f-marca', 'marca', AV.MARCAS);
+  casillas('f-condicion', 'condicion', Object.keys(CONDICIONES), o => CONDICIONES[o]);
+  casillas('f-mecanica', 'mecanica', Object.keys(MECANICAS).filter(m => AV.RELOJES.some(r => r.calibre.tipo === m)), o => MECANICAS[o]);
   casillas('f-estilo', 'estilo', Object.keys(ESTILOS).filter(e => AV.RELOJES.some(r => r.estilo === e)), o => ESTILOS[o]);
-  casillas('f-metal', 'metal', Object.keys(AV.METALES).filter(m => AV.RELOJES.some(r => r.caja.metal === m)), o => AV.METALES[o].nombre.replace(/ (316L|grado 5|18k|CuSn8|950|negro)/, ''));
   casillas('f-comp', 'comp', Object.keys(COMPS).filter(c => AV.RELOJES.some(r => r.complicaciones.includes(c))), o => COMPS[o]);
 
   const form = document.getElementById('filtros');
@@ -52,13 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const marcados = campo => Array.from(form.querySelectorAll(`input[name="${campo}"]:checked`)).map(i => i.value);
 
   function aplicar(actualizarUrl) {
-    const sel = { coleccion: marcados('coleccion'), estilo: marcados('estilo'), metal: marcados('metal'), comp: marcados('comp') };
+    const sel = {
+      coleccion: marcados('coleccion'), marca: marcados('marca'), condicion: marcados('condicion'),
+      mecanica: marcados('mecanica'), estilo: marcados('estilo'), comp: marcados('comp')
+    };
     const tope = +rPrecio.value, diamMax = +rDiam.value;
 
     let lista = AV.RELOJES.filter(r =>
       (!sel.coleccion.length || sel.coleccion.includes(r.coleccion)) &&
+      (!sel.marca.length || sel.marca.includes(r.marca)) &&
+      (!sel.condicion.length || sel.condicion.includes(r.condicion)) &&
+      (!sel.mecanica.length || sel.mecanica.includes(r.calibre.tipo)) &&
       (!sel.estilo.length || sel.estilo.includes(r.estilo)) &&
-      (!sel.metal.length || sel.metal.includes(r.caja.metal)) &&
       (!sel.comp.length || sel.comp.every(c => r.complicaciones.includes(c))) &&
       r.precio <= tope && r.caja.diametro <= diamMax
     );
@@ -68,21 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
       'precio-desc': (a, b) => b.precio - a.precio,
       'nuevo': (a, b) => b.anio - a.anio || b.precio - a.precio,
       'tamano': (a, b) => a.caja.diametro - b.caja.diametro,
-      'raro': (a, b) => (a.piezas || 9999) - (b.piezas || 9999),
+      'stock': (a, b) => a.stock - b.stock,
       'destacado': (a, b) => AV.RELOJES.indexOf(a) - AV.RELOJES.indexOf(b)
     }[orden.value];
     lista = lista.slice().sort(ordenar);
 
-    conteo.textContent = lista.length === 1 ? '1 pieza' : `${lista.length} piezas`;
-    document.getElementById('f-precio-val').textContent = tope >= 100000 ? 'Sin tope' : AV.precioMXN(tope);
+    conteo.textContent = lista.length === 1 ? '1 reloj' : `${lista.length} relojes`;
+    document.getElementById('f-precio-val').textContent = tope >= 160000 ? 'Sin tope' : AV.precioMXN(tope);
     document.getElementById('f-diam-val').textContent = diamMax + ' mm';
     AVComp.pintarVitrina(vitrina, lista);
 
     if (actualizarUrl !== false) {
       const p = new URLSearchParams();
       Object.entries(sel).forEach(([k, v]) => v.length && p.set(k, v.join(',')));
-      if (tope < 100000) p.set('precio', tope);
-      if (diamMax < 43) p.set('diam', diamMax);
+      if (tope < 160000) p.set('precio', tope);
+      if (diamMax < 45) p.set('diam', diamMax);
       if (orden.value !== 'destacado') p.set('orden', orden.value);
       history.replaceState(null, '', p.toString() ? '?' + p : location.pathname);
     }
@@ -93,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   orden.addEventListener('change', () => aplicar());
   document.getElementById('f-limpiar').onclick = () => {
     form.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
-    rPrecio.value = 100000; rDiam.value = 43; orden.value = 'destacado';
+    rPrecio.value = 160000; rDiam.value = 45; orden.value = 'destacado';
     aplicar();
   };
 

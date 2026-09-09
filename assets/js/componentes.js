@@ -13,29 +13,35 @@
   /* Sellos de vitrina: lo que hay que saber antes de leer la ficha. */
   function sello(p) {
     if (p.stock === 1) return '<span class="av-sello av-sello--ultima">Última pieza</span>';
-    if (p.stock <= 3) return `<span class="av-sello av-sello--ultima">Quedan ${p.stock}</span>`;
-    if (p.piezas && p.piezas <= 100) return `<span class="av-sello av-sello--serie">Serie de ${p.piezas}</span>`;
-    if (p.anio >= 2025) return '<span class="av-sello av-sello--nueva">Novedad</span>';
+    if (p.condicion === 'seminuevo') return '<span class="av-sello av-sello--serie">Seminuevo</span>';
+    if (p.stock <= 2) return `<span class="av-sello av-sello--ultima">Quedan ${p.stock}</span>`;
     return '';
+  }
+
+  /* Precio con el de lista tachado cuando hay diferencia real. */
+  function precio(p) {
+    const ahorro = p.precioLista && p.precioLista > p.precio;
+    return `<span class="av-pieza__precio">${AV.precioMXN(p.precio)}` +
+      (ahorro ? `<s>${AV.precioMXN(p.precioLista)}</s>` : '') + `</span>`;
   }
 
   /* Tarjeta de vitrina. La tarjeta entera es el enlace a la ficha. */
   function tarjeta(p, retraso) {
     return `<article class="av-pieza" data-revelar ${retraso ? `data-retraso="${retraso % 6}"` : ''} data-pieza="${p.id}">
-      <div class="av-pieza__cab"><b>${p.ref}</b><span>${p.coleccion}</span></div>
+      <div class="av-pieza__cab"><b>${p.marca}</b><span>${p.coleccion}</span></div>
       ${sello(p)}
       <div class="av-pieza__lienzo" data-reloj="${p.id}"></div>
-      <h3 class="av-pieza__nom"><a href="${r()}reloj.html?id=${p.id}">${p.nombre}</a></h3>
+      <h3 class="av-pieza__nom"><a href="${r()}reloj.html?id=${p.id}">${p.modelo}</a></h3>
       <p class="av-pieza__lema">${p.lema}</p>
       <div class="av-pieza__cab" style="border-top:var(--filo);padding-top:.8rem">
-        <span>${p.caja.diametro} mm · ${AV.METALES[p.caja.metal].nombre.split(' ')[0]}</span>
-        <span>${p.calibre.tipo === 'automático' ? 'Automático' : 'Cuerda'}</span>
+        <span>${p.caja.diametro} mm · ${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'}</span>
+        <span>${p.calibre.tipo}</span>
       </div>
       <div class="av-pieza__pie">
-        <span class="av-pieza__precio">${AV.precioMXN(p.precio)}</span>
+        ${precio(p)}
         <div class="av-pieza__actos">
-          <button type="button" class="av-pieza__acto boveda" data-boveda="${p.id}" aria-pressed="${AVTienda.enBoveda(p.id)}" aria-label="Guardar ${p.nombre} en tu bóveda">${ICONO.corazon}</button>
-          <button type="button" class="av-pieza__acto comparar" data-comparar="${p.id}" aria-pressed="${AVTienda.enComparador(p.id)}" aria-label="Comparar ${p.nombre}">${ICONO.banco}</button>
+          <button type="button" class="av-pieza__acto boveda" data-boveda="${p.id}" aria-pressed="${AVTienda.enBoveda(p.id)}" aria-label="Guardar ${p.marca} ${p.modelo} en tu bóveda">${ICONO.corazon}</button>
+          <button type="button" class="av-pieza__acto comparar" data-comparar="${p.id}" aria-pressed="${AVTienda.enComparador(p.id)}" aria-label="Comparar ${p.marca} ${p.modelo}">${ICONO.banco}</button>
         </div>
       </div>
     </article>`;
@@ -58,7 +64,7 @@
     if (!lista.length) {
       cont.innerHTML = `<div class="av-sin-resultados">
         <p class="av-t-lead">Ninguna pieza cumple con eso.</p>
-        <p class="av-tenue">Afloja un filtro o dinos qué buscas: armamos piezas por encargo.</p>
+        <p class="av-tenue">Afloja un filtro, o escríbeme qué buscas: consigo piezas por encargo.</p>
       </div>`;
       return;
     }
@@ -92,7 +98,7 @@
 
   function mecanismoSVG() {
     const l = '#C9A24A', t = 'rgba(160,160,170,.75)';
-    return `<svg viewBox="0 0 420 300" role="img" aria-label="Esquema del calibre AV-01: barrilete, tren de rodaje, escape y volante">
+    return `<svg viewBox="0 0 420 300" role="img" aria-label="Esquema de un movimiento automático: barrilete, tren de rodaje, escape y volante">
       <g opacity=".5">
         <path d="M20 150 H400" stroke="${t}" stroke-width=".5" stroke-dasharray="2 6"/>
         <path d="M210 20 V280" stroke="${t}" stroke-width=".5" stroke-dasharray="2 6"/>
@@ -115,13 +121,13 @@
       ${[[96, 150], [196, 132], [268, 168], [330, 128]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" fill="none" stroke="#C4452D" stroke-width=".8" opacity=".6"/>`).join('')}
       <!-- Anotaciones de plano técnico -->
       <g font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="${t}" letter-spacing="1.6">
-        <line x1="96" y1="150" x2="96" y2="252" stroke="${t}" stroke-width=".6"/><text x="96" y="266" text-anchor="middle">BARRILETE · 41 H</text>
+        <line x1="96" y1="150" x2="96" y2="252" stroke="${t}" stroke-width=".6"/><text x="96" y="266" text-anchor="middle">BARRILETE · LA CUERDA</text>
         <line x1="196" y1="132" x2="196" y2="52" stroke="${t}" stroke-width=".6"/><text x="196" y="44" text-anchor="middle">TREN DE RODAJE</text>
         <line x1="330" y1="128" x2="330" y2="62" stroke="${t}" stroke-width=".6"/><text x="330" y="54" text-anchor="middle">ESCAPE</text>
-        <line x1="372" y1="236" x2="372" y2="262" stroke="${t}" stroke-width=".6"/><text x="372" y="276" text-anchor="end">VOLANTE · 4 HZ</text>
+        <line x1="372" y1="236" x2="372" y2="262" stroke="${t}" stroke-width=".6"/><text x="372" y="276" text-anchor="end">VOLANTE · EL PULSO</text>
       </g>
     </svg>`;
   }
 
-  global.AVComp = { tarjeta, conectarTarjetas, pintarVitrina, mecanismoSVG, sello, ICONO };
+  global.AVComp = { tarjeta, conectarTarjetas, pintarVitrina, mecanismoSVG, sello, precio, ICONO };
 })(window);

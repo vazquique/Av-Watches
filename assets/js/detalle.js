@@ -8,13 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const p = AV.porId(id) || AV.RELOJES[0];
   AVTienda.registrarVisto(p.id);
 
-  document.title = `${p.nombre} · ${p.ref} · AV Watches`;
-  document.getElementById('miga-nom').textContent = p.nombre;
+  document.title = `${p.marca} ${p.modelo} · AV Watches`;
+  document.getElementById('miga-nom').textContent = `${p.marca} ${p.modelo}`;
 
   /* Estado del configurador. */
-  const est = { dial: p.variantesDial[0], correa: p.correa, grabado: '', lume: false };
-  const extraCorrea = c => AV.CORREAS[c].tipo === 'metal' ? 3500 : 0;
+  const est = { dial: p.variantes[0], correa: p.correa, grabado: '', lume: false };
+  /* Cambiar la correa que trae de fábrica se cobra como accesorio. */
+  const extraCorrea = c => c === p.correa ? 0 : AV.CORREAS[c].tipo === 'metal' ? 2900 : 890;
   const precio = () => p.precio + est.dial.extra + extraCorrea(est.correa);
+  const nuevo = p.condicion === 'nuevo';
 
   const metal = AV.METALES[p.caja.metal];
   const chip = hex => `<i style="background:${hex}"></i>`;
@@ -31,57 +33,62 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="av-escaparate__util">
         <button type="button" class="av-util" id="btn-lume" aria-pressed="false"><i></i> Apagar la luz</button>
         <button type="button" class="av-util" id="btn-boveda" aria-pressed="${AVTienda.enBoveda(p.id)}"><i></i> Guardar en bóveda</button>
-        <button type="button" class="av-util" id="btn-banco" aria-pressed="${AVTienda.enComparador(p.id)}"><i></i> Al banco</button>
+        <button type="button" class="av-util" id="btn-banco" aria-pressed="${AVTienda.enComparador(p.id)}"><i></i> Comparar</button>
       </div>
       <p class="av-mono av-tenue" style="text-align:center;margin:.9rem 0 0;font-size:.62rem">
-        Dibujo vectorial a escala · marca la hora real de tu equipo · pasa el cursor para la lupa
+        Ilustración a escala del modelo · marca la hora real de tu equipo · pasa el cursor para la lupa
       </p>
     </div>
 
     <div>
       <header class="av-ficha__cab">
         <div class="av-ficha__ref">
-          <b>${p.ref}</b><span>${p.coleccion}</span>
-          <span>${p.piezas ? `Serie de ${p.piezas}` : 'Producción continua'}</span>
+          <b>${p.marca}</b>
+          <span class="av-condicion ${nuevo ? '' : 'usado'}">${nuevo ? 'Nuevo · sellado' : 'Seminuevo'}</span>
+          <span>Ref. ${p.refFab}</span>
         </div>
-        <h1 class="av-t-display">${p.nombre}</h1>
+        <h1 class="av-t-display">${p.modelo}</h1>
         <p class="av-t-lead" style="margin-top:.8rem">${p.lema}</p>
         <div class="av-ficha__precio">
           <b id="precio">${AV.precioMXN(precio())}</b>
-          <span>MXN · IVA incluido · envío asegurado</span>
+          ${p.precioLista > p.precio ? `<s class="av-mono">${AV.precioMXN(p.precioLista)}</s>` : ''}
+          <span>MXN · envío asegurado incluido</span>
         </div>
-        <p class="av-disponible ${p.stock <= 3 ? 'poco' : ''}"><i></i>
-          ${p.stock === 1 ? 'Queda una sola pieza en el taller' : `${p.stock} piezas disponibles`} ·
-          entrega en ${p.stock ? '5 a 8 días hábiles' : 'consultar'}</p>
+        <p class="av-disponible ${p.stock <= 2 ? 'poco' : ''}"><i></i>
+          ${p.stock === 1 ? 'Solo tengo una' : `${p.stock} disponibles`} ·
+          sale al día siguiente hábil · ${p.incluye}</p>
+        ${p.estado ? `<div class="av-estado"><h2 class="av-t-eyebrow">Estado de esta pieza</h2><p>${p.estado}</p></div>` : ''}
       </header>
 
       <div class="av-config">
         <div class="av-config__grupo">
-          <div class="av-config__cab"><h3>Dial</h3><span id="dial-nom">${est.dial.nombre}</span></div>
+          <div class="av-config__cab"><h3>Color · referencia</h3><span id="dial-nom">${est.dial.nombre}</span></div>
           <div class="av-opciones" id="op-dial">
-            ${p.variantesDial.map((v, i) => `<button type="button" class="av-opcion" data-dial="${i}" aria-pressed="${i === 0}">
+            ${p.variantes.map((v, i) => `<button type="button" class="av-opcion" data-dial="${i}" aria-pressed="${i === 0}">
               ${chip(v.base)} ${v.nombre}${v.extra ? ` <em>+${AV.precioMXN(v.extra)}</em>` : ''}</button>`).join('')}
           </div>
+          <p class="av-config__nota">Son referencias distintas del mismo modelo. Si la que quieres no está en existencia, la consigo en unos días.</p>
         </div>
 
         <div class="av-config__grupo">
           <div class="av-config__cab"><h3>Correa</h3><span id="correa-nom">${AV.CORREAS[p.correa].nombre}</span></div>
           <div class="av-opciones" id="op-correa">
-            ${p.variantesCorrea.map(c => `<button type="button" class="av-opcion" data-correa="${c}" aria-pressed="${c === p.correa}">
-              ${chip(AV.CORREAS[c].cuerpo)} ${AV.CORREAS[c].nombre}${extraCorrea(c) ? ` <em>+${AV.precioMXN(extraCorrea(c))}</em>` : ''}</button>`).join('')}
+            ${p.correasExtra.map(c => `<button type="button" class="av-opcion" data-correa="${c}" aria-pressed="${c === p.correa}">
+              ${chip(AV.CORREAS[c].cuerpo)} ${AV.CORREAS[c].nombre}${c === p.correa ? ' <em>de fábrica</em>' : extraCorrea(c) ? ` <em>+${AV.precioMXN(extraCorrea(c))}</em>` : ''}</button>`).join('')}
           </div>
+          <p class="av-config__nota">Viene con la correa de fábrica. Si eliges otra, te la monto antes de enviártelo y la original va en la caja.</p>
         </div>
 
         <div class="av-config__grupo av-grabado">
-          <div class="av-config__cab"><h3>Grabado en el fondo</h3><span>Sin costo</span></div>
-          <input type="text" id="grabado" maxlength="28" placeholder="Una fecha, un nombre, una necedad…">
-          <div class="av-grabado__pie"><span>Se graba a láser en el fondo de caja</span><span><b id="grabado-n">0</b>/28</span></div>
+          <div class="av-config__cab"><h3>¿Algo que deba saber?</h3><span>Opcional</span></div>
+          <input type="text" id="grabado" maxlength="80" placeholder="Talla de muñeca, si es regalo, cuándo lo necesitas…">
+          <div class="av-grabado__pie"><span>Lo leo yo antes de preparar el envío</span><span><b id="grabado-n">0</b>/80</span></div>
         </div>
       </div>
 
       <div class="av-comprar">
         <button type="button" class="av-btn av-btn--solido" id="btn-bolsa">Agregar a la bolsa · <span id="precio-btn">${AV.precioMXN(precio())}</span></button>
-        <a class="av-btn" href="servicio.html#cita">Probármelo</a>
+        <a class="av-btn" href="servicio.html#gdl">Verlo en persona</a>
       </div>
 
       <!-- Prueba de talla -->
@@ -100,18 +107,20 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Hoja de especificaciones -->
       <section class="av-specs">
         <table>
-          <caption>Hoja técnica ${p.ref}</caption>
+          <caption>Ficha técnica · ${p.marca} ${p.refFab}</caption>
           <tbody>
-            <tr><th scope="row">Calibre</th><td>${p.calibre.nombre} · ${p.calibre.tipo}</td></tr>
+            <tr><th scope="row">Marca y modelo</th><td>${p.marca} ${p.modelo}</td></tr>
+            <tr><th scope="row">Condición</th><td>${nuevo ? 'Nuevo, sin uso' : 'Seminuevo · ' + p.anio}</td></tr>
+            <tr><th scope="row">Movimiento</th><td>${p.calibre.nombre} · ${p.calibre.tipo}</td></tr>
             <tr><th scope="row">Frecuencia</th><td>${p.calibre.frecuencia}</td></tr>
-            <tr><th scope="row">Rubíes</th><td>${p.calibre.rubies}</td></tr>
-            <tr><th scope="row">Reserva de marcha</th><td>${p.calibre.reserva} horas</td></tr>
+            ${p.calibre.rubies ? `<tr><th scope="row">Rubíes</th><td>${p.calibre.rubies}</td></tr>` : ''}
+            <tr><th scope="row">${/cuarzo/.test(p.calibre.tipo) ? 'Autonomía' : 'Reserva de marcha'}</th><td>${p.calibre.reserva >= 8760 ? Math.round(p.calibre.reserva / 8760) + ' años por pila (aprox.)' : p.calibre.reserva >= 720 ? Math.round(p.calibre.reserva / 730) + ' meses a oscuras' : p.calibre.reserva + ' horas'}</td></tr>
             <tr><th scope="row">Caja</th><td>${metal.nombre}, ${p.caja.diametro} × ${p.caja.altura} mm</td></tr>
             <tr><th scope="row">Cristal</th><td>${p.caja.cristal}</td></tr>
             <tr><th scope="row">Resistencia al agua</th><td>${p.caja.agua} metros</td></tr>
             <tr><th scope="row">Complicaciones</th><td>${p.complicaciones.length ? p.complicaciones.map(c => ({ fecha: 'Fecha', gmt: 'Segundo huso horario', cronografo: 'Cronógrafo', 'fase-lunar': 'Fase lunar', reserva: 'Reserva de marcha', 'segundero-pequeno': 'Segundero pequeño', mundo: 'Hora mundial' }[c] || c)).join(' · ') : 'Ninguna, a propósito'}</td></tr>
-            <tr><th scope="row">Producción</th><td>${p.piezas ? `${p.piezas} piezas numeradas` : 'Serie continua'} · desde ${p.anio}</td></tr>
-            <tr><th scope="row">Garantía</th><td>5 años de taller</td></tr>
+            <tr><th scope="row">Qué incluye</th><td>${p.incluye}</td></tr>
+            <tr><th scope="row">Garantía</th><td>${nuevo ? 'De la marca, según lo que incluye' : '6 meses de mi parte sobre el movimiento'}</td></tr>
           </tbody>
         </table>
         <ol class="av-notas">${p.notas.map(n => `<li>${n}</li>`).join('')}</ol>
@@ -139,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --- Configurador ------------------------------------------------------ */
   document.getElementById('op-dial').onclick = e => {
     const b = e.target.closest('[data-dial]'); if (!b) return;
-    est.dial = p.variantesDial[+b.dataset.dial];
+    est.dial = p.variantes[+b.dataset.dial];
     b.parentNode.querySelectorAll('.av-opcion').forEach(o => o.setAttribute('aria-pressed', o === b));
     document.getElementById('dial-nom').textContent = est.dial.nombre;
     dibujar();
@@ -163,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLume.innerHTML = `<i></i> ${est.lume ? 'Encender la luz' : 'Apagar la luz'}`;
     escaparate.classList.toggle('lume', est.lume);
     cont.querySelector('svg').classList.toggle('lume', est.lume);
-    if (est.lume && !p.dial.lume) AVTienda.aviso('Esta pieza no lleva luminiscencia: es un reloj de vestir.');
+    if (est.lume && !p.dial.lume) AVTienda.aviso('Este modelo no trae luminiscencia: es un reloj de vestir.');
   };
 
   /* --- Bóveda y banco ---------------------------------------------------- */
@@ -211,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --- Del mismo taller -------------------------------------------------- */
   const cerca = AV.RELOJES
     .filter(r => r.id !== p.id)
-    .map(r => ({ r, d: (r.coleccion === p.coleccion ? 0 : 3) + (r.estilo === p.estilo ? 0 : 2) + Math.abs(r.precio - p.precio) / 40000 }))
+    .map(r => ({ r, d: (r.coleccion === p.coleccion ? 0 : 3) + (r.estilo === p.estilo ? 0 : 2) + Math.abs(Math.log(r.precio) - Math.log(p.precio)) * 2 }))
     .sort((a, b) => a.d - b.d).slice(0, 4).map(x => x.r);
   AVComp.pintarVitrina(document.getElementById('relacionadas'), cerca);
 });

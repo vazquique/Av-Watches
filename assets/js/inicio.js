@@ -5,31 +5,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* --- Marquesina: se duplica el contenido para que el bucle no salte. --- */
   const frases = [
-    'Hecho en <b>México</b>', 'Series cortas · nunca más de 200 piezas',
-    'Calibres <b>propios</b> desde 2019', '5 años de garantía de taller',
-    '15 días de regulación por pieza', 'Envío asegurado <b>sin costo</b>',
-    'Grabado de fondo <b>incluido</b>', '30 días para devolverlo'
+    'Nuevos y <b>seminuevos</b>', 'Envío asegurado <b>sin costo</b>',
+    'Entrega en mano en <b>Guadalajara</b>', '7 días para devolverlo',
+    'Cada pieza <b>revisada</b> antes de publicarse', 'Con caja y papeles',
+    'Meses sin intereses', 'Consigo modelos <b>por encargo</b>'
   ];
   const tira = frases.map(f => `<span>${f} <b>✦</b></span>`).join('');
   document.getElementById('marquesina').innerHTML = tira + tira;
 
-  /* --- Vitrina de la semana: una pieza por colección, la más cara. ------- */
+  /* --- Recién llegados: uno por curaduría, para que se vea todo el rango. */
   const destacadas = AV.COLECCIONES.map(c =>
-    AV.RELOJES.filter(r => r.coleccion === c.id).sort((a, b) => b.precio - a.precio)[0]
+    AV.RELOJES.filter(r => r.coleccion === c.id).sort((a, b) => b.anio - a.anio || b.precio - a.precio)[0]
   ).filter(Boolean);
   AVComp.pintarVitrina(document.getElementById('vitrina-destacadas'), destacadas);
 
   /* --- Colecciones ------------------------------------------------------- */
   document.getElementById('lista-colecciones').innerHTML = AV.COLECCIONES.map((c, i) => {
-    const n = AV.RELOJES.filter(r => r.coleccion === c.id).length;
-    const desde = Math.min(...AV.RELOJES.filter(r => r.coleccion === c.id).map(r => r.precio));
+    const dentro = AV.RELOJES.filter(r => r.coleccion === c.id);
+    const n = dentro.length;
+    const desde = Math.min(...dentro.map(r => r.precio));
     return `<article class="av-col" data-revelar data-retraso="${i}">
       <span class="av-col__num">${c.numero}</span>
       <div>
         <h3 class="av-col__nom"><a href="catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}</a></h3>
         <p class="av-col__desc">${c.desc}</p>
       </div>
-      <span class="av-col__flecha">${n} piezas · desde ${AV.precioMXN(desde)}</span>
+      <span class="av-col__flecha">${n} relojes · desde ${AV.precioMXN(desde)}</span>
     </article>`;
   }).join('');
 
@@ -37,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('mecanismo').innerHTML = AVComp.mecanismoSVG();
 
   /* --- Hora en el mundo: cuatro piezas viajeras en su huso -------------- */
-  const viajeras = ['meridiano-105', 'obsidiana-gmt', 'bruma', 'chapopote'];
+  /* Cuatro relojes del catálogo, cada uno puesto en su ciudad. */
+  const viajeras = ['omega-seamaster-300m', 'tissot-prx-powermatic', 'seiko-5-srpd55', 'hamilton-khaki-field'];
   document.getElementById('husos').innerHTML = AV.HUSOS.map((h, i) => `
     <article class="av-huso" data-revelar data-retraso="${i}">
       <div data-reloj="${viajeras[i]}" data-tz="${h.zona}"></div>
@@ -52,9 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   refrescarHoras(); setInterval(refrescarHoras, 5000);
 
-  /* --- Encabezado del hero con datos reales de la pieza expuesta -------- */
-  const p = AV.porId('obsidiana-gmt');
-  document.getElementById('hero-ref').textContent = `${p.ref} ${p.nombre}`;
+  /* --- Hero: la pieza en vitrina, con sus datos reales ------------------- */
+  const p = AV.porId('tissot-prx-powermatic');
+  document.getElementById('hero-ref').textContent = `${p.marca} ${p.modelo}`;
   document.getElementById('hero-cal').textContent = `${p.calibre.nombre} · ${p.calibre.reserva} h`;
   document.getElementById('hero-precio').textContent = AV.precioMXN(p.precio);
   const heroPieza = document.getElementById('hero-pieza');

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>La colección · AV Watches</title>
-<meta name="description" content="Las doce piezas de AV Watches: buceo, cronógrafos, GMT, esqueletos y vestir. Filtra por colección, metal, tamaño y precio.">
+<title>Catálogo · AV Watches</title>
+<meta name="description" content="Relojes nuevos y seminuevos de Seiko, Tissot, Hamilton, Oris, Omega y más. Filtra por marca, condición, precio y tamaño.">
 <meta name="theme-color" content="#0B0B0C">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0B0C'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23C9A24A' text-anchor='middle'%3EAV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,11 +23,11 @@
   <section class="av-seccion av-marco" style="padding-bottom:0">
     <header class="av-catalogo__cab">
       <div>
-        <p class="av-t-eyebrow" style="margin-bottom:.8rem">La colección completa</p>
-        <h1 class="av-t-display">Doce piezas<br>y ninguna de relleno.</h1>
+        <p class="av-t-eyebrow" style="margin-bottom:.8rem">Todo lo que tengo</p>
+        <h1 class="av-t-display">Nada que yo<br>no me pondría.</h1>
       </div>
       <div style="text-align:right">
-        <p class="av-conteo" id="conteo">12 piezas</p>
+        <p class="av-conteo" id="conteo">13 relojes</p>
         <div class="av-orden" style="margin-top:.6rem;justify-content:flex-end">
           <label for="orden">Ordenar</label>
           <select id="orden">
@@ -36,7 +36,7 @@
             <option value="precio-desc">Precio · mayor a menor</option>
             <option value="nuevo">Lo más nuevo</option>
             <option value="tamano">Tamaño de caja</option>
-            <option value="raro">Los más escasos</option>
+            <option value="stock">Los que quedan menos</option>
           </select>
         </div>
       </div>
@@ -44,22 +44,24 @@
 
     <div class="av-catalogo">
       <form class="av-filtros" id="filtros" aria-label="Filtrar la colección">
-        <div class="av-filtro"><h3>Colección</h3><div id="f-coleccion"></div></div>
-        <div class="av-filtro"><h3>Temperamento</h3><div id="f-estilo"></div></div>
-        <div class="av-filtro"><h3>Material de caja</h3><div id="f-metal"></div></div>
+        <div class="av-filtro"><h3>Marca</h3><div id="f-marca"></div></div>
+        <div class="av-filtro"><h3>Condición</h3><div id="f-condicion"></div></div>
+        <div class="av-filtro"><h3>Para qué</h3><div id="f-coleccion"></div></div>
+        <div class="av-filtro"><h3>Mecánica</h3><div id="f-mecanica"></div></div>
+        <div class="av-filtro"><h3>Tipo</h3><div id="f-estilo"></div></div>
         <div class="av-filtro"><h3>Complicación</h3><div id="f-comp"></div></div>
         <div class="av-filtro">
           <h3>Hasta cuánto</h3>
           <div class="av-rango">
-            <input type="range" id="f-precio" min="20000" max="100000" step="1000" value="100000" aria-label="Precio máximo">
-            <div class="av-rango__val"><span>$20,000</span><span id="f-precio-val">Sin tope</span></div>
+            <input type="range" id="f-precio" min="1500" max="160000" step="500" value="160000" aria-label="Precio máximo">
+            <div class="av-rango__val"><span>$1,500</span><span id="f-precio-val">Sin tope</span></div>
           </div>
         </div>
         <div class="av-filtro">
           <h3>Diámetro máximo</h3>
           <div class="av-rango">
-            <input type="range" id="f-diam" min="36" max="43" step="1" value="43" aria-label="Diámetro máximo de caja">
-            <div class="av-rango__val"><span>36 mm</span><span id="f-diam-val">43 mm</span></div>
+            <input type="range" id="f-diam" min="34" max="45" step="0.5" value="45" aria-label="Diámetro máximo de caja">
+            <div class="av-rango__val"><span>34 mm</span><span id="f-diam-val">45 mm</span></div>
           </div>
         </div>
         <button type="button" class="av-btn av-btn--bajo" id="f-limpiar">Limpiar filtros</button>
