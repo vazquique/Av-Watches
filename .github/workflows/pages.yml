@@ -1,0 +1,42 @@
+# Publica el sitio en GitHub Pages.
+# No hay paso de compilación: el repo ya es el sitio, así que se sube tal cual.
+name: Publicar el sitio
+
+on:
+  push:
+    branches: ["claude/av-watches-ecommerce-iy3qps"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un despliegue a la vez, sin cancelar el que ya va en camino.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Bajar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true          # habilita Pages solo, sin tocar Ajustes a mano
+
+      - name: Empaquetar el sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Desplegar
+        id: despliegue
+        uses: actions/deploy-pages@v4
