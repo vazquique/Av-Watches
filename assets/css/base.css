@@ -92,14 +92,16 @@ body::before {
 }
 body.av-bloqueado { overflow: hidden; }
 
-h1,h2,h3,h4 { margin: 0; font-weight: 400; line-height: 1.02; letter-spacing: -.015em; }
+/* Con una grotesca, un encabezado en peso 400 se lee como texto sin
+   terminar. El default es negritas y las clases afinan desde ahí. */
+h1,h2,h3,h4 { margin: 0; font-weight: 700; line-height: 1.08; letter-spacing: -.03em; }
 p { margin: 0 0 1em; }
 img, svg { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { background: none; border: 0; cursor: pointer; padding: 0; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
-::selection { background: var(--acento); color: var(--fondo); }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+::selection { background: var(--acento); color: #FFF; }
 hr { border: 0; border-top: var(--filo); margin: 0; }
 [hidden] { display: none !important; }
 
@@ -217,6 +219,20 @@ hr { border: 0; border-top: var(--filo); margin: 0; }
 
 @media (max-width: 860px) {
   .av-logo__txt, .av-hora-local { display: none; }
+}
+/* En un teléfono el encabezado medía 427 px dentro de 390 y la bolsa se
+   salía de la pantalla: en una tienda, justo el botón que no puede faltar.
+   Se encoge el logotipo y los iconos hasta que los seis caben. */
+@media (max-width: 460px) {
+  .av-cabeza__int { gap: .5rem; padding-inline: 1rem; }
+  .av-logo__marca { font-size: 1.15rem; }
+  .av-acciones { gap: 0; }
+  .av-icono { width: 34px; height: 34px; }
+  .av-icono svg { width: 18px; height: 18px; }
+}
+/* Más angosto todavía: el tema se consulta poco y vive en el menú. */
+@media (max-width: 360px) {
+  #av-tema { display: none; }
 }
 
 /* --- 7. Pie -------------------------------------------------------------- */
