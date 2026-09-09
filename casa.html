@@ -14,15 +14,21 @@
 <link rel="stylesheet" href="assets/css/paginas.css">
 <script src="assets/js/datos.js" defer></script>
 <script src="assets/js/motor-reloj.js" defer></script>
+<script src="assets/js/perfil.js" defer></script>
 <script src="assets/js/tienda.js" defer></script>
+<script src="assets/js/escala.js" defer></script>
+<script src="assets/js/mecanismo.js" defer></script>
 <script src="assets/js/componentes.js" defer></script>
 </head>
 <body>
 <main id="principal">
   <section class="av-seccion av-marco">
-    <p class="av-t-eyebrow" style="margin-bottom:1rem">Sobre AV Watches</p>
-    <h1 class="av-t-titan" style="font-size:clamp(3rem,10vw,8rem)">Vendo los que<br>yo me pondría.</h1>
-    <div class="av-rejilla av-dos" style="margin-top:clamp(2rem,5vw,4rem);align-items:start">
+    <p class="av-t-eyebrow" style="margin-bottom:1rem" data-revelar>Sobre AV Watches</p>
+    <div class="av-portada-doble">
+      <h1 class="av-t-titan" data-revelar style="font-size:clamp(2.6rem,8vw,6.4rem)">Vendo los que<br>yo me pondría.</h1>
+      <div class="av-portada-pieza" data-revelar data-retraso="2" data-reloj="hamilton-khaki-field"></div>
+    </div>
+    <div class="av-rejilla av-dos" style="margin-top:clamp(2rem,5vw,4rem);align-items:start" data-revelar>
       <p class="av-t-lead">AV Watches es una tienda chica de relojes nuevos y seminuevos. No soy distribuidor oficial de nadie ni pretendo serlo: consigo piezas buenas, las reviso, las describo como están y te las mando.</p>
       <div>
         <p class="av-tenue">Trabajo por catálogo corto y a propósito. Prefiero tener trece relojes que conozco a tener trescientos que nunca he tocado. Si buscas algo que no está aquí, lo consigo por encargo y te digo desde el principio cuánto va a tardar y cuánto va a costar.</p>
@@ -40,47 +46,47 @@
        Cambia también el año y las cifras de abajo por las tuyas reales.
        ========================================================================== -->
   <section class="av-seccion av-marco" style="padding-top:0">
-    <div class="av-cifras">
-      <div class="av-cifra"><b>13</b><span>Relojes en existencia</span></div>
-      <div class="av-cifra"><b>12</b><span>Marcas en catálogo</span></div>
-      <div class="av-cifra"><b>7</b><span>Días para devolver</span></div>
-      <div class="av-cifra"><b>0</b><span>Costo de envío</span></div>
+    <div class="av-cifras" data-revelar>
+      <div class="av-cifra"><b data-cuenta-hasta="13">0</b><span>Relojes en existencia</span></div>
+      <div class="av-cifra"><b data-cuenta-hasta="12">0</b><span>Marcas en catálogo</span></div>
+      <div class="av-cifra"><b data-cuenta-hasta="7">0</b><span>Días para devolver</span></div>
+      <div class="av-cifra"><b data-cuenta-hasta="0">0</b><span>Costo de envío</span></div>
       <div class="av-cifra"><b>GDL</b><span>Entrega en persona</span></div>
     </div>
   </section>
 
   <section class="av-seccion av-marco" id="como">
-    <header class="av-seccion-eti"><b>01</b><span class="av-t-eyebrow">Cómo trabajo cada pieza</span></header>
-    <div class="av-linea-tiempo">
-      <article class="av-hito"><time>01</time><h3>La consigo</h3>
+    <header class="av-seccion-eti" data-revelar><b>01</b><span class="av-t-eyebrow">Cómo trabajo cada pieza</span></header>
+    <div class="av-linea-tiempo" data-revelar>
+      <article class="av-hito" data-revelar><time>01</time><h3>La consigo</h3>
         <p>De distribuidor cuando es nueva, o de un dueño anterior cuando es seminueva. En las de segunda mano pregunto historial: si tuvo servicio, si trae caja y papeles, si se mojó alguna vez.</p></article>
-      <article class="av-hito"><time>02</time><h3>La reviso</h3>
+      <article class="av-hito" data-revelar><time>02</time><h3>La reviso</h3>
         <p>Marcha del movimiento, corona y pulsadores, estado del cristal y el bisel, y que el brazalete no traiga eslabones forzados. En automáticos, que la reserva llegue a lo que promete la marca.</p></article>
-      <article class="av-hito"><time>03</time><h3>La verifico</h3>
+      <article class="av-hito" data-revelar><time>03</time><h3>La verifico</h3>
         <p>Número de serie contra la referencia, acabado del dial y las manecillas, peso y sonido del rotor. Si una pieza me deja con dudas, no la publico. Prefiero perder la venta que vender algo que no puedo garantizar.</p></article>
-      <article class="av-hito"><time>04</time><h3>La describo como está</h3>
+      <article class="av-hito" data-revelar><time>04</time><h3>La describo como está</h3>
         <p>Si tiene micro rayas, lo dice la ficha. Si le falta la caja original, lo dice la ficha. Un seminuevo bien descrito se vende solo; uno mal descrito se regresa.</p></article>
-      <article class="av-hito"><time>05</time><h3>Te la mando o te la llevo</h3>
+      <article class="av-hito" data-revelar><time>05</time><h3>Te la mando o te la llevo</h3>
         <p>Empacada, asegurada y con guía rastreable. O nos vemos en Guadalajara y la revisas antes de que salga un peso de tu cuenta.</p></article>
     </div>
   </section>
 
   <section class="av-seccion av-marco" id="reglas">
-    <header class="av-seccion-eti"><b>02</b><span class="av-t-eyebrow">Lo que no hago</span></header>
+    <header class="av-seccion-eti" data-revelar><b>02</b><span class="av-t-eyebrow">Lo que no hago</span></header>
     <div class="av-cols">
-      <article class="av-col"><span class="av-col__num">—</span>
+      <article class="av-col" data-revelar><span class="av-col__num">—</span>
         <div><h3 class="av-col__nom">Réplicas</h3><p class="av-col__desc">Ni una, ni de broma, ni "homenajes" que copian un dial completo. Si algo huele a réplica, no entra al catálogo.</p></div>
         <span class="av-col__flecha">Nunca</span></article>
-      <article class="av-col"><span class="av-col__num">—</span>
+      <article class="av-col" data-revelar><span class="av-col__num">—</span>
         <div><h3 class="av-col__nom">Piezas sin procedencia</h3><p class="av-col__desc">Si no puedo explicarte de dónde salió un reloj, no te lo vendo. Es tan simple como eso.</p></div>
         <span class="av-col__flecha">Nunca</span></article>
-      <article class="av-col"><span class="av-col__num">—</span>
+      <article class="av-col" data-revelar><span class="av-col__num">—</span>
         <div><h3 class="av-col__nom">Apurarte</h3><p class="av-col__desc">Nada de "quedan dos horas" ni contadores falsos. Si el reloj se vendió, se vendió; si no, aquí sigue.</p></div>
         <span class="av-col__flecha">Nunca</span></article>
     </div>
   </section>
 
-  <section class="av-seccion av-marco av-manifiesto">
+  <section class="av-seccion av-marco av-manifiesto" data-revelar>
     <p>Prefiero perder una venta que <em>vender algo que no puedo sostener.</em></p>
     <footer>La única regla</footer>
   </section>

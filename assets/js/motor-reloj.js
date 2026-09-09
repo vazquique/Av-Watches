@@ -341,9 +341,12 @@
       const rnd = semilla('luna' + spec.id);
       for (let i = 0; i < 40; i++) out += `<circle cx="${n(cx - ww + rnd() * ww * 2)}" cy="${n(wy - wh + rnd() * wh * 2)}" r="${n(0.4 + rnd())}" fill="#cfd8ff" opacity="${n(0.4 + rnd() * 0.6)}"/>`;
       const desp = (fase - 0.5) * ww * 1.6;
-      out += `<circle cx="${n(cx + desp)}" cy="${n(wy + wh * 0.12)}" r="${n(wh * 0.44)}" fill="#efe9d8"/>`;
-      out += `<circle cx="${n(cx + desp - wh * 0.14)}" cy="${n(wy + wh * 0.02)}" r="${n(wh * 0.09)}" fill="#d6cfbc"/>`;
-      out += `</g>`;
+      /* El disco va en su propio grupo: así se puede recorrer el mes sin
+         volver a dibujar la pieza entera. */
+      out += `<g class="av-luna" data-amp="${n(ww * 1.6)}" style="transform:translateX(${n(desp)}px)">`;
+      out += `<circle cx="${cx}" cy="${n(wy + wh * 0.12)}" r="${n(wh * 0.44)}" fill="#efe9d8"/>`;
+      out += `<circle cx="${n(cx - wh * 0.14)}" cy="${n(wy + wh * 0.02)}" r="${n(wh * 0.09)}" fill="#d6cfbc"/>`;
+      out += `</g></g>`;
       out += `<path d="M ${n(cx - ww / 2)} ${n(wy + wh / 2)} A ${n(ww / 2)} ${n(wh)} 0 0 1 ${n(cx + ww / 2)} ${n(wy + wh / 2)} Z" fill="none" stroke="${tinta}" stroke-width="1.4" opacity="0.8"/>`;
     }
     if (comp.includes('reserva')) {
@@ -437,6 +440,10 @@
     return out;
   }
 
+  /* Radio con el que se dibuja la caja dentro del viewBox de 400. Se expone
+     porque el modo de tamaño real necesita despejar la escala a partir de él. */
+  const radioCaja = spec => 118 + (spec.caja.diametro - 36) * 5.2;
+
   /* ======================================================================
      PIEZA COMPLETA
      ====================================================================== */
@@ -445,7 +452,7 @@
     const uid = 'u' + (++contador);
     const met = AV.METALES[spec.caja.metal];
     const cx = 200, cy = 290;
-    const R = 118 + (spec.caja.diametro - 36) * 5.2;   /* el diámetro real se ve */
+    const R = radioCaja(spec);
     const rDial = R * (spec.bisel.tipo === 'liso' ? 0.88 : 0.80);
     const ahora = new Date();
 
@@ -510,24 +517,44 @@
      BUCLE DE LA HORA · un solo rAF para todas las piezas del documento
      ====================================================================== */
   let vivos = [];
-  function refrescar() { vivos = Array.from(document.querySelectorAll('.av-reloj-vivo')); }
-
-  function girar(el, sel, ang) {
-    const g = el.querySelector(sel);
-    if (g) g.style.transform = `rotate(${ang}deg)`;
+  /* Al refrescar se guardan las referencias a las agujas dentro del propio
+     elemento. Con trece relojes en pantalla eso ahorra decenas de búsquedas
+     en el DOM por cuadro, que a 60 por segundo se notan.                 */
+  function refrescar() {
+    vivos = Array.from(document.querySelectorAll('.av-reloj-vivo'));
+    for (const el of vivos) {
+      el._av = {
+        h: el.querySelector('.av-hora'), m: el.querySelector('.av-min'),
+        s: el.querySelector('.av-seg'), g: el.querySelector('.av-gmt'),
+        sub: el.querySelector('.av-sub-s'),
+        fecha: el.querySelector('.av-fecha'), luna: el.querySelector('.av-luna')
+      };
+    }
   }
+
+  const girar = (g, ang) => { if (g) g.style.transform = `rotate(${ang}deg)`; };
 
   /* Una pasada: pone en hora todas las piezas vivas del documento. */
   function pintar() {
     const ahora = Date.now();
     for (const el of vivos) {
-      let d = new Date(ahora);
+      /* data-forzado deja al visitante mover el reloj a la hora que quiera. */
+      const forzado = el.dataset.forzado ? +el.dataset.forzado : 0;
+      let d = new Date(forzado || ahora);
       let h, m, s, ms = d.getMilliseconds();
       if (el.dataset.tz) {
-        /* Hora de otra ciudad, sin librerías: el propio navegador la calcula. */
-        const partes = new Intl.DateTimeFormat('es-MX', { timeZone: el.dataset.tz, hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(d);
-        const v = {}; partes.forEach(p => v[p.type] = parseInt(p.value, 10));
-        h = v.hour % 24; m = v.minute; s = v.second;
+        /* Hora de otra ciudad. Intl es caro para llamarlo sesenta veces por
+           segundo, así que el desfase se guarda y solo se recalcula al
+           cambiar de minuto: dentro del minuto no varía.                 */
+        const marca = Math.floor(d.getTime() / 60000);
+        if (el._tzMarca !== marca) {
+          const partes = new Intl.DateTimeFormat('es-MX', { timeZone: el.dataset.tz, hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(d);
+          const v = {}; partes.forEach(x => v[x.type] = parseInt(x.value, 10));
+          el._tzMarca = marca;
+          el._tzDesfase = ((v.hour % 24) * 60 + v.minute) - (d.getHours() * 60 + d.getMinutes());
+        }
+        const totalMin = ((d.getHours() * 60 + d.getMinutes() + el._tzDesfase) % 1440 + 1440) % 1440;
+        h = Math.floor(totalMin / 60); m = totalMin % 60; s = d.getSeconds();
       } else { h = d.getHours(); m = d.getMinutes(); s = d.getSeconds(); }
 
       /* Un automático barre, una cuerda manual barre más entrecortado y un
@@ -535,11 +562,22 @@
       const segCont = el.dataset.mov === 'cuarzo' ? s
         : el.dataset.mov === 'manual' ? s + Math.floor(ms / 125) / 8
         : s + ms / 1000;
-      girar(el, '.av-seg', segCont * 6);
-      girar(el, '.av-min', (m + segCont / 60) * 6);
-      girar(el, '.av-hora', ((h % 12) + m / 60 + segCont / 3600) * 30);
-      girar(el, '.av-gmt', (h + m / 60) * 15);
-      girar(el, '.av-sub-s', segCont * 6);
+      /* Con la hora impuesta se refrescan también fecha y fase lunar, que
+         de otro modo solo se dibujan una vez. */
+      const p = el._av || (refrescar(), el._av);
+      if (forzado || el.dataset.diaPintado !== String(d.getDate())) {
+        el.dataset.diaPintado = String(d.getDate());
+        if (p.fecha) p.fecha.textContent = d.getDate();
+        if (p.luna) {
+          const fase = ((d.getTime() / 86400000) % 29.53) / 29.53;
+          p.luna.style.transform = `translateX(${((fase - 0.5) * +p.luna.dataset.amp).toFixed(2)}px)`;
+        }
+      }
+      girar(p.s, segCont * 6);
+      girar(p.m, (m + segCont / 60) * 6);
+      girar(p.h, ((h % 12) + m / 60 + segCont / 3600) * 30);
+      girar(p.g, (h + m / 60) * 15);
+      girar(p.sub, segCont * 6);
     }
   }
 
@@ -582,7 +620,7 @@
     refrescar();
   }
 
-  global.AVMotor = { svgReloj, montarTodos, refrescar, pintar, aclarar, esClaro };
+  global.AVMotor = { svgReloj, montarTodos, refrescar, pintar, radioCaja, aclarar, esClaro };
   function iniciar() { montarTodos(); arrancar(); setInterval(latido, 1000); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
   else iniciar();

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('miga-nom').textContent = `${p.marca} ${p.modelo}`;
 
   /* Estado del configurador. */
-  const est = { dial: p.variantes[0], correa: p.correa, grabado: '', lume: false };
+  const est = { dial: p.variantes[0], correa: p.correa, grabado: '', lume: false, vista: 'frente', real: false };
   /* Cambiar la correa que trae de fábrica se cobra como accesorio. */
   const extraCorrea = c => c === p.correa ? 0 : AV.CORREAS[c].tipo === 'metal' ? 2900 : 890;
   const precio = () => p.precio + est.dial.extra + extraCorrea(est.correa);
@@ -30,10 +30,33 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="pieza"></div>
         <div class="av-lupa" id="lupa" aria-hidden="true"><div class="av-lupa__int" id="lupa-int"></div></div>
       </div>
+      <div class="av-vistas" role="tablist" aria-label="Cómo ver la pieza">
+        <button type="button" class="av-vista" data-vista="frente" role="tab" aria-selected="true">De frente</button>
+        <button type="button" class="av-vista" data-vista="perfil" role="tab" aria-selected="false">De perfil</button>
+      </div>
       <div class="av-escaparate__util">
+        <button type="button" class="av-util" id="btn-real" aria-pressed="false"><i></i> Tamaño real</button>
         <button type="button" class="av-util" id="btn-lume" aria-pressed="false"><i></i> Apagar la luz</button>
         <button type="button" class="av-util" id="btn-boveda" aria-pressed="${AVTienda.enBoveda(p.id)}"><i></i> Guardar en bóveda</button>
         <button type="button" class="av-util" id="btn-banco" aria-pressed="${AVTienda.enComparador(p.id)}"><i></i> Comparar</button>
+      </div>
+      <div id="real-aviso"></div>
+
+      <!-- Mover el tiempo: para ver la fase lunar, la fecha, el segundo huso
+           y cómo se ve la pieza de noche. -->
+      <div class="av-tiempo" id="tiempo">
+        <div class="av-tiempo__cab">
+          <h3 class="av-t-eyebrow">Mueve el tiempo</h3>
+          <b class="av-mono" id="tiempo-lectura"></b>
+        </div>
+        <input type="range" id="tiempo-rango" min="-360" max="360" step="1" value="0"
+               aria-label="Adelantar o atrasar el reloj, en horas">
+        <div class="av-tiempo__pie">
+          <span class="av-mono">−15 días</span>
+          <button type="button" class="av-tiempo__ahora" id="tiempo-ahora">volver a ahora</button>
+          <span class="av-mono">+15 días</span>
+        </div>
+        <p class="av-tiempo__nota av-mono" id="tiempo-nota"></p>
       </div>
       <p class="av-mono av-tenue" style="text-align:center;margin:.9rem 0 0;font-size:.62rem">
         Ilustración a escala del modelo · marca la hora real de tu equipo · pasa el cursor para la lupa
@@ -123,6 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <tr><th scope="row">Garantía</th><td>${nuevo ? 'De la marca, según lo que incluye' : '6 meses de mi parte sobre el movimiento'}</td></tr>
           </tbody>
         </table>
+        <div class="av-grosor" id="perfil-nota" hidden>
+          <h3 class="av-t-eyebrow">Sobre el grosor</h3>
+          <p>${AVPerfil.veredictoGrosor(p.caja.altura).txt}</p>
+          <p class="av-mono av-tenue">${p.caja.altura} mm de alto · cristal ${p.caja.cristal.toLowerCase()}</p>
+        </div>
         <ol class="av-notas">${p.notas.map(n => `<li>${n}</li>`).join('')}</ol>
       </section>
     </div>`;
@@ -130,19 +158,43 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------------------------
      Dibujo y redibujo de la pieza
      ---------------------------------------------------------------------- */
-  const cont = document.getElementById('pieza');
-  const lupaInt = document.getElementById('lupa-int');
+  /* Todos los nodos de una vez, antes de cualquier función que los toque. */
+  const $ = id => document.getElementById(id);
+  const cont = $('pieza'), lupaInt = $('lupa-int'), escaparate = $('escaparate'),
+        lienzo = $('lienzo'), lupa = $('lupa'),
+        btnReal = $('btn-real'), avisoReal = $('real-aviso'), btnLume = $('btn-lume'),
+        rango = $('tiempo-rango'), lectura = $('tiempo-lectura'), notaT = $('tiempo-nota'),
+        panelTiempo = $('tiempo');
 
   function dibujar() {
     const svg = AVMotor.svgReloj(p, { dial: est.dial, correa: est.correa });
-    cont.innerHTML = svg;
+    if (est.vista === 'perfil') {
+      cont.innerHTML = AVPerfil.svgPerfil(p, { correa: est.correa });
+    } else {
+      cont.innerHTML = svg;
+      if (est.lume) cont.querySelector('svg').classList.add('lume');
+    }
     lupaInt.innerHTML = svg;   /* la copia de la lupa también corre: si no, las
                                   agujas magnificadas marcarían otra hora */
-    if (est.lume) cont.querySelector('svg').classList.add('lume');
     AVMotor.refrescar();
+    aplicarEscala();
+    if (rango) moverTiempo();
     document.getElementById('precio').textContent = AV.precioMXN(precio());
     document.getElementById('precio-btn').textContent = AV.precioMXN(precio());
   }
+
+  /* Tamaño real: se fija el ancho en píxeles que corresponde a los
+     milímetros de la pieza en ESTA pantalla, ya medida por el visitante. */
+  function aplicarEscala() {
+    const svgEl = cont.querySelector('svg');
+    if (!svgEl) return;
+    escaparate.classList.toggle('real', est.real);
+    if (!est.real) { svgEl.style.removeProperty('width'); svgEl.style.removeProperty('max-width'); return; }
+    const ancho = est.vista === 'perfil' ? AVEscala.anchoPerfil(p) : AVEscala.anchoFrente(p);
+    svgEl.style.width = ancho + 'px';
+    svgEl.style.maxWidth = 'none';
+  }
+
   dibujar();
 
   /* --- Configurador ------------------------------------------------------ */
@@ -165,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
   gr.oninput = () => { est.grabado = gr.value.trim(); document.getElementById('grabado-n').textContent = gr.value.length; };
 
   /* --- Modo lume: se apaga la luz del cuarto ----------------------------- */
-  const btnLume = document.getElementById('btn-lume'), escaparate = document.getElementById('escaparate');
   btnLume.onclick = () => {
     est.lume = !est.lume;
     btnLume.setAttribute('aria-pressed', est.lume);
@@ -175,15 +226,85 @@ document.addEventListener('DOMContentLoaded', () => {
     if (est.lume && !p.dial.lume) AVTienda.aviso('Este modelo no trae luminiscencia: es un reloj de vestir.');
   };
 
+  /* --- Cambiar entre frente y perfil ------------------------------------- */
+  document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => {
+    est.vista = b.dataset.vista;
+    document.querySelectorAll('[data-vista]').forEach(o => o.setAttribute('aria-selected', o === b));
+    /* La lupa solo tiene sentido sobre el dial. */
+    lienzo.classList.toggle('sin-lupa', est.vista === 'perfil');
+    dibujar();
+    pintarAvisoPerfil();
+  });
+
+  function pintarAvisoPerfil() {
+    const zona = document.getElementById('perfil-nota');
+    if (!zona) return;
+    zona.hidden = est.vista !== 'perfil';
+  }
+
+  /* --- Tamaño real ------------------------------------------------------- */
+  function pintarReal() {
+    btnReal.setAttribute('aria-pressed', est.real);
+    avisoReal.innerHTML = est.real
+      ? `<p class="av-real-aviso">A tamaño físico en tu pantalla · ${p.caja.diametro} × ${p.caja.altura} mm
+         <button type="button" id="recalibrar">volver a medir</button></p>`
+      : '';
+    const rc = document.getElementById('recalibrar');
+    if (rc) rc.onclick = () => AVEscala.abrir(() => { pintarReal(); dibujar(); });
+    aplicarEscala();
+  }
+  btnReal.onclick = () => {
+    if (!AVEscala.estaCalibrada()) {
+      AVEscala.abrir(ok => { est.real = !!ok; pintarReal(); dibujar(); });
+      return;
+    }
+    est.real = !est.real; pintarReal(); dibujar();
+  };
+
+  /* --- Mover el tiempo ---------------------------------------------------
+     El reloj sigue caminando, pero desde la hora que el visitante elija.
+     Así se ve la fase lunar a lo largo del mes, el salto de fecha a
+     medianoche y cómo queda la pieza de noche.                          */
+  const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+  function moverTiempo() {
+    const horas = +rango.value;
+    const svgEl = cont.querySelector('svg');
+    const copia = lupaInt.querySelector('svg');
+    if (!horas) {
+      [svgEl, copia].forEach(e => e && delete e.dataset.forzado);
+      lectura.textContent = 'ahora';
+      notaT.textContent = 'El reloj marca la hora real de tu equipo.';
+      panelTiempo.classList.remove('movido');
+    } else {
+      const d = new Date(Date.now() + horas * 3600000);
+      [svgEl, copia].forEach(e => { if (e) e.dataset.forzado = d.getTime(); });
+      const hh = String(d.getHours()).padStart(2, '0'), mm = String(d.getMinutes()).padStart(2, '0');
+      lectura.textContent = `${DIAS[d.getDay()]} ${d.getDate()} · ${hh}:${mm}`;
+      const dias = Math.round(horas / 24);
+      notaT.textContent = (horas > 0 ? '+' : '') + (Math.abs(horas) >= 24 ? `${dias} día${Math.abs(dias) === 1 ? '' : 's'}` : `${horas} h`) +
+        (p.complicaciones.includes('fase-lunar') ? ' · mira cómo cambia la luna' :
+         p.complicaciones.includes('fecha') ? ' · la fecha salta a medianoche' : '');
+      panelTiempo.classList.add('movido');
+      /* De noche, ofrecer el lume sin imponerlo. */
+      const h = d.getHours();
+      if (p.dial.lume && (h >= 20 || h < 6) && !est.lume) notaT.textContent += ' · prueba apagar la luz';
+    }
+    AVMotor.pintar();
+  }
+  rango.addEventListener('input', moverTiempo);
+  document.getElementById('tiempo-ahora').onclick = () => { rango.value = 0; moverTiempo(); };
+  moverTiempo();
+
   /* --- Bóveda y banco ---------------------------------------------------- */
   document.getElementById('btn-boveda').onclick = e => e.currentTarget.setAttribute('aria-pressed', AVTienda.boveda(p.id));
   document.getElementById('btn-banco').onclick = e => e.currentTarget.setAttribute('aria-pressed', AVTienda.comparar(p.id));
 
   /* --- Lupa de relojero -------------------------------------------------- */
-  const lienzo = document.getElementById('lienzo'), lupa = document.getElementById('lupa');
   const ZOOM = 2.6, R = 75;   /* R = mitad del diámetro de .av-lupa */
   lienzo.addEventListener('pointermove', e => {
     if (e.pointerType === 'touch' || matchMedia('(hover: none)').matches) return;
+    if (est.vista === 'perfil') return;
     const r = lienzo.getBoundingClientRect();
     const x = e.clientX - r.left, y = e.clientY - r.top;
     lupa.classList.add('viva');

@@ -13,11 +13,79 @@ document.addEventListener('DOMContentLoaded', () => {
   const tira = frases.map(f => `<span>${f} <b>✦</b></span>`).join('');
   document.getElementById('marquesina').innerHTML = tira + tira;
 
-  /* --- Recién llegados: uno por curaduría, para que se vea todo el rango. */
-  const destacadas = AV.COLECCIONES.map(c =>
-    AV.RELOJES.filter(r => r.coleccion === c.id).sort((a, b) => b.anio - a.anio || b.precio - a.precio)[0]
-  ).filter(Boolean);
-  AVComp.pintarVitrina(document.getElementById('vitrina-destacadas'), destacadas);
+  /* ----------------------------------------------------------------------
+     EL ESCAPARATE
+     Una pieza por curaduría, para que se vea todo el rango de la tienda.
+     Va rotando sola, y se detiene en cuanto alguien la toca.
+     ---------------------------------------------------------------------- */
+  const TURNO = 7000;
+  const enVitrina = AV.COLECCIONES
+    .map(c => AV.RELOJES.filter(r => r.coleccion === c.id).sort((a, b) => b.anio - a.anio || b.precio - a.precio)[0])
+    .filter(Boolean);
+
+  const escPieza = document.getElementById('esc-pieza');
+  const escLista = document.getElementById('esc-lista');
+  let escActual = -1, escTemporizador = null, escDetenido = false;
+
+  escLista.innerHTML = enVitrina.map((p, i) => `
+    <li><button type="button" data-esc="${i}" aria-current="false">
+      <span class="n">0${i + 1}</span>
+      <span class="m">${p.modelo}<em>${p.marca} · ${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'}</em></span>
+      <span class="p">${AV.precioMXN(p.precio)}</span>
+    </button></li>`).join('');
+
+  function mostrarEnVitrina(i, porGusto) {
+    if (i === escActual) return;
+    const p = enVitrina[i];
+    escActual = i;
+
+    /* Sale la anterior, entra la nueva. */
+    escPieza.classList.add('cambiando');
+    setTimeout(() => {
+      escPieza.innerHTML = AVMotor.svgReloj(p, {});
+      AVMotor.refrescar();
+      escPieza.classList.remove('cambiando');
+    }, 220);
+
+    document.getElementById('esc-marca').textContent = p.marca;
+    document.getElementById('esc-modelo').textContent = p.modelo;
+    document.getElementById('esc-lema').textContent = p.lema;
+    document.getElementById('esc-pie').textContent = `${p.coleccion} · ref. ${p.refFab}`;
+    document.getElementById('esc-precio').innerHTML = AV.precioMXN(p.precio) +
+      (p.precioLista > p.precio ? `<s>${AV.precioMXN(p.precioLista)}</s>` : '');
+    document.getElementById('esc-ir').href = 'reloj.html?id=' + p.id;
+    document.getElementById('esc-datos').innerHTML = `
+      <div><dt>Caja</dt><dd>${p.caja.diametro}<small> mm</small></dd></div>
+      <div><dt>Alto</dt><dd>${p.caja.altura}<small> mm</small></dd></div>
+      <div><dt>${/cuarzo/.test(p.calibre.tipo) ? 'Pila' : 'Reserva'}</dt><dd>${
+        p.calibre.reserva >= 8760 ? Math.round(p.calibre.reserva / 8760) + '<small> años</small>'
+        : p.calibre.reserva >= 720 ? Math.round(p.calibre.reserva / 730) + '<small> meses</small>'
+        : p.calibre.reserva + '<small> h</small>'}</dd></div>`;
+
+    escLista.querySelectorAll('[data-esc]').forEach((b, k) => {
+      b.setAttribute('aria-current', k === i ? 'true' : 'false');
+      if (k === i) { b.style.removeProperty('--turno'); void b.offsetWidth; b.style.setProperty('--turno', (escDetenido || porGusto ? 0 : TURNO) + 'ms'); }
+    });
+
+    clearTimeout(escTemporizador);
+    if (!escDetenido) escTemporizador = setTimeout(() => mostrarEnVitrina((i + 1) % enVitrina.length), TURNO);
+  }
+
+  escLista.addEventListener('click', e => {
+    const b = e.target.closest('[data-esc]'); if (!b) return;
+    escDetenido = true;                     /* si eligen a mano, deja de rotar */
+    clearTimeout(escTemporizador);
+    mostrarEnVitrina(+b.dataset.esc, true);
+  });
+
+  /* Mientras no se vea en pantalla, no gasta turnos. */
+  const ioEsc = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) { clearTimeout(escTemporizador); }
+    else if (!escDetenido && escActual >= 0) escTemporizador = setTimeout(() => mostrarEnVitrina((escActual + 1) % enVitrina.length), TURNO);
+  }), { threshold: 0.25 });
+  ioEsc.observe(document.querySelector('.av-esc'));
+
+  mostrarEnVitrina(0);
 
   /* --- Colecciones ------------------------------------------------------- */
   document.getElementById('lista-colecciones').innerHTML = AV.COLECCIONES.map((c, i) => {

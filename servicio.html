@@ -14,19 +14,27 @@
 <link rel="stylesheet" href="assets/css/paginas.css">
 <script src="assets/js/datos.js" defer></script>
 <script src="assets/js/motor-reloj.js" defer></script>
+<script src="assets/js/perfil.js" defer></script>
 <script src="assets/js/tienda.js" defer></script>
+<script src="assets/js/escala.js" defer></script>
+<script src="assets/js/mecanismo.js" defer></script>
 <script src="assets/js/componentes.js" defer></script>
 </head>
 <body>
 <main id="principal">
   <section class="av-seccion av-marco">
-    <p class="av-t-eyebrow" style="margin-bottom:1rem">Ayuda</p>
-    <h1 class="av-t-display">Todo lo que<br>me preguntan.</h1>
-    <p class="av-t-lead" style="max-width:48ch;margin-top:1.2rem">Sin letra chica. Si algo no está aquí, escríbeme y te contesto yo.</p>
+    <p class="av-t-eyebrow" style="margin-bottom:1rem" data-revelar>Ayuda</p>
+    <div class="av-portada-doble">
+      <div>
+        <h1 class="av-t-display" data-revelar>Todo lo que<br>me preguntan.</h1>
+        <p class="av-t-lead" style="max-width:48ch;margin-top:1.2rem" data-revelar>Sin letra chica. Si algo no está aquí, escríbeme y te contesto yo.</p>
+      </div>
+      <div class="av-portada-pieza" data-revelar data-retraso="2" data-reloj="orient-bambino-v4"></div>
+    </div>
   </section>
 
   <section class="av-seccion av-marco" style="padding-top:0" id="garantia">
-    <div class="av-acordeon">
+    <div class="av-acordeon" data-revelar>
       <details open><summary>¿Qué garantía traen?</summary><div>
         <p><b>Los nuevos</b> traen la garantía de la marca, con su tarjeta o papeles sellados. Eso lo cubre el servicio oficial de la marca, no yo: son dos años en la mayoría, cinco en Citizen.</p>
         <p><b>Los seminuevos</b> los cubro yo seis meses sobre el movimiento. Si en ese plazo se atrasa fuera de especificación o deja de caminar, me lo mandas y yo veo el servicio. No cubre golpes, agua entrando por una corona mal cerrada, ni el rayón del escritorio.</p></div></details>
@@ -58,8 +66,8 @@
   </section>
 
   <section class="av-seccion av-marco" id="contacto">
-    <header class="av-seccion-eti"><b>·</b><span class="av-t-eyebrow">Escríbeme</span></header>
-    <div class="av-rejilla av-dos" style="align-items:start">
+    <header class="av-seccion-eti" data-revelar><b>·</b><span class="av-t-eyebrow">Escríbeme</span></header>
+    <div class="av-rejilla av-dos" style="align-items:start" data-revelar>
       <div>
         <h2 class="av-t-display">Pregunta<br>lo que sea.</h2>
         <p class="av-t-lead" style="margin-top:1rem">Contesto yo, normalmente el mismo día.</p>

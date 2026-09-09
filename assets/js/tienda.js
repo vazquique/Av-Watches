@@ -98,6 +98,7 @@
     const r = rutaBase;
     const nav = [
       ['catalogo.html', 'Catálogo'],
+      ['guia.html', 'Guíame'],
       ['casa.html', 'Sobre AV'],
       ['comparar.html', 'Comparar'],
       ['servicio.html', 'Ayuda']
@@ -170,7 +171,7 @@
       <nav class="av-pie__cols" aria-label="Pie de página">
         <div><h3>Catálogo</h3>${AV.COLECCIONES.map(c => `<a href="${r}catalogo.html?coleccion=${encodeURIComponent(c.id)}">${c.id}</a>`).join('')}<a href="${r}catalogo.html">Ver todo</a></div>
         <div><h3>Marcas</h3>${AV.MARCAS.slice(0, 5).map(m => `<a href="${r}catalogo.html?marca=${encodeURIComponent(m)}">${m}</a>`).join('')}<a href="${r}catalogo.html">Todas las marcas</a></div>
-        <div><h3>Comprar aquí</h3><a href="${r}servicio.html#garantia">Garantía y autenticidad</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#gdl">Vernos en Guadalajara</a><a href="${r}boveda.html">Tu bóveda</a></div>
+        <div><h3>Comprar aquí</h3><a href="${r}guia.html">¿Cuál es tu reloj?</a><a href="${r}servicio.html#garantia">Garantía y autenticidad</a><a href="${r}servicio.html#envios">Envíos y devoluciones</a><a href="${r}servicio.html#gdl">Vernos en Guadalajara</a><a href="${r}boveda.html">Tu bóveda</a></div>
       </nav>
       <div class="av-pie__base">
         <span>© ${new Date().getFullYear()} AV Watches · Guadalajara, Jalisco</span>
@@ -346,6 +347,24 @@
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     document.querySelectorAll('[data-revelar]').forEach(el => io.observe(el));
     global.AVTienda.observar = el => io.observe(el);
+
+    /* Las cifras suben desde cero cuando entran en pantalla. Una sola vez. */
+    const ioCifras = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      ioCifras.unobserve(e.target);
+      const meta = +e.target.dataset.cuentaHasta;
+      if (!meta) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { e.target.textContent = meta.toLocaleString('es-MX'); return; }
+      const inicio = performance.now(), dur = 1100;
+      const paso = t => {
+        const k = Math.min(1, (t - inicio) / dur);
+        const suave = 1 - Math.pow(1 - k, 3);
+        e.target.textContent = Math.round(meta * suave).toLocaleString('es-MX');
+        if (k < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    }), { threshold: 0.5 });
+    document.querySelectorAll('[data-cuenta-hasta]').forEach(el => ioCifras.observe(el));
   });
 
   global.AVTienda = {

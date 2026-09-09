@@ -165,6 +165,7 @@
 
 .av-escaparate { position: sticky; top: calc(var(--cabeza-alto) + 1.5rem); border: var(--filo); background: var(--fondo-2); padding: clamp(1rem,3vw,2.5rem); }
 .av-escaparate__lienzo { position: relative; display: grid; place-items: center; }
+.av-escaparate__lienzo > div { width: 100%; display: grid; place-items: center; }
 .av-escaparate__lienzo .av-svg { width: min(100%, 26rem); transition: filter .6s; }
 .av-escaparate.lume { background: #05070a; }
 .av-escaparate__util { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1.2rem; padding-top: 1.2rem; border-top: var(--filo); }
@@ -299,3 +300,242 @@
 .av-estado { margin-top: 1.4rem; padding: 1rem 1.2rem; border-left: 2px solid var(--laton); background: var(--fondo-2); }
 .av-estado p { margin: .5rem 0 0; font-size: .92rem; color: var(--tinta-tenue); }
 .av-config__nota { margin: .8rem 0 0; font-size: .78rem; color: var(--tinta-fantasma); }
+
+/* ==========================  EL MOVIMIENTO  ==============================
+   Las ruedas giran con el periodo que les toca por su número de dientes.
+   El escape avanza a pasos, un diente por latido, y el volante oscila.
+   ======================================================================== */
+.av-mec { width: 100%; height: auto; overflow: visible; }
+.av-mec .av-rot {
+  transform-box: view-box; transform-origin: var(--x) var(--y);
+  animation: av-gira var(--dur) var(--pasos, linear) infinite;
+  animation-direction: var(--dir, normal);
+}
+.av-mec .av-volante {
+  transform-box: view-box; transform-origin: var(--x) var(--y);
+  animation: av-oscila var(--semi) cubic-bezier(.42,0,.58,1) infinite alternate;
+}
+.av-mec .av-ancora {
+  transform-box: view-box; transform-origin: var(--x) var(--y);
+  animation: av-bascula var(--semi) cubic-bezier(.6,0,.4,1) infinite alternate;
+}
+@keyframes av-oscila  { from { rotate: -150deg; } to { rotate: 150deg; } }
+@keyframes av-bascula { from { rotate: -7deg; }   to { rotate: 7deg; } }
+
+/* Cada pieza se puede señalar: el hover la sube y apaga el resto. */
+.av-mec .av-pieza-mec { transition: opacity .45s var(--curva); }
+.av-mec:hover .av-pieza-mec { opacity: .28; }
+.av-mec .av-pieza-mec:hover { opacity: 1; }
+
+/* Quien prefiere no ver movimiento, ve el esquema quieto. */
+@media (prefers-reduced-motion: reduce) {
+  .av-mec .av-rot, .av-mec .av-volante, .av-mec .av-ancora { animation: none; }
+}
+
+/* ==========================  EL ESCAPARATE  ==============================
+   Formato aparte del catálogo: una pieza protagonista dentro de una vitrina
+   con su cristal, su ficha editorial al lado y el resto del aparador como
+   una lista numerada por la que se va cambiando.
+   ======================================================================== */
+.av-esc {
+  display: grid; gap: 1px; background: var(--linea); border: var(--filo);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas: 'vitrina ficha' 'vitrina lista';
+  align-items: stretch;
+}
+.av-esc__vitrina {
+  grid-area: vitrina; position: relative; overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--laton) 9%, var(--fondo-2)), var(--fondo-2));
+  display: grid; place-items: center; padding: clamp(1.5rem, 4vw, 3.5rem);
+  min-height: clamp(22rem, 46vw, 34rem);
+}
+/* Reflejo del vidrio del aparador, en diagonal. */
+.av-esc__cristal {
+  position: absolute; inset: -40% -10%; pointer-events: none; z-index: 2;
+  background: linear-gradient(104deg, transparent 34%, rgba(255,255,255,.055) 42%, rgba(255,255,255,.10) 46%, rgba(255,255,255,.03) 52%, transparent 60%);
+}
+.av-esc__pieza { width: min(100%, 20rem); position: relative; z-index: 1; filter: drop-shadow(0 26px 44px rgba(0,0,0,.5)); }
+.av-esc__pieza .av-svg { width: 100%; }
+/* Al cambiar de pieza entra desde abajo, no aparece de golpe. */
+.av-esc__pieza.cambiando { opacity: 0; transform: translateY(18px) scale(.97); }
+.av-esc__pieza { transition: opacity .42s var(--curva), transform .42s var(--curva); }
+.av-esc__pie {
+  position: absolute; left: 0; right: 0; bottom: 1.1rem; z-index: 3; text-align: center;
+  font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-fantasma);
+}
+
+.av-esc__ficha { grid-area: ficha; background: var(--fondo); padding: clamp(1.6rem, 3vw, 2.8rem); display: flex; flex-direction: column; justify-content: center; }
+.av-esc__marca { font-size: .68rem; letter-spacing: .26em; text-transform: uppercase; color: var(--laton); margin: 0 0 .5rem; }
+.av-esc__modelo { font-family: var(--display); font-size: clamp(1.9rem, 3.6vw, 3.1rem); line-height: 1; font-weight: 500; }
+.av-esc__lema { font-family: var(--display); font-style: italic; font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--tinta-tenue); margin: .8rem 0 1.4rem; max-width: 32ch; }
+.av-esc__datos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--linea); border: var(--filo); margin: 0 0 1.6rem; }
+.av-esc__datos div { background: var(--fondo); padding: .8rem .9rem; }
+.av-esc__datos dt { font-family: var(--mono); font-size: .55rem; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-fantasma); }
+.av-esc__datos dd { margin: .3rem 0 0; font-family: var(--display); font-size: 1.25rem; line-height: 1; }
+.av-esc__datos dd small { font-family: var(--mono); font-size: .6rem; color: var(--tinta-tenue); }
+.av-esc__compra { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.av-esc__precio { font-size: 1.5rem; }
+.av-esc__precio s { margin-left: .5rem; font-size: .78rem; color: var(--tinta-fantasma); }
+
+/* La lista del aparador: numerada, con barra de avance en la activa. */
+.av-esc__lista { grid-area: lista; background: var(--fondo); margin: 0; padding: 0; list-style: none; display: grid; }
+.av-esc__lista li { border-top: var(--filo); }
+.av-esc__lista li:first-child { border-top: 0; }
+.av-esc__lista button {
+  position: relative; width: 100%; display: grid; grid-template-columns: 2.6rem 1fr auto; gap: 1rem;
+  align-items: center; padding: .85rem clamp(1.6rem, 3vw, 2.8rem); text-align: left;
+  color: var(--tinta-tenue); transition: color .35s, background .35s;
+}
+.av-esc__lista button:hover { color: var(--tinta); background: var(--fondo-2); }
+.av-esc__lista button[aria-current="true"] { color: var(--tinta); }
+.av-esc__lista .n { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; color: var(--tinta-fantasma); }
+.av-esc__lista button[aria-current="true"] .n { color: var(--laton); }
+.av-esc__lista .m { font-family: var(--display); font-size: 1.05rem; }
+.av-esc__lista .m em { font-family: var(--mono); font-style: normal; font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; color: var(--tinta-fantasma); display: block; }
+.av-esc__lista .p { font-family: var(--mono); font-size: .78rem; }
+/* Barra que se llena mientras la pieza está en el aparador. */
+.av-esc__lista button::after {
+  content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%;
+  background: var(--laton); transform: scaleX(0); transform-origin: left;
+}
+.av-esc__lista button[aria-current="true"]::after { animation: av-turno var(--turno, 7s) linear forwards; }
+@keyframes av-turno { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .av-esc__lista button[aria-current="true"]::after { animation: none; transform: scaleX(1); } }
+
+@media (max-width: 900px) {
+  .av-esc { grid-template-columns: 1fr; grid-template-areas: 'vitrina' 'ficha' 'lista'; }
+  .av-esc__vitrina { min-height: 20rem; }
+  .av-esc__datos { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 460px) { .av-esc__datos { grid-template-columns: 1fr; } }
+
+/* ==========================  TAMAÑO REAL  ===============================
+   El calibrador: una tarjeta bancaria dibujada que el visitante ajusta
+   contra la suya de verdad hasta que coinciden.
+   ======================================================================== */
+.av-calibrador { position: fixed; inset: 0; z-index: 200; background: var(--velo); backdrop-filter: blur(10px);
+  display: grid; place-items: center; padding: 1rem; opacity: 0; transition: opacity .3s; overflow-y: auto; }
+.av-calibrador.visible { opacity: 1; }
+.av-cal__caja { width: min(56rem, 100%); background: var(--fondo-2); border: var(--filo); padding: clamp(1.4rem, 3vw, 2.4rem);
+  transform: translateY(-14px); transition: transform .45s var(--curva); }
+.av-calibrador.visible .av-cal__caja { transform: none; }
+.av-cal__cab { display: flex; gap: 2rem; justify-content: space-between; align-items: flex-start; padding-bottom: 1.2rem; border-bottom: var(--filo); }
+.av-cal__pasos { margin: 1.2rem 0; padding-left: 1.4rem; font-size: .78rem; color: var(--tinta-tenue); line-height: 1.9; }
+.av-cal__pasos li::marker { color: var(--laton); }
+
+.av-cal__zona { display: grid; place-items: center; padding: clamp(1rem, 3vw, 2rem) 0; background:
+  repeating-linear-gradient(45deg, transparent, transparent 9px, color-mix(in oklab, var(--tinta) 4%, transparent) 9px, color-mix(in oklab, var(--tinta) 4%, transparent) 10px);
+  border: var(--filo); }
+/* La tarjeta de referencia, con su chip y su banda para que se reconozca. */
+.av-cal__tarjeta { position: relative; border: 2px solid var(--laton); border-radius: 8px;
+  background: linear-gradient(135deg, color-mix(in oklab, var(--laton) 14%, var(--fondo-3)), var(--fondo-3));
+  box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.av-cal__chip { position: absolute; left: 9%; top: 30%; width: 13%; height: 20%; border-radius: 3px;
+  background: linear-gradient(135deg, #d9b45c, #8a6a24); }
+.av-cal__banda { position: absolute; left: 0; right: 0; top: 62%; height: 13%; background: rgba(0,0,0,.45); }
+.av-cal__marca { position: absolute; right: 8%; bottom: 8%; font-size: .62rem; letter-spacing: .12em; color: var(--laton); }
+
+.av-cal__mando { display: grid; grid-template-columns: auto 1fr auto; gap: .8rem; align-items: center; margin-top: 1.2rem; }
+.av-cal__paso { width: 34px; height: 34px; border: var(--filo); display: grid; place-items: center;
+  font-family: var(--mono); color: var(--tinta-tenue); transition: color .3s, border-color .3s; }
+.av-cal__paso:hover { color: var(--tinta); border-color: var(--linea-viva); }
+.av-cal__mando input[type="range"] { width: 100%; appearance: none; height: 1px; background: var(--linea-viva); }
+.av-cal__mando input[type="range"]::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-cal__mando input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-cal__lectura { text-align: center; margin: 1rem 0 0; font-size: .74rem; color: var(--tinta-tenue); }
+.av-cal__lectura b { color: var(--laton); }
+.av-cal__pie { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; margin-top: 1.4rem; }
+.av-cal__nota { text-align: center; margin: .9rem 0 0; font-size: .68rem; color: var(--tinta-fantasma); }
+
+/* La pieza puesta a tamaño físico: el ancho lo fija el JS en píxeles, así
+   que aquí solo se deja sitio para que quepa y se pueda desplazar. */
+.av-escaparate.real .av-escaparate__lienzo { overflow: auto; justify-items: center; }
+.av-escaparate.real .av-escaparate__lienzo > div { display: grid; place-items: center; min-width: 100%; }
+.av-real-aviso { display: flex; align-items: center; gap: .6rem; justify-content: center; margin-top: 1rem;
+  padding: .6rem .9rem; border: 1px solid var(--laton); font-family: var(--mono); font-size: .64rem;
+  letter-spacing: .1em; color: var(--laton); text-align: center; }
+.av-real-aviso button { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Selector de vista: de frente o de perfil. */
+.av-vistas { display: flex; gap: 1px; background: var(--linea); border: var(--filo); margin-bottom: 1rem; }
+.av-vista { flex: 1; background: var(--fondo); padding: .6rem; font-family: var(--mono); font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .16em; color: var(--tinta-fantasma); transition: color .3s, background .3s; }
+.av-vista:hover { color: var(--tinta); }
+.av-vista[aria-selected="true"] { background: var(--tinta); color: var(--fondo); }
+.av-escaparate__lienzo.sin-lupa { cursor: default; }
+.av-escaparate__lienzo .av-perfil { width: 100%; max-width: 30rem; }
+.av-grosor { margin-top: 2rem; padding: 1.2rem 1.4rem; border-left: 2px solid var(--laton); background: var(--fondo-2); }
+.av-grosor p { margin: .6rem 0 0; color: var(--tinta-tenue); font-size: .92rem; }
+
+/* Mover el tiempo. */
+.av-tiempo { margin-top: 1.2rem; padding-top: 1.2rem; border-top: var(--filo); }
+.av-tiempo__cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .7rem; }
+.av-tiempo__cab b { font-size: .8rem; color: var(--tinta-tenue); transition: color .3s; }
+.av-tiempo.movido .av-tiempo__cab b { color: var(--laton); }
+.av-tiempo input[type="range"] { width: 100%; appearance: none; height: 1px; background: var(--linea-viva); margin: .3rem 0; }
+.av-tiempo input[type="range"]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-tiempo input[type="range"]::-moz-range-thumb { width: 15px; height: 15px; background: var(--laton); border-radius: 50%; border: 3px solid var(--fondo-2); cursor: grab; }
+.av-tiempo__pie { display: flex; justify-content: space-between; align-items: center; margin-top: .4rem; font-size: .6rem; color: var(--tinta-fantasma); }
+.av-tiempo__ahora { font-family: var(--mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .14em; color: var(--tinta-tenue); border-bottom: 1px solid transparent; }
+.av-tiempo__ahora:hover { color: var(--laton); border-bottom-color: var(--laton); }
+.av-tiempo__nota { margin: .7rem 0 0; font-size: .64rem; color: var(--tinta-fantasma); text-align: center; min-height: 1.2em; }
+
+/* ==========================  ¿CUÁL ES TU RELOJ?  ========================= */
+.av-guia { margin-top: clamp(2rem, 5vw, 3.5rem); border: var(--filo); padding: clamp(1.5rem, 4vw, 3rem); background: var(--fondo-2); position: relative; }
+.av-guia__barra { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--linea); }
+.av-guia__barra i { display: block; height: 100%; background: var(--laton); transform-origin: left; transition: transform .6s var(--curva); }
+.av-guia__cuenta { font-size: .64rem; letter-spacing: .22em; text-transform: uppercase; color: var(--tinta-fantasma); }
+.av-guia__titulo { margin: .6rem 0 1.8rem; }
+.av-guia__ops { display: grid; gap: 1px; background: var(--linea); border: var(--filo); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.av-guia__op { background: var(--fondo); padding: 1.4rem 1.2rem; text-align: left; display: grid; gap: .3rem; align-content: start;
+  transition: background .35s var(--curva), transform .35s var(--curva); }
+.av-guia__op:hover { background: var(--fondo-3); }
+.av-guia__op .e { font-family: var(--display); font-size: 1.35rem; line-height: 1.1; }
+.av-guia__op .s { font-family: var(--mono); font-size: .68rem; color: var(--tinta-tenue); }
+.av-guia__op.elegida { background: var(--laton); }
+.av-guia__op.elegida .e, .av-guia__op.elegida .s { color: #0B0B0C; }
+.av-guia__pie { margin: 1.2rem 0 0; font-size: .84rem; color: var(--tinta-fantasma); max-width: 52ch; }
+.av-guia__atras { display: inline-block; margin-top: 1.4rem; color: var(--tinta-tenue); }
+
+.av-guia__gana { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center;
+  border: var(--filo); background: var(--fondo); padding: clamp(1.4rem, 3vw, 2.4rem); }
+.av-guia__pieza { width: min(100%, 15rem); margin-inline: auto; }
+.av-guia__razones { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .45rem; }
+.av-guia__razones li { position: relative; padding-left: 1.5rem; font-size: .95rem; color: var(--tinta-tenue); }
+.av-guia__razones li::before { content: '✓'; position: absolute; left: 0; color: var(--laton); font-family: var(--mono); font-size: .8rem; }
+.av-guia__pero { font-size: .84rem; color: var(--tinta-fantasma); border-left: 2px solid var(--brasa); padding-left: .8rem; margin: 0 0 1.2rem; }
+.av-guia__compra { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.av-guia__compra b { font-size: 1.4rem; }
+.av-guia__final { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; margin-top: 2.5rem; padding-top: 2rem; border-top: var(--filo); }
+@media (max-width: 760px) { .av-guia__gana { grid-template-columns: 1fr; } }
+
+/* Siluetas superpuestas del comparador. */
+.av-siluetas { border: var(--filo); background: var(--fondo-2); padding: clamp(1.2rem, 3vw, 2rem); margin-bottom: 2rem; }
+.av-siluetas__cab { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; justify-content: space-between; align-items: baseline;
+  padding-bottom: 1rem; border-bottom: var(--filo); margin-bottom: 1.4rem; }
+.av-siluetas__cab p { margin: 0; font-size: .68rem; }
+.av-siluetas__par { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 3vw, 2.5rem); }
+.av-siluetas__par figure { margin: 0; }
+.av-siluetas__par figcaption { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-fantasma); margin-bottom: .6rem; }
+.av-siluetas__par svg { width: 100%; height: auto; max-height: 20rem; }
+@media (max-width: 640px) { .av-siluetas__par { grid-template-columns: 1fr; } }
+
+/* Los hitos de la historia se encienden al pasar. */
+.av-hito::before { transition: background .5s var(--curva), box-shadow .5s var(--curva); background: var(--tinta-fantasma); }
+.av-hito.visible::before { background: var(--laton); box-shadow: 0 0 0 4px color-mix(in oklab, var(--laton) 22%, transparent); }
+/* La línea de tiempo se dibuja de arriba abajo al entrar. */
+.av-linea-tiempo { border-left-color: transparent; position: relative; }
+.av-linea-tiempo::before { content: ''; position: absolute; left: -1px; top: 0; width: 1px; height: 100%; background: var(--linea);
+  transform: scaleY(0); transform-origin: top; transition: transform 1.4s var(--curva); }
+.av-linea-tiempo.visible::before { transform: scaleY(1); }
+/* El acordeón abre con holgura. */
+.av-acordeon details[open] div { animation: av-abre .45s var(--curva); }
+@keyframes av-abre { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+/* Las cifras que cuentan usan cifras de ancho fijo para no bailar. */
+.av-cifra b { font-variant-numeric: tabular-nums; }
+
+/* Titular con una pieza viva al lado, en las páginas de texto. */
+.av-portada-doble { display: grid; grid-template-columns: minmax(0,1fr) clamp(10rem, 22vw, 17rem); gap: clamp(1.5rem,4vw,3.5rem); align-items: center; }
+.av-portada-pieza { width: 100%; filter: drop-shadow(0 22px 40px rgba(0,0,0,.5)); }
+.av-portada-pieza .av-svg { width: 100%; }
+@media (max-width: 780px) { .av-portada-doble { grid-template-columns: 1fr; } .av-portada-pieza { max-width: 13rem; margin-inline: auto; } }

@@ -16,7 +16,10 @@
 <link rel="stylesheet" href="assets/css/paginas.css">
 <script src="assets/js/datos.js" defer></script>
 <script src="assets/js/motor-reloj.js" defer></script>
+<script src="assets/js/perfil.js" defer></script>
 <script src="assets/js/tienda.js" defer></script>
+<script src="assets/js/escala.js" defer></script>
+<script src="assets/js/mecanismo.js" defer></script>
 <script src="assets/js/componentes.js" defer></script>
 <script src="assets/js/inicio.js" defer></script>
 </head>
@@ -65,14 +68,37 @@
     <div class="av-marquesina__pista" id="marquesina"></div>
   </div>
 
-  <!-- ========================== DESTACADAS =========================== -->
+  <!-- ========================== ESCAPARATE =========================== -->
   <section class="av-seccion av-marco" id="destacadas">
     <header class="av-seccion-eti" data-revelar>
       <b>01</b>
-      <span class="av-t-eyebrow">Recién llegados</span>
+      <span class="av-t-eyebrow">El escaparate</span>
       <a class="av-enlace" href="catalogo.html">Ver todo el catálogo →</a>
     </header>
-    <div class="av-vitrina" id="vitrina-destacadas"></div>
+
+    <div class="av-esc" data-revelar>
+      <!-- La pieza en el aparador, a tamaño grande -->
+      <div class="av-esc__vitrina">
+        <div class="av-esc__cristal" aria-hidden="true"></div>
+        <div class="av-esc__pieza" id="esc-pieza"></div>
+        <p class="av-esc__pie av-mono" id="esc-pie"></p>
+      </div>
+
+      <!-- Su ficha, en formato editorial -->
+      <div class="av-esc__ficha">
+        <p class="av-esc__marca av-mono" id="esc-marca"></p>
+        <h3 class="av-esc__modelo" id="esc-modelo"></h3>
+        <p class="av-esc__lema" id="esc-lema"></p>
+        <dl class="av-esc__datos" id="esc-datos"></dl>
+        <div class="av-esc__compra">
+          <span class="av-esc__precio av-mono" id="esc-precio"></span>
+          <a class="av-btn av-btn--solido" id="esc-ir">Ver la ficha</a>
+        </div>
+      </div>
+
+      <!-- El resto del aparador, para cambiar de pieza -->
+      <ol class="av-esc__lista" id="esc-lista" aria-label="Otras piezas en el escaparate"></ol>
+    </div>
   </section>
 
   <!-- ========================== MANIFIESTO =========================== -->
