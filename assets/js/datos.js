@@ -396,6 +396,15 @@ AV.HUSOS = [
   { ciudad: 'Nueva York',  zona: 'America/New_York',    codigo: 'NYC' }
 ];
 
+/* --- Fotos ----------------------------------------------------------------
+   Cada reloj puede traer un arreglo `fotos` con los nombres de archivo que
+   estén en assets/fotos/. Mientras no lo traiga, la tienda dibuja la pieza.
+   Ver assets/fotos/LEEME.md.                                              */
+AV.RUTA_FOTOS = 'assets/fotos/';
+AV.fotosDe = r => (r.fotos || []).map(n =>
+  ((window.AVTienda || {}).rutaBase || '') + AV.RUTA_FOTOS + n);
+AV.tieneFotos = r => !!(r.fotos && r.fotos.length);
+
 /* --- Utilidades ----------------------------------------------------------- */
 AV.porId = id => AV.RELOJES.find(r => r.id === id) || null;
 AV.precioMXN = n => '$' + Math.round(n).toLocaleString('es-MX');

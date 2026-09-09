@@ -364,7 +364,7 @@
     cuerpo.querySelectorAll('[data-reloj-mini]').forEach(el => {
       const r = AV.porId(el.dataset.relojMini);
       const dial = r.variantes.find(v => v.id === el.dataset.dial) || r.variantes[0];
-      el.innerHTML = AVMotor.svgReloj(r, { dial, correa: el.dataset.correa });
+      AVMotor.montar(el, r, { dial, correa: el.dataset.correa });
     });
     AVMotor.refrescar();
 

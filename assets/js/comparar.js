@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const th = piezas.map(p => `<td class="av-banco__pieza">
-        <div data-reloj="${p.id}"></div>
+        <div data-reloj="${p.id}" data-dibujo></div>
         <p class="av-mono av-laton" style="font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;margin:.6rem 0 .2rem">${p.marca}</p>
         <h2 class="av-t-titulo" style="font-size:1.25rem"><a href="reloj.html?id=${p.id}">${p.modelo}</a></h2>
         <p class="av-pieza__lema" style="min-height:0;font-size:.85rem">${p.lema}</p>

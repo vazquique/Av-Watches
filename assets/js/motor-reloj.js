@@ -4,7 +4,7 @@
    Convierte una ficha técnica (datos.js) en una pieza vectorial completa:
    correa, caja, bisel, dial, índices, complicaciones y agujas. Las agujas
    marcan la hora real y se actualizan en un solo bucle global.
-   No hay una sola fotografía en esta tienda.
+   El dibujo es el respaldo: cuando un reloj trae foto, manda la foto.
    ========================================================================== */
 (function (global) {
   'use strict';
@@ -485,6 +485,18 @@
       <filter id="sombra${uid}" x="-30%" y="-20%" width="160%" height="150%">
         <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity="0.45"/>
       </filter>
+      <!-- Sombra que la caja arroja sobre el dial: da hondura al conjunto. -->
+      <radialGradient id="hondo${uid}" cx="50%" cy="50%" r="50%">
+        <stop offset="72%" stop-color="#000" stop-opacity="0"/>
+        <stop offset="93%" stop-color="#000" stop-opacity="0.30"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.55"/>
+      </radialGradient>
+      <!-- Luz principal del estudio, arriba a la izquierda. -->
+      <linearGradient id="luz${uid}" x1="0.15" y1="0" x2="0.85" y2="1">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.16"/>
+        <stop offset="38%" stop-color="#fff" stop-opacity="0.02"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.16"/>
+      </linearGradient>
     </defs>`;
 
     let g = '';
@@ -492,9 +504,14 @@
     g += correa(uid, cor, cx, cy, R, false);
     g += `<g filter="url(#sombra${uid})">`;
     g += `<circle cx="${cx}" cy="${cy}" r="${n(R * 1.02)}" fill="url(#met${uid})"/>`;   /* flanco de la caja */
+    g += `<circle cx="${cx}" cy="${cy}" r="${n(R * 1.02)}" fill="url(#luz${uid})"/>`;   /* luz del estudio */
     g += bisel(uid, base, cx, cy, R, rDial);
+    /* Canto entre el bisel y el dial: un filo claro arriba y oscuro abajo. */
+    g += `<circle cx="${cx}" cy="${cy}" r="${n(rDial + 2)}" fill="none" stroke="url(#luz${uid})" stroke-width="4" opacity="0.9"/>`;
     g += `</g>`;
     g += textura(uid, base, cx, cy, rDial);
+    /* Hondura del dial, antes de índices y agujas. */
+    g += `<circle cx="${cx}" cy="${cy}" r="${n(rDial)}" fill="url(#hondo${uid})" pointer-events="none"/>`;
     g += indices(base, cx, cy, rDial);
     g += complicaciones(uid, base, cx, cy, rDial, ahora);
     g += agujas(base, cx, cy, rDial);
@@ -508,7 +525,7 @@
     }
 
     /* Reflejo del zafiro: lo último que se dibuja, como en la vida real. */
-    g += `<path class="av-cristal" d="M ${n(cx - rDial * 0.94)} ${n(cy - rDial * 0.2)} A ${n(rDial)} ${n(rDial)} 0 0 1 ${n(cx + rDial * 0.42)} ${n(cy - rDial * 0.88)} L ${n(cx - rDial * 0.30)} ${n(cy + rDial * 0.55)} Z" fill="url(#cri${uid})" clip-path="url(#dial${uid})" pointer-events="none"/>`;
+    g += `<path class="av-cristal" d="M ${n(cx - rDial * 0.94)} ${n(cy - rDial * 0.2)} A ${n(rDial)} ${n(rDial)} 0 0 1 ${n(cx + rDial * 0.42)} ${n(cy - rDial * 0.88)} L ${n(cx - rDial * 0.30)} ${n(cy + rDial * 0.55)} Z" fill="url(#cri${uid})" clip-path="url(#dial${uid})" pointer-events="none"/><circle cx="${cx}" cy="${cy}" r="${n(rDial)}" fill="url(#luz${uid})" opacity="0.55" pointer-events="none"/>`;
 
     const mov = /cuarzo/.test(spec.calibre.tipo) ? 'cuarzo' : spec.calibre.tipo === 'automático' ? 'auto' : 'manual';
     const clase = 'av-svg av-reloj-vivo' + (opts.clase ? ' ' + opts.clase : '');
@@ -613,17 +630,38 @@
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') arrancar(); });
 
   /* Monta todo contenedor con data-reloj="id-del-modelo". */
+  /* Llena un hueco con la pieza. Si el reloj tiene foto, manda la foto; el
+     dibujo queda de respaldo, también si la foto no llega a cargar.
+     `data-dibujo` pide el dibujo a fuerza: lo usan la portada, donde la pieza
+     está viva y en hora, y el comparador, que superpone siluetas. */
+  function montar(el, spec, opts) {
+    const dibujo = () => {
+      el.classList.remove('con-foto');
+      el.innerHTML = svgReloj(spec, opts || {});
+      refrescar();
+    };
+    if (el.hasAttribute('data-dibujo') || !AV.tieneFotos(spec)) return dibujo();
+    const img = new Image(1600, 1600);
+    img.onerror = dibujo;
+    img.alt = AV.nombreCompleto(spec);
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.src = AV.fotosDe(spec)[0];
+    el.classList.add('con-foto');
+    el.replaceChildren(img);
+  }
+
   function montarTodos(raiz) {
     (raiz || document).querySelectorAll('[data-reloj]:not([data-montado])').forEach(el => {
       const spec = AV.porId(el.dataset.reloj);
       if (!spec) return;
-      el.innerHTML = svgReloj(spec, { tz: el.dataset.tz || null, correa: el.dataset.correa || null });
+      montar(el, spec, { tz: el.dataset.tz || null, correa: el.dataset.correa || null });
       el.setAttribute('data-montado', '1');
     });
     refrescar();
   }
 
-  global.AVMotor = { svgReloj, montarTodos, refrescar, pintar, radioCaja, aclarar, esClaro };
+  global.AVMotor = { svgReloj, montar, montarTodos, refrescar, pintar, radioCaja, aclarar, esClaro };
   function iniciar() { montarTodos(); arrancar(); setInterval(latido, 1000); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
   else iniciar();

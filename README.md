@@ -13,14 +13,20 @@ y funciona.
 
 ## ⚠ Antes de publicarlo
 
-Tres cosas que **tienes que revisar**, porque las llené con datos de ejemplo:
+Cuatro cosas que **tienes que hacer tú**, porque yo no las puedo inventar:
 
-1. **Precios y existencias** (`assets/js/datos.js`) — son aproximaciones de
+1. **Fotos de tus relojes.** Es lo que más se nota. El sitio ya está listo
+   para recibirlas: las metes en `assets/fotos/`, agregas el renglón `fotos`
+   al reloj en `datos.js` y de ahí en adelante el catálogo, la ficha y la
+   bolsa enseñan la foto solas. Las instrucciones completas —cómo nombrarlas,
+   qué cuatro tomas hacen falta y cómo sacarlas— están en
+   `assets/fotos/LEEME.md`.
+2. **Precios y existencias** (`assets/js/datos.js`) — son aproximaciones de
    mercado, no tu inventario. Ajusta `precio`, `precioLista` y `stock` de
    cada entrada.
-2. **Especificaciones** — siguen a los modelos de fábrica, pero verifica cada
+3. **Especificaciones** — siguen a los modelos de fábrica, pero verifica cada
    `refFab` contra la pieza que tengas físicamente antes de publicarla.
-3. **Tus datos de contacto** — busca los comentarios `⇢` en `servicio.html`
+4. **Tus datos de contacto** — busca los comentarios `⇢` en `servicio.html`
    (correo, WhatsApp, redes) y en `casa.html` (tu historia y tus cifras).
 
 Los formularios de pedido y contacto **no mandan nada a ningún servidor** ni
@@ -29,14 +35,20 @@ pasarela (Stripe, Mercado Pago, Conekta) y un backend.
 
 ## La idea
 
-**Aquí no hay una sola fotografía.** Cada reloj se dibuja por código en SVG a
-partir de su ficha técnica y **marca la hora real**, en vivo. El dial lleva la
-marca que corresponde, la caja se dibuja al diámetro real del modelo, y un
-cuarzo pega el salto seco de cada segundo mientras un automático barre suave.
+**Manda la foto; el dibujo es la red.** Cada reloj que no tenga foto se
+dibuja por código en SVG a partir de su ficha técnica y **marca la hora real**,
+en vivo. El dial lleva la marca que corresponde, la caja se dibuja al diámetro
+real del modelo, y un cuarzo pega el salto seco de cada segundo mientras un
+automático barre suave.
 
-Es una ilustración a escala, no una foto del producto: sirve para que el
-catálogo se vea coherente mientras consigues fotos reales de tus piezas. Es
-buena idea sustituirlas por fotos propias conforme las tengas.
+Así el catálogo se ve parejo mientras juntas las fotos, y nunca queda un hueco:
+si una foto falta o no carga, esa pieza vuelve al dibujo sola. En cuanto un
+reloj tiene foto, el catálogo, la ficha, la bolsa y la guía la usan; el dibujo
+se queda en la pestaña **Dibujo** de la ficha, que es donde vive el tamaño real.
+
+La portada y el comparador van siempre dibujados a propósito: en la portada el
+reloj está vivo y en hora, y el comparador superpone siluetas para enseñar la
+diferencia de tamaño.
 
 ## Cosas que vale la pena abrir
 

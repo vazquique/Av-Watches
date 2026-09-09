@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const nuevo = p.condicion === 'nuevo';
   const met = AV.METALES[p.caja.metal];
-  const est = { dial: p.variantes[0], correa: p.correa, nota: '', lume: false, vista: 'frente', real: false, horas: 0 };
+  const est = { dial: p.variantes[0], correa: p.correa, nota: '', lume: false, vista: AV.tieneFotos(p) ? 'fotos' : 'frente', real: false, horas: 0, foto: 0 };
   const extraCorrea = c => c === p.correa ? 0 : AV.CORREAS[c].tipo === 'metal' ? 2900 : 890;
   const precio = () => p.precio + est.dial.extra + extraCorrea(est.correa);
   const chip = hex => `<i style="background:${hex}"></i>`;
@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div class="av-vistas" role="tablist" aria-label="Cómo ver la pieza">
-        <button type="button" class="av-vista" data-vista="frente" role="tab" aria-selected="true">Frente</button>
+        ${AV.tieneFotos(p) ? '<button type="button" class="av-vista" data-vista="fotos" role="tab" aria-selected="true">Fotos</button>' : ''}
+        <button type="button" class="av-vista" data-vista="frente" role="tab" aria-selected="${!AV.tieneFotos(p)}">${AV.tieneFotos(p) ? 'Dibujo' : 'Frente'}</button>
         <button type="button" class="av-vista" data-vista="perfil" role="tab" aria-selected="false">Perfil</button>
         <button type="button" class="av-vista" data-vista="muneca" role="tab" aria-selected="false">En tu muñeca</button>
       </div>
@@ -142,6 +143,23 @@ document.addEventListener('DOMContentLoaded', () => {
      ====================================================================== */
   function dibujar() {
     const svg = AVMotor.svgReloj(p, { dial: est.dial, correa: est.correa });
+    if (est.vista === 'fotos') {
+      const fotos = AV.fotosDe(p);
+      cont.innerHTML = `<figure class="av-galeria">
+        <img src="${fotos[est.foto]}" alt="${p.marca} ${p.modelo}, foto ${est.foto + 1} de ${fotos.length}"
+             width="1600" height="1600" loading="eager" decoding="async">
+        ${fotos.length > 1 ? `<div class="av-galeria__minis">${fotos.map((f, i) =>
+          `<button type="button" data-foto="${i}" aria-current="${i === est.foto}" aria-label="Foto ${i + 1}">
+             <img src="${f}" alt="" width="160" height="160" loading="lazy" decoding="async"></button>`).join('')}</div>` : ''}
+      </figure>`;
+      cont.querySelectorAll('[data-foto]').forEach(bt => bt.onclick = () => { est.foto = +bt.dataset.foto; dibujar(); });
+      /* Si una foto no carga, se cae al dibujo en vez de dejar el hueco. */
+      const img = cont.querySelector('img');
+      img.onerror = () => { est.vista = 'frente'; marcarVista(); dibujar(); };
+      lupaInt.innerHTML = svg;
+      AVMotor.refrescar();
+      return;
+    }
     if (est.vista === 'perfil') {
       cont.innerHTML = AVPerfil.svgPerfil(p, { correa: est.correa });
     } else if (est.vista === 'muneca') {
@@ -179,14 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ======================================================================
      Controles
      ====================================================================== */
+  function marcarVista() {
+    document.querySelectorAll('[data-vista]').forEach(o => o.setAttribute('aria-selected', o.dataset.vista === est.vista));
+    lienzo.classList.toggle('sin-lupa', est.vista !== 'frente');
+    /* Lume, tiempo y tamaño real solo tienen sentido sobre el dibujo. */
+    btnLume.disabled = btnTiempo.disabled = est.vista !== 'frente';
+    btnReal.disabled = est.vista === 'fotos' || est.vista === 'muneca';
+  }
   document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => {
     est.vista = b.dataset.vista;
-    document.querySelectorAll('[data-vista]').forEach(o => o.setAttribute('aria-selected', o === b));
-    lienzo.classList.toggle('sin-lupa', est.vista !== 'frente');
-    /* El lume y el tiempo solo tienen sentido sobre el dial. */
-    btnLume.disabled = btnTiempo.disabled = est.vista !== 'frente';
+    marcarVista();
     dibujar();
   });
+  marcarVista();
 
   $('op-dial').onclick = e => {
     const b = e.target.closest('[data-dial]'); if (!b) return;
